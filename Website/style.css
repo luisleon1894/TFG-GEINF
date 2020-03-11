@@ -14,11 +14,24 @@
     background:blue;
 }
 
-.stage{
+.stage_box{
 	float: left;
     width: 60%;
     height: 950px;
-    background:blue;
+    background:transparent;
+}
+
+.stage{
+	margin: auto;
+	margin-top: 10%;
+    width: 85%;
+    height: 85%;
+    background: green;
+}
+
+.stage2{
+
+    
 }
 
 .team_or_rider_box{

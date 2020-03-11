@@ -12,7 +12,12 @@
 
 </div>
 
-<div class="stage"></div>
+<div class="stage_box">
+		
+		<div id="stage_id"></div>
+
+
+</div>
 
 <div class="team_or_rider_box">
 	
@@ -26,7 +31,7 @@
 <script src="https://d3js.org/d3.v4.js"></script>
 <script>
 	
-	//d3.csv("./Teams.csv", function(data){
+	//d3.csv("./Teams.csv", function(da{
     //	console.log(data);
 	//});
 
@@ -34,8 +39,101 @@
     //	console.log(data);
 	//});
 
+	var margin = {top: 30, right: 10, bottom: 10, left: 0},
+  	width = 500 - margin.left - margin.right,
+  	height = 400 - margin.top - margin.bottom;
+
+	var svg = d3.select("#stage_id")
+	.append("svg")
+  		.attr("width", width + margin.left + margin.right)
+  		.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+  		.attr("transform",
+        	"translate(" + margin.left + "," + margin.top + ")");
+
+	function isnewKm(infoColumn){
+		return infoColumn.includes("km");
+	}
+
+	function isNotElapsed(infoColumn){
+		return !infoColumn.includes("Elapsed");
+	}
+
+	// Extract the list of km we want to keep in the plot. Here I keep all except the column called Species
 	d3.csv("./Stage13-data-full-csv.csv", function(data){
     	console.log(data);
+
+    	columnsKm = d3.keys(data[0]).filter(isnewKm)
+
+    	for(var i = 0; i < columnsKm.length; i++){
+    		columnsKm[i] = columnsKm[i].slice(0, columnsKm[i].indexOf("_")).replace("km",""); // elimina tot el text que no sigui "kmXX"
+    	}
+
+    	columnsKm = columnsKm.filter((a, b) => columnsKm.indexOf(a) === b) //elimina repetits
+    	//console.log(columnsKm);
+
+
+    	columnsElapsed = JSON.parse(JSON.stringify( data ));
+
+    	columnsNotElapsed = d3.keys(data[0]).filter(isNotElapsed)
+
+    	for(i = 0; i < columnsElapsed.length; i++){
+
+    		columnsNotElapsed.forEach(function(key) {
+    			delete columnsElapsed[i][key];
+			});
+    	}
+    	
+    	console.log(columnsElapsed);
+
+    	// For each columnKm, I build a linear scale. I store all in a y object
+  		var y = {}
+  		for (i in columnsKm) {
+    		kmname = columnsKm[i]
+    		y[kmname] = d3.scaleLinear()
+      			.domain( d3.extent(data, function(d) { return +d["km"+kmname+"_Elapsed_time"]; }) )
+      			.range([height, 0])
+  		}
+
+  		  // Build the X scale -> it find the best position for each Y axis
+  		x = d3.scalePoint()
+    		.range([0, width])
+    		.padding(1)
+    		.domain(columnsKm);
+
+
+    	// The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
+  		function path(d) {
+      		return d3.line()(columnsKm.map(function(p) { return [x(p), y[p](d[p])]; }));
+  		}
+
+
+	  	// Draw the lines
+	  	svg
+	    	.selectAll("myPath")
+	    	.data(columnsElapsed)
+	    	.enter().append("path")
+	    	.attr("d",  path)
+	    	.style("fill", "none")
+	    	.style("stroke", "#69b3a2")
+	    	.style("opacity", 0.5)
+
+	  	// Draw the axis:
+	  	svg.selectAll("myAxis")
+	    	// For each dimension of the dataset I add a 'g' element:
+	    	.data(columnsKm).enter()
+	    	.append("g")
+	    	// I translate this element to its right position on the x axis
+	    	.attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+	    	// And I build the axis with the call function
+	    	.each(function(d) { d3.select(this).call(d3.axisLeft().scale(y[d])); })
+	    	// Add axis title
+	    	.append("text")
+	      		.style("text-anchor", "middle")
+	      		.attr("y", -9)
+	      		.text(function(d) { return d; })
+	      		.style("fill", "black")
+	  		
 	});
 
 
