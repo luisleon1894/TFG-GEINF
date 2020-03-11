@@ -1,20 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="style.css">
 
-<h1> Hola </h1>
+
+<div class="stagelist">
+	
+	<div class="ministage"></div>
+	<div class="ministage"></div>
+	<div class="ministage"></div>
+
+</div>
+
+<div class="stage"></div>
+
+<div class="team_or_rider_box">
+	
+	<div class="team_or_rider_list"></div>
+
+	<div class="team_or_rider_info"></div>
+
+</div>
 
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
 <script>
 	
-	d3.csv("./Teams.csv", function(data){
-    	console.log(data);
-	});
+	//d3.csv("./Teams.csv", function(data){
+    //	console.log(data);
+	//});
 
-	d3.csv("./Riders.csv", function(data){
-    	console.log(data);
-	});
+	//d3.csv("./Riders.csv", function(data){
+    //	console.log(data);
+	//});
 
 	d3.csv("./Stage13-data-full-csv.csv", function(data){
     	console.log(data);
