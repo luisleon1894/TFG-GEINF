@@ -40,8 +40,8 @@
 	//});
 
 	var margin = {top: 30, right: 10, bottom: 10, left: 0},
-  	width = 500 - margin.left - margin.right,
-  	height = 400 - margin.top - margin.bottom;
+  	width = 1000 - margin.left - margin.right,
+  	height = 800 - margin.top - margin.bottom;
 
 	var svg = d3.select("#stage_id")
 	.append("svg")
@@ -59,9 +59,13 @@
 		return !infoColumn.includes("Elapsed");
 	}
 
+	function isElapsed(infoColumn){
+		return infoColumn.includes("Elapsed");
+	}
+
 	// Extract the list of km we want to keep in the plot. Here I keep all except the column called Species
 	d3.csv("./Stage13-data-full-csv.csv", function(data){
-    	console.log(data);
+    	//console.log(data);
 
     	columnsKm = d3.keys(data[0]).filter(isnewKm)
 
@@ -72,10 +76,10 @@
     	columnsKm = columnsKm.filter((a, b) => columnsKm.indexOf(a) === b) //elimina repetits
     	//console.log(columnsKm);
 
-
     	columnsElapsed = JSON.parse(JSON.stringify( data ));
 
     	columnsNotElapsed = d3.keys(data[0]).filter(isNotElapsed)
+
 
     	for(i = 0; i < columnsElapsed.length; i++){
 
@@ -83,15 +87,34 @@
     			delete columnsElapsed[i][key];
 			});
     	}
-    	
+		
+		columnsElapsedKeys = d3.keys(data[0]).filter(isElapsed)
+		//console.log(columnsElapsedKeys);
+
+		for(i = 0; i < columnsElapsed.length; i++){
+
+    		columnsElapsedKeys.forEach(function(key) {
+    			//modificar value, transformar minuts segons a un valor
+    			var elapse = columnsElapsed[i][key]
+
+    			var min = elapse[1]
+    			var seg = elapse.substr(3, 2)
+
+    			columnsElapsed[i][key] = (parseInt(min) * 60) + parseInt(seg) 
+
+
+			});
+    	}
+
     	console.log(columnsElapsed);
+
 
     	// For each columnKm, I build a linear scale. I store all in a y object
   		var y = {}
   		for (i in columnsKm) {
     		kmname = columnsKm[i]
     		y[kmname] = d3.scaleLinear()
-      			.domain( d3.extent(data, function(d) { return +d["km"+kmname+"_Elapsed_time"]; }) )
+      			.domain( d3.extent(columnsElapsed, function(d) { return +d["km"+kmname+"_Elapsed_time"]; }) )
       			.range([height, 0])
   		}
 
@@ -104,7 +127,11 @@
 
     	// The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
   		function path(d) {
-      		return d3.line()(columnsKm.map(function(p) { return [x(p), y[p](d[p])]; }));
+  			
+
+  			columnsElapsedKm = d3.keys(data[0]).filter(isElapsed)
+  			//console.log(columnsElapsedKm);
+      		//return d3.line()(columnsElapsedKm.map(function(p) { return [x(p), y[p](d[p])]; }));
   		}
 
 
