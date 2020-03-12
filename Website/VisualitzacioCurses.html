@@ -13,7 +13,7 @@
 </div>
 
 <div class="stage_box">
-		
+		 
 		<div id="stage_id"></div>
 
 
@@ -40,8 +40,8 @@
 	//});
 
 	var margin = {top: 30, right: 10, bottom: 10, left: 0},
-  	width = 1000 - margin.left - margin.right,
-  	height = 800 - margin.top - margin.bottom;
+  	width = 1150 - margin.left - margin.right,
+  	height = 900 - margin.top - margin.bottom;
 
 	var svg = d3.select("#stage_id")
 	.append("svg")
@@ -67,6 +67,8 @@
 	d3.csv("./Stage13-data-full-csv.csv", function(data){
     	//console.log(data);
 
+    	columnsKmCorrectName = d3.keys(data[0]).filter(isElapsed)
+    	//columnsKmCorrectName = columnsKmCorrectName.reverse()
     	columnsKm = d3.keys(data[0]).filter(isnewKm)
 
     	for(var i = 0; i < columnsKm.length; i++){
@@ -106,32 +108,40 @@
 			});
     	}
 
-    	console.log(columnsElapsed);
+    	//console.log(columnsElapsed);
 
 
     	// For each columnKm, I build a linear scale. I store all in a y object
   		var y = {}
-  		for (i in columnsKm) {
-    		kmname = columnsKm[i]
+  		for (i in columnsKmCorrectName) {
+    		kmname = columnsKmCorrectName[i]
     		y[kmname] = d3.scaleLinear()
-      			.domain( d3.extent(columnsElapsed, function(d) { return +d["km"+kmname+"_Elapsed_time"]; }) )
-      			.range([height, 0])
+      			//.domain( d3.extent(columnsElapsed, function(d) { return +d[kmname]; }) )
+      			.domain( d3.extent([0, 300]))
+      			.range([0, height])
   		}
 
   		  // Build the X scale -> it find the best position for each Y axis
   		x = d3.scalePoint()
     		.range([0, width])
     		.padding(1)
-    		.domain(columnsKm);
+    		.domain(columnsKmCorrectName);
 
+
+    	console.log(x);
 
     	// The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
   		function path(d) {
   			
+  			//se tiene que modificar la <y> para ver las diferencias entre uno y otro ciclista cuando tiene el mismo tiempo (sumar la position)
+  			
+      		return d3.line()(columnsKmCorrectName.map(function(p) {
 
-  			columnsElapsedKm = d3.keys(data[0]).filter(isElapsed)
-  			//console.log(columnsElapsedKm);
-      		//return d3.line()(columnsElapsedKm.map(function(p) { return [x(p), y[p](d[p])]; }));
+      			//console.log(x(p));
+
+      		 return [x(p), y[p](d[p])];
+
+      		  }));
   		}
 
 
@@ -148,7 +158,7 @@
 	  	// Draw the axis:
 	  	svg.selectAll("myAxis")
 	    	// For each dimension of the dataset I add a 'g' element:
-	    	.data(columnsKm).enter()
+	    	.data(columnsKmCorrectName).enter()
 	    	.append("g")
 	    	// I translate this element to its right position on the x axis
 	    	.attr("transform", function(d) { return "translate(" + x(d) + ")"; })
@@ -158,9 +168,9 @@
 	    	.append("text")
 	      		.style("text-anchor", "middle")
 	      		.attr("y", -9)
-	      		.text(function(d) { return d; })
+	      		.text(function(d) { return d.substr(0, 5); })
 	      		.style("fill", "black")
-	  		
+	  	
 	});
 
 
