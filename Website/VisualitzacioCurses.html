@@ -64,7 +64,7 @@
 	}
 
 	// Extract the list of km we want to keep in the plot. Here I keep all except the column called Species
-	d3.csv("./Stage13-data-full-csv.csv", function(data){
+	d3.csv("./Stage18-data-full-csv.csv", function(data){
     	//console.log(data);
 
     	columnsKmCorrectName = d3.keys(data[0]).filter(isElapsed)
@@ -83,12 +83,12 @@
     	columnsNotElapsed = d3.keys(data[0]).filter(isNotElapsed)
 
 
-    	for(i = 0; i < columnsElapsed.length; i++){
+    	//for(i = 0; i < columnsElapsed.length; i++){
 
-    		columnsNotElapsed.forEach(function(key) {
-    			delete columnsElapsed[i][key];
-			});
-    	}
+    	//	columnsNotElapsed.forEach(function(key) {
+    	//		delete columnsElapsed[i][key];
+		//	});
+    	//}
 		
 		columnsElapsedKeys = d3.keys(data[0]).filter(isElapsed)
 		//console.log(columnsElapsedKeys);
@@ -102,9 +102,15 @@
     			var min = elapse[1]
     			var seg = elapse.substr(3, 2)
 
-    			columnsElapsed[i][key] = (parseInt(min) * 60) + parseInt(seg) 
+    			if(elapse.includes("h")){
 
+    				columnsElapsed[i][key] = 0
+    			}
+    			else{
 
+    				columnsElapsed[i][key] = (parseInt(min) * 60) + parseInt(seg)
+    			}
+ 
 			});
     	}
 
@@ -128,18 +134,20 @@
     		.domain(columnsKmCorrectName);
 
 
-    	console.log(x);
 
     	// The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
-  		function path(d) {
+  		function path(d, index) {
   			
   			//se tiene que modificar la <y> para ver las diferencias entre uno y otro ciclista cuando tiene el mismo tiempo (sumar la position)
-  			
       		return d3.line()(columnsKmCorrectName.map(function(p) {
 
-      			//console.log(x(p));
+      			var positionKM = p.slice(0, p.indexOf("_"))+"_Position"
+      			//console.log(positionKM);
+      			//console.log(columnsElapsed[index][positionKM]);
+      			//console.log(d[p]);
+      			console.log(d[p] + parseInt(columnsElapsed[index][positionKM] ));
 
-      		 return [x(p), y[p](d[p])];
+      		 return [x(p), y[p](d[p] + parseInt(columnsElapsed[index][positionKM]) - 1)];
 
       		  }));
   		}
