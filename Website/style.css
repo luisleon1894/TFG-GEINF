@@ -56,3 +56,13 @@
     height: 40%;
     background:blue;
 }
+
+rect { 
+    fill: #fff; 
+}
+
+.chart {
+    background-color: #F7F2C5;
+    width: 960px;
+    height: 500px; 
+}
