@@ -1,0 +1,68 @@
+.stagelist{
+
+	float: left;
+    width: 20%;
+    height: 950px;
+    background:red;
+}
+
+.ministage{
+	margin: auto;
+	margin-top: 10px;
+    width: 90%;
+    height: 30%;
+    background:blue;
+}
+
+.stage_box{
+	float: left;
+    width: 60%;
+    height: 950px;
+    background:transparent;
+}
+
+.stage{
+	margin: auto;
+	margin-top: 10%;
+    width: 85%;
+    height: 85%;
+    background: green;
+}
+
+.stage2{
+
+    
+}
+
+.team_or_rider_box{
+	float: right;
+    width: 20%;
+    height: 950px;
+    background:yellow;
+}
+
+.team_or_rider_list{
+	margin: auto;
+	margin-top: 60px;
+    width: 90%;
+    height: 40%;
+    background:blue;
+}
+
+.team_or_rider_info{
+	margin: auto;
+	margin-top: 60px;
+    width: 90%;
+    height: 40%;
+    background:blue;
+}
+
+rect { 
+    fill: #fff; 
+}
+
+.chart {
+    background-color: #F7F2C5;
+    width: 960px;
+    height: 500px; 
+}

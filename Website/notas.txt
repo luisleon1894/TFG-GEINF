@@ -1,0 +1,11 @@
+- crear la pagina inicial y estructurar todo
+
+- leer el fichero y filtrar solo las dadas que son necesarias
+
+- buscar exactamente que tipo de gráfica es la que necesito (parallel coordinates)... que mas tarde veremos que es un error!
+
+- implementar la idea y hacer la gràfica (imágenes que se enviaron por correo al grupo)
+
+- al principio la idea era parallel coordinates, pero en realidad no, ya que la distancia, diferencia siempre es la misma, entonces no tienes porque usar scalePoint, sino scaleLinear... ahora a tener que volver amoldear todo el código
+
+- conseguir 5 ejes "y" idénticas, con scaleLinear que haciendo zoom o no, estos ejes se disminuirian o aumentarian
