@@ -26,10 +26,20 @@ SimpleGraph = function(elemid){
       .append("g") //afegeix tota la gràfica, amb els valors de "x" i "y" inclos
         .attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")");
 
+      // Pan and zoom
+      var zoom = d3.zoom()
+          .scaleExtent([.5, 20])
+          .extent([[0, 0], [this.size.width, this.size.height]])
+          .on("zoom", zoomed);
+
   //afegeix rectangle, amb la seva amplada i altura
   this.plot = this.vis.append("rect")
       .attr("width", this.size.width)
       .attr("height", this.size.height)
+      .style("pointer-events", "all")
+      .call(zoom);
+
+
 
   this.vis.append("svg")
     .attr("top", 0)
@@ -40,71 +50,61 @@ SimpleGraph = function(elemid){
     .attr("class", "line") //???? The <line> element is an SVG basic shape used to create a line connecting two points.
     .append("path") ////The line SVG Path we draw
         .attr("class", "line")
+
         //.attr("d", this.line(this.points));
+
+
 
   //this.plot.call(d3.behavior.zoom().x(this.x).y(this.y).on("zoom", this.redraw()));
 
-  d3.select(this.chart)
-      .on("mousemove.drag", self.mousemove())
-      .on("mouseup.drag",   self.mouseup())
+  //d3.select(this.chart)
+    //  .on("mousemove.drag", self.mousemove())
+      //.on("mouseup.drag",   self.mouseup())
 
 
   // Extract the list of km we want to keep in the plot. Here I keep all except the column called Species
   d3.csv("./Stage18-data-full-csv.csv", function(data){
 
-    	columnsKmCorrectName = d3.keys(data[0]).filter(isElapsed)
-    	//columnsKmCorrectName = columnsKmCorrectName.reverse()
-    	columnsKm = d3.keys(data[0]).filter(isnewKm)
+      //Array[Names Km]
+    	columnsKmName = d3.keys(data[0]).filter(isElapsed)
 
+
+      //Array[Km]
+    	columnsKm = d3.keys(data[0]).filter(isnewKm) //guarda les claus que continguin "km"
     	for(var i = 0; i < columnsKm.length; i++){
-    		columnsKm[i] = columnsKm[i].slice(0, columnsKm[i].indexOf("_")).replace("km",""); // elimina tot el text que no sigui "kmXX"
+    		columnsKm[i] = columnsKm[i].slice(0, columnsKm[i].indexOf("_")).replace("km",""); // en cada valor acosta l'string i subst. "km" per ""
     	}
-
-    	columnsKm = columnsKm.filter((a, b) => columnsKm.indexOf(a) === b) //elimina repetits
-    	//console.log(columnsKm);
-
-    	columnsElapsed = JSON.parse(JSON.stringify( data ));
-
-    	columnsNotElapsed = d3.keys(data[0]).filter(isNotElapsed)
+    	columnsKm = columnsKm.filter((a, b) => columnsKm.indexOf(a) === b); //elimina repetits
 
 
-    	//for(i = 0; i < columnsElapsed.length; i++){
 
-    	//	columnsNotElapsed.forEach(function(key) {
-    	//		delete columnsElapsed[i][key];
-  	//	});
-    	//}
-  	
-  	columnsElapsedKeys = d3.keys(data[0]).filter(isElapsed)
+      //es modifica el valor de "Elapsed time" de data per un valor enter, representa els segons
+  	 for(i = 0; i < data.length; i++){
 
-  	for(i = 0; i < columnsElapsed.length; i++){
+    		columnsKmName.forEach(function(key) {
+  			   //modificar value, transformar minuts segons a un valor enter
+  			   var elapse = data[i][key]
 
-    		columnsElapsedKeys.forEach(function(key) {
-    			//modificar value, transformar minuts segons a un valor
-    			var elapse = columnsElapsed[i][key]
+  			   var min = elapse[1]
+  			   var seg = elapse.substr(3, 2)
 
-    			var min = elapse[1]
-    			var seg = elapse.substr(3, 2)
+  			   if(elapse.includes("h")){ //si hi ha "h" és el primer i l'elapsed es = 0
+  				    data[i][key] = 0
+  			   }
+  			   else{ // altrament es transforma valor a un enter
+  				    data[i][key] = (parseInt(min) * 60) + parseInt(seg)
+  			   }
+  		  });
+      }
 
-    			if(elapse.includes("h")){
-
-    				columnsElapsed[i][key] = 0
-    			}
-    			else{
-
-    				columnsElapsed[i][key] = (parseInt(min) * 60) + parseInt(seg)
-    			}
-
-  		});
-    }
-
+      var LIN_INFO_KM = 5
     	// For each columnKm, I build a linear scale. I store all in a y object
-  		var y = {}
-  		for (i in columnsKmCorrectName) {
-    		kmname = columnsKmCorrectName[i]
+  		y = {}
+  		for (i in resize(columnsKmName, LIN_INFO_KM)) {
+    		kmname = resize(columnsKmName, LIN_INFO_KM)[i]
     		y[kmname] = d3.scaleLinear()
       			//.domain( d3.extent(columnsElapsed, function(d) { return +d[kmname]; }) )
-      			.domain( d3.extent([0, 300]))
+      			.domain( d3.extent([0, 450])) //domini de l'elapsed de 0 a X segons de diferència
       			.range([0, self.size.height])
   		}
 
@@ -113,18 +113,18 @@ SimpleGraph = function(elemid){
   		x = d3.scalePoint()
     		.range([0, self.size.width])
     		.padding(1)
-    		.domain(columnsKmCorrectName);
+    		.domain(resize(columnsKmName, LIN_INFO_KM));
 
 
     	// The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
   		function path(d, index) {
   			
   			//s'ha modificat la <y> para ver las diferencias entre uno y otro ciclista cuando tiene el mismo tiempo (sumar la position)
-      		return d3.line()(columnsKmCorrectName.map(function(p) {
+      		return d3.line()(resize(columnsKmName, LIN_INFO_KM).map(function(p) {
 
       			var positionKM = p.slice(0, p.indexOf("_"))+"_Position"
 
-      		 return [x(p), y[p](d[p] + parseInt(columnsElapsed[index][positionKM]) - 1)];
+      		 return [x(p), y[p](d[p] + parseInt(data[index][positionKM]) - 1)];
 
       		  }));
   		}
@@ -134,7 +134,7 @@ SimpleGraph = function(elemid){
     	// Draw the lines
     	self.vis
       	.selectAll("myPath")
-      	.data(columnsElapsed)
+      	.data(data)
       	.enter().append("path")
       	.attr("d",  path)
       	.style("fill", "none")
@@ -144,7 +144,7 @@ SimpleGraph = function(elemid){
     	// Draw the axis:
     	self.vis.selectAll("myAxis")
       	// For each dimension of the dataset I add a 'g' element:
-      	.data(columnsKmCorrectName).enter()
+      	.data(resize(columnsKmName, LIN_INFO_KM)).enter()
       	.append("g")
       	// I translate this element to its right position on the x axis
       	.attr("transform", function(d) { return "translate(" + x(d) + ")"; })
@@ -156,15 +156,64 @@ SimpleGraph = function(elemid){
         		.attr("y", -9)
         		.text(function(d) { return d.substr(0, 5); })
         		.style("fill", "black")
-    	
-  });
+
+
+          	
+        });
 
 }
+function zoomed() {
+  console.log(self.x);
 
+// create new scale ojects based on event
+    var new_xScale = d3.event.transform.rescaleX(self.x);
+    console.log(new_xScale);
+    //var new_yScale = d3.event.transform.rescaleY(self.y);
+// update axes
+    //gX.call(xAxis.scale(new_xScale));
+    gY.call(yAxis.scale(new_yScale));
+    //points.data(data)
+     //.attr(self.cx, function(d) {return new_xScale(d.x)})
+     //.attr(self.cy, function(d) {return new_yScale(d.y)});
+}
+
+function resize(array, size) {
+  
+  if(size < array.length / 2){
+    var arr_new = [];
+    var step = Math.trunc(array.length / size - 1 );
+    var j = step;
+
+    arr_new.push(array[0]);
+    for (i = 0; i < size - 2; i++) { 
+      arr_new.push(array[j]);
+      j += step;
+    }
+    arr_new.push(array[array.length - 1]);
+
+    return arr_new;
+  }
+  else return array;
+}
+
+function isnewKm(infoColumn){
+  return infoColumn.includes("km");
+}
+
+function isNotElapsed(infoColumn){
+  return !infoColumn.includes("Elapsed");
+}
+
+function isElapsed(infoColumn){
+  return infoColumn.includes("Elapsed");
+}
+
+/*
 SimpleGraph.prototype.update = function() {
   var self = this;
   var lines = this.vis.select("path").attr("d", this.line(this.points));
 }
+
 
 SimpleGraph.prototype.mousemove = function() {
   var self = this;
@@ -272,16 +321,4 @@ SimpleGraph.prototype.redraw = function() {
     self.plot.call(d3.behavior.zoom().x(self.x).y(self.y).on("zoom", self.redraw()));
     self.update();    
   }  
-}
-
-function isnewKm(infoColumn){
-  return infoColumn.includes("km");
-}
-
-function isNotElapsed(infoColumn){
-  return !infoColumn.includes("Elapsed");
-}
-
-function isElapsed(infoColumn){
-  return infoColumn.includes("Elapsed");
-}
+}*/
