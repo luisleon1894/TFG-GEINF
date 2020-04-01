@@ -155,11 +155,12 @@ points.selectAll('.dot')
 // Zoom specific updates
 //************************************************************
 function zoomed() {
+
 	svg.select(".x.axis").call(xAxis);
 	svg.select(".y.axis").call(yAxis);   
 	svg.selectAll('path.line').attr('d', line);  
  
-	points.selectAll('circle').attr("transform", function(d) { 
-		return "translate(" + x(d.point.x) + "," + y(d.point.y) + ")"; }
-	);  
+	//points.selectAll('circle').attr("transform", function(d) { 
+	//	return "translate(" + x(d.point.x) + "," + y(d.point.y) + ")"; }
+	//);  
 }
