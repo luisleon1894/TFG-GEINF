@@ -34,7 +34,6 @@ SimpleGraph = function(elemid){
       .style("pointer-events", "all")
 
 
-
   this.vis.append("svg")
     .attr("top", 0)
     .attr("left", 0)
@@ -51,7 +50,6 @@ SimpleGraph = function(elemid){
 
       //Array[Names Km]
     	columnsKmName = d3.keys(data[0]).filter(isElapsed)
-
 
       //Array[Km]
     	columnsKm = d3.keys(data[0]).filter(isnewKm) //guarda les claus que continguin "km"
@@ -82,8 +80,8 @@ SimpleGraph = function(elemid){
       }
 
 
-
-      LIN_INFO_KM = 5
+      console.log(data);
+      LIN_INFO_KM = 21
     	// For each columnKm, I build a linear scale. I store all in a y object
   		y = {}
   		for (i in resize(columnsKmName, LIN_INFO_KM)) {
@@ -105,10 +103,9 @@ SimpleGraph = function(elemid){
 
     	// The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
   		function path(d, index) {
-  			
+
   			//s'ha modificat la <y> para ver las diferencias entre uno y otro ciclista cuando tiene el mismo tiempo (sumar la position)
       		return d3.line()(resize(columnsKmName, LIN_INFO_KM).map(function(p) {
-
       			var positionKM = p.slice(0, p.indexOf("_"))+"_Position"
 
       		 return [x(p), y[p](d[p] + parseInt(data[index][positionKM]) - 1)];
