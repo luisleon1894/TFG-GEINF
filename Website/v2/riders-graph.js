@@ -1,52 +1,10 @@
 SimpleGraph = function(elemid){
 
-  var self = this;
-  this.chart = document.getElementById(elemid);
-  this.cx = 1150; //amplada en pixels de l'interior (amb padding inclos)
-  this.cy = 900; //altura en pixels de l'interior (amb padding inclos)
-    //paddings dels costats
-  this.padding = {
-     "top":    30,
-     "right":  10,
-     "bottom": 10,
-     "left":   0
-  };
-
-  //es la mida de amplada i altura de la gràfica (ampladaTotal - paddingEs - paddingDret)
-  //el mateix per l'altura
-  this.size = {
-    "width":  this.cx - this.padding.left - this.padding.right,
-    "height": this.cy - this.padding.top  - this.padding.bottom
-  };
-
-  //en el selector "chart" afegeix "SVG", amb amplada i altura
-  this.vis = d3.select(this.chart).append("svg")
-      .attr("width",  this.cx)
-      .attr("height", this.cy)
-      .append("g") //afegeix tota la gràfica, amb els valors de "x" i "y" inclos
-        .attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")");
-
-
-  //afegeix rectangle, amb la seva amplada i altura
-  this.plot = this.vis.append("rect")
-      .attr("width", this.size.width)
-      .attr("height", this.size.height)
-      .style("pointer-events", "all")
-
-
-  this.vis.append("svg")
-    .attr("top", 0)
-    .attr("left", 0)
-    .attr("width", this.size.width)
-    .attr("height", this.size.height)
-    .attr("viewBox", "0 0 "+this.size.width+" "+this.size.height)
-    .attr("class", "line") //???? The <line> element is an SVG basic shape used to create a line connecting two points.
-    .append("path") ////The line SVG Path we draw
-        .attr("class", "line")
+  
 
 
   // Extract the list of km we want to keep in the plot. Here I keep all except the column called Species
-  d3.csv("./csv/Stage18-data-full-csv.csv", function(data){
+  d3.csv("./csv/StageProva.csv", function(data){
 
       //Array[Names Km]
     	columnsKmName = d3.keys(data[0]).filter(isElapsed)
@@ -57,8 +15,6 @@ SimpleGraph = function(elemid){
     		columnsKm[i] = columnsKm[i].slice(0, columnsKm[i].indexOf("_")).replace("km",""); // en cada valor acosta l'string i subst. "km" per ""
     	}
     	columnsKm = columnsKm.filter((a, b) => columnsKm.indexOf(a) === b); //elimina repetits
-
-
 
       //es modifica el valor de "Elapsed time" de data per un valor enter, representa els segons
   	 for(i = 0; i < data.length; i++){
@@ -80,72 +36,148 @@ SimpleGraph = function(elemid){
       }
 
 
-      console.log(data);
-      LIN_INFO_KM = 21
-    	// For each columnKm, I build a linear scale. I store all in a y object
-  		y = {}
-  		for (i in resize(columnsKmName, LIN_INFO_KM)) {
-    		kmname = resize(columnsKmName, LIN_INFO_KM)[i]
-    		y[kmname] = d3.scaleLinear()
-      			//.domain( d3.extent(columnsElapsed, function(d) { return +d[kmname]; }) )
-      			.domain( d3.extent([0, 450])) //domini de l'elapsed de 0 a X segons de diferència
-      			.range([0, self.size.height])
+      //************************************************************
+      // Data elapsed riders
+      //************************************************************
 
-  		}
+      var elapsedDataRider = [];
 
-  		  // Build the X scale -> it find the best position for each Y axis
-        //scalePoint creates scale functions that map from a discrete set of values to equally spaced points along the specified range:
-  		x = d3.scalePoint()
-    		.range([0, self.size.width])
-    		.padding(1)
-    		.domain(resize(columnsKmName, LIN_INFO_KM));
+      for(rider in data){
+
+        var coordinates = [];
+
+        for(j = 0; j < columnsKmName.length; j++){
+
+          var positionKM = columnsKmName[j].slice(0, columnsKmName[j].indexOf("_"))+"_Position"
+          
+          coordinates.push({x: j, y: data[rider][columnsKmName[j]] + parseInt(data[rider][positionKM])})
+        }
+
+        elapsedDataRider.push(coordinates);
+      }
+   	  
+      var colors = [
+        'steelblue',
+        'green',
+        'red',
+        'purple'
+      ]
+
+      //************************************************************
+      // Create Margins and Axis and hook our zoom function
+      //************************************************************
+      var self = this;
+      this.chart = document.getElementById(elemid);
+      this.cx = 1150; //amplada en pixels de l'interior (amb padding inclos)
+      this.cy = 900; //altura en pixels de l'interior (amb padding inclos)
+
+      var margin = {top: 20, right: 30, bottom: 30, left: 50},
+          width = this.cx - margin.left - margin.right,
+          height = this.cy - margin.top - margin.bottom;
+      
+      var xScale = d3.scaleLinear()
+          .domain([0, elapsedDataRider[0].length])
+          .range([0, width]);
+       
+      var yScale = d3.scaleLinear()
+          .domain([0, 450])
+          .range([0, height]);
+        
+      var xAxis = d3.axisBottom(xScale)
+        .tickSize(-height)
+        .tickPadding(10)  
+        //.tickSubdivide(true)  
+          //.orient("bottom");  
+        
+      var yAxis = d3.axisLeft(yScale)
+        .tickPadding(10)
+        .tickSize(-width)
+        //.tickSubdivide(true)  
+          //.orient("left");
+      
+      var zoom = d3.zoom()
+          .scaleExtent([.5, 20])
+          //.translateExtent([[0, 0], [width, height]])  ?? mirar translateExtent??
+          .extent([[0, 0], [width, height]])
+          .on("zoom", zoomed);
+        
+
+      //************************************************************
+      // Generate our SVG object
+      //************************************************************  
+      var svg = d3.select(this.chart).append("svg")
+        .call(zoom)
+        .attr("width", this.cx + margin.left + margin.right )
+        .attr("height", this.cy + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+       
+       var gX = svg.append("g")
+                  .attr("class", "x axis")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(xAxis);
+       
+      var gY = svg.append("g")
+                  .attr("class", "y axis")
+                  .call(yAxis);
+       
+      svg.append("g")
+        .attr("class", "y axis")
+        .append("text")
+        .attr("class", "axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("y", (-margin.left) + 10)
+        .attr("x", -height/2)
+        .text('Axis Label');  
+      
+
+      svg.append("clipPath")
+        .attr("id", "clip")
+        .append("rect")
+        .attr("width", width)
+        .attr("height", height);
+
+      //************************************************************
+      // Create D3 line object and draw data on our SVG object
+      //************************************************************
+      var line = d3.line()
+          .x(function(d) { return xScale(d.x); })
+          .y(function(d) { return yScale(d.y); });   
+      
+
+      svg.selectAll('.line')
+        .data(elapsedDataRider)
+        .enter()
+        .append("path")
+        .attr("class", "line")
+        .attr("clip-path", "url(#clip)")
+      //   //.attr('stroke', function(d,i){      
+      //     //return colors[i%colors.length];
+      //   //})
+         .attr("d", line);   
+        
+        
+
+      //************************************************************
+      // Zoom specific updates
+      //************************************************************
+      function zoomed() {
+
+        // create new scale ojects based on event
+        var new_xScale = d3.event.transform.rescaleX(xScale);
+        var new_yScale = d3.event.transform.rescaleY(yScale);
+
+        // update axes
+        gX.call(xAxis.scale(new_xScale));
+        gY.call(yAxis.scale(new_yScale));
 
 
-    	// The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
-  		function path(d, index) {
+      }
 
-  			//s'ha modificat la <y> para ver las diferencias entre uno y otro ciclista cuando tiene el mismo tiempo (sumar la position)
-      		return d3.line()(resize(columnsKmName, LIN_INFO_KM).map(function(p) {
-      			var positionKM = p.slice(0, p.indexOf("_"))+"_Position"
-
-      		 return [x(p), y[p](d[p] + parseInt(data[index][positionKM]) - 1)];
-
-      		  }));
-  		}
-
-
-
-    	// Draw the lines
-    	gXLines = self.vis
-                	.selectAll("myPath")
-                	.data(data)
-                	.enter().append("path")
-                	.attr("d",  path)
-                	.style("fill", "none")
-                	.style("stroke", "#69b3a2")
-                	.style("opacity", 0.5)
-
-    	// Draw the axis:
-    	self.vis.selectAll("myAxis")
-      	// For each dimension of the dataset I add a 'g' element:
-      	.data(resize(columnsKmName, LIN_INFO_KM)).enter()
-      	.append("g")
-      	// I translate this element to its right position on the x axis
-      	.attr("transform", function(d) { return "translate(" + x(d) + ")"; })
-      	// And I build the axis with the call function
-      	.each(function(d) { d3.select(this).call(d3.axisLeft().scale(y[d])); })
-      	// Add axis title
-      	.append("text")
-        		.style("text-anchor", "middle")
-        		.attr("y", -9)
-        		.text(function(d) { return d.substr(0, 5); })
-        		.style("fill", "black")
-
-
-          	
-        });
+  });
 
 }
+
 
 
 function resize(array, size) {

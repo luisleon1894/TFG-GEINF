@@ -88,7 +88,6 @@ function genRandomData (n, max){
   }
   return data
 }
-    console.log(xScale);
 
 function zoomed() {
 
@@ -96,6 +95,8 @@ function zoomed() {
     var new_xScale = d3.event.transform.rescaleX(xScale);
     var new_yScale = d3.event.transform.rescaleY(yScale);
 // update axes
+console.log(xScale);
+
     gX.call(xAxis.scale(new_xScale));
     gY.call(yAxis.scale(new_yScale));
     gY2.call(yAxis.scale(new_yScale));

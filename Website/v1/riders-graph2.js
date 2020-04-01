@@ -156,7 +156,6 @@ SimpleGraph = function(elemid){
                 	.data(data)
                 	.enter().append("path")
                 	.attr("d",  path)
-                  .call(xAxis[0])
                 	.style("fill", "none")
                 	.style("stroke", "#69b3a2")
                 	.style("opacity", 0.5)
