@@ -4,7 +4,7 @@ SimpleGraph = function(elemid){
 
 
   // Extract the list of km we want to keep in the plot. Here I keep all except the column called Species
-  d3.csv("./csv/StageProva.csv", function(data){
+  d3.csv("./csv/Stage18-data-full-csv.csv", function(data){
 
       //Array[Names Km]
     	columnsKmName = d3.keys(data[0]).filter(isElapsed)
@@ -55,7 +55,8 @@ SimpleGraph = function(elemid){
 
         elapsedDataRider.push(coordinates);
       }
-   	  
+      elapsedDataRider.pop();
+
       var colors = [
         'steelblue',
         'green',
@@ -86,14 +87,10 @@ SimpleGraph = function(elemid){
       var xAxis = d3.axisBottom(xScale)
         .tickSize(-height)
         .tickPadding(10)  
-        //.tickSubdivide(true)  
-          //.orient("bottom");  
-        
+
       var yAxis = d3.axisLeft(yScale)
         .tickPadding(10)
         .tickSize(-width)
-        //.tickSubdivide(true)  
-          //.orient("left");
       
       var zoom = d3.zoom()
           .scaleExtent([.5, 20])
@@ -157,7 +154,6 @@ SimpleGraph = function(elemid){
          .attr("d", line);   
         
         
-
       //************************************************************
       // Zoom specific updates
       //************************************************************
@@ -171,14 +167,29 @@ SimpleGraph = function(elemid){
         gX.call(xAxis.scale(new_xScale));
         gY.call(yAxis.scale(new_yScale));
 
+                // re-scale axes
+        svg.select(".y.axis")
+            .call(yAxis.scale(new_yScale));
 
+        svg.select(".x.axis")
+            .call(xAxis.scale(new_xScale));
+
+        // re-draw line
+        plotLine = d3.line()
+            //.curve(d3.curveMonotoneX)
+            .x(function (d) {
+                return new_xScale(d.x);
+            })
+            .y(function (d) {
+                return new_yScale(d.y);
+            });
+
+        svg.selectAll('path.line').attr("d", plotLine);
       }
 
   });
 
 }
-
-
 
 function resize(array, size) {
   
