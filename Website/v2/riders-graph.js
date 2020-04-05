@@ -1,8 +1,5 @@
 SimpleGraph = function(elemid){
 
-  
-
-
   // Extract the list of km we want to keep in the plot. Here I keep all except the column called Species
   d3.csv("./csv/Stage18-data-full-csv.csv", function(data){
 
@@ -167,7 +164,7 @@ SimpleGraph = function(elemid){
         gX.call(xAxis.scale(new_xScale));
         gY.call(yAxis.scale(new_yScale));
 
-                // re-scale axes
+        // re-scale axes
         svg.select(".y.axis")
             .call(yAxis.scale(new_yScale));
 
@@ -176,7 +173,6 @@ SimpleGraph = function(elemid){
 
         // re-draw line
         plotLine = d3.line()
-            //.curve(d3.curveMonotoneX)
             .x(function (d) {
                 return new_xScale(d.x);
             })
@@ -185,10 +181,31 @@ SimpleGraph = function(elemid){
             });
 
         svg.selectAll('path.line').attr("d", plotLine);
+
+        //re-draw polygons
+        polygonsScale = function(d){
+            return d.points.map(function(d) { return [new_xScale(d.x),new_yScale(d.y)].join(","); }).join(" ");
+            }
+
+        svg.selectAll("polygon").attr("points", polygonsScale)
       }
 
-  });
+      //console.log(arrayOfPolygons);
+      var poligons = function(d){
+        return d.points.map(function(d) { return [xScale(d.x),yScale(d.y)].join(","); }).join(" ");
+      }
 
+      console.log(elapsedDataRider);
+
+      svg.selectAll("polygon")
+          .data(arrayOfPolygons)
+          .enter().append("polygon")
+          .attr("points",poligons)
+          .attr("clip-path", "url(#clip)")
+          .attr("fill", "blue")
+          .attr("fill-opacity", 0.3)
+
+  });
 }
 
 function resize(array, size) {
