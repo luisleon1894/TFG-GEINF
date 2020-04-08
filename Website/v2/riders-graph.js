@@ -78,7 +78,7 @@ SimpleGraph = function(elemid){
           .range([0, width]);
        
       var yScale = d3.scaleLinear()
-          .domain([0, 450])
+          .domain([0, 750])
           .range([0, height]);
         
       var xAxis = d3.axisBottom(xScale)
@@ -190,12 +190,9 @@ SimpleGraph = function(elemid){
         svg.selectAll("polygon").attr("points", polygonsScale)
       }
 
-      //console.log(arrayOfPolygons);
       var poligons = function(d){
         return d.points.map(function(d) { return [xScale(d.x),yScale(d.y)].join(","); }).join(" ");
       }
-
-      console.log(elapsedDataRider);
 
       svg.selectAll("polygon")
           .data(arrayOfPolygons)
@@ -205,8 +202,56 @@ SimpleGraph = function(elemid){
           .attr("fill", "blue")
           .attr("fill-opacity", 0.3)
 
+
+      //************************************************************
+      //Trobar els grups de ciclistes que hi ha en els kms
+      //************************************************************
+      var grupsCiclistesEtapa = [];
+      for(i = 0; i < columnsKmName.length; i++){
+
+        var grupsCiclistesKM = [];
+
+        ////ordenar els ciclistes per km "i"
+        var posicioCiclista = [];
+        for(j = 0; j < elapsedDataRider.length; j++){
+
+          if(!isNaN(elapsedDataRider[j][i].y)){ //comprova que sigui una coordenada válida
+            posicioCiclista.push(elapsedDataRider[j][i])
+          }
+        }
+
+        posicioCiclista.sort(function(a,b) { //ordena les posicions dels ciclistes
+            if( a.x == b.x) return a.y-b.y;
+              return a.x-b.x;
+        });
+
+        //trobar els grups de ciclistes
+        for(k = 0; k < posicioCiclista.length - 1; k++){
+
+          if(posicioCiclista[k].y === (posicioCiclista[k+1].y - 1)){
+
+            var coordIni = k;
+            var coordFi = k+1;
+
+            while(posicioCiclista[k].y === (posicioCiclista[k+1].y -1)){
+
+              if(k + 1 === posicioCiclista.length - 1){
+                break;
+              }
+              else{
+                k++;
+                coordFi = k;
+              }
+            }
+            var grupN = [posicioCiclista[coordIni], posicioCiclista[coordFi]];
+            grupsCiclistesKM.push(grupN);
+          }
+        }
+        grupsCiclistesEtapa.push(grupsCiclistesKM);
+      }
   });
 }
+
 
 function resize(array, size) {
   
