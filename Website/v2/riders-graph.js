@@ -14,7 +14,7 @@ SimpleGraph = function(elemid){
     	columnsKm = columnsKm.filter((a, b) => columnsKm.indexOf(a) === b); //elimina repetits
 
       //es modifica el valor de "Elapsed time" de data per un valor enter, representa els segons
-  	 for(i = 0; i < data.length; i++){
+  	 for(var i = 0; i < data.length; i++){
 
     		columnsKmName.forEach(function(key) {
   			   //modificar value, transformar minuts segons a un valor enter
@@ -38,12 +38,11 @@ SimpleGraph = function(elemid){
       //************************************************************
 
       var elapsedDataRider = [];
-
       for(rider in data){
 
         var coordinates = [];
 
-        for(j = 0; j < columnsKmName.length; j++){
+        for(var j = 0; j < columnsKmName.length; j++){
 
           var positionKM = columnsKmName[j].slice(0, columnsKmName[j].indexOf("_"))+"_Position"
           
@@ -139,17 +138,14 @@ SimpleGraph = function(elemid){
           .y(function(d) { return yScale(d.y); });   
       
 
-      svg.selectAll('.line')
-        .data(elapsedDataRider)
-        .enter()
-        .append("path")
-        .attr("class", "line")
-        .attr("clip-path", "url(#clip)")
-        .style('stroke', '#1E90FF')
-         //.attr('stroke', function(d,i){      
-           //return colors[i%colors.length];
-         //})
-         .attr("d", line);   
+      // svg.selectAll('.line')
+      //   .data(elapsedDataRider)
+      //   .enter()
+      //   .append("path")
+      //   .attr("class", "line")
+      //   .attr("clip-path", "url(#clip)")
+      //   .style('stroke', '#1E90FF')
+      //    .attr("d", line);   
         
         
       //************************************************************
@@ -199,13 +195,13 @@ SimpleGraph = function(elemid){
       //************************************************************
       var grupsCiclistesEtapa = [];
 
-      for(i = 0; i < columnsKmName.length; i++){
+      for(var i = 0; i < columnsKmName.length; i++){
 
         var grupsCiclistesKM = [];
 
         ////ordenar els ciclistes per km "i"
         var posicioCiclista = [];
-        for(j = 0; j < elapsedDataRider.length; j++){
+        for(var j = 0; j < elapsedDataRider.length; j++){
 
           if(!isNaN(elapsedDataRider[j][i].y)){ //comprova que sigui una coordenada válida
             posicioCiclista.push(elapsedDataRider[j][i])
@@ -217,7 +213,7 @@ SimpleGraph = function(elemid){
               return a.x-b.x;
         });
 
-        for(k = 0; k < posicioCiclista.length - 1; k++){
+        for(var k = 0; k < posicioCiclista.length - 1; k++){
 
           var grupN = []
           if(posicioCiclista[k].y === (posicioCiclista[k+1].y - 1)){
@@ -249,41 +245,58 @@ SimpleGraph = function(elemid){
       //************************************************************************************
       var polygonGrups = [];
 
-      for(i = 0; i < columnsKmName.length - 1; i++){ //per cada km (d'esquerra a dreta)
-
+      for(var i = 0; i < columnsKmName.length - 1; i++){ //per cada km (d'esquerra a dreta)
+      //for(i = 3; i < 7; i++){
         var grupsCiclistaKM = grupsCiclistesEtapa[i];
 
-        for(j = 0; j < grupsCiclistaKM.length; j++){ //per cada grup de ciclistes de cada km
-
+        for(var j = 0; j < grupsCiclistaKM.length; j++){ //per cada grup de ciclistes de cada km
 
           var grupCiclista = grupsCiclistaKM[j];
 
-          for(k = 0; k < grupCiclista.length; k++){ //per cada ciclista del grup de ciclistes de cada km, busca el grup que anira en km+1
+          for(var k = 0; k < grupCiclista.length; k++){ //per cada ciclista del grup de ciclistes de cada km, busca el grup que anira en km+1
 
-            var coordPrimerCiclista = grupCiclista[0];
-            var coordUltimCiclista = grupCiclista[grupCiclista.length - 1]
-            
+            var coordPrimerCiclista;
+            var coordUltimCiclista;
+
+            // var coordPrimerCiclista = grupCiclista[0];
+            // var coordUltimCiclista = grupCiclista[grupCiclista.length - 1]
+
             var seguentCoordCiclista = elapsedDataRider[grupCiclista[k].id][i + 1];
-            
-            var coordPrimerCiclistaSegGrup = trobarPrimerCiclistaSeg(seguentCoordCiclista, grupsCiclistesEtapa[i + 1]);
-            var coordUltimCiclistaSegGrup = trobarUltimCiclistaSeg(seguentCoordCiclista, grupsCiclistesEtapa[i + 1]);
 
-            if(coordPrimerCiclistaSegGrup !== -1 && noExisteixPolygon(polygonGrups,coordPrimerCiclista, coordPrimerCiclistaSegGrup, coordUltimCiclistaSegGrup, coordUltimCiclista)){ //forma part d'algun grup en el km + 1
+            //if(uneixGrupMesGran(grupCiclista.length, elapsedDataRider[grupCiclista[k].id][i + 1], grupsCiclistesEtapa[i + 1])){
+            // if(canviaDeGrup(elapsedDataRider[grupCiclista[k].id][i], elapsedDataRider[grupCiclista[k].id][i + 1], grupsCiclistesEtapa[i], grupsCiclistesEtapa[i + 1])){
+            //     coordPrimerCiclista = grupCiclista[0];
+            //     coordUltimCiclista = grupCiclista[grupCiclista.length - 1]
+            // }
+            // else{
+                coordPrimerCiclista = trobarPrimerCiclista(elapsedDataRider[grupCiclista[k].id][i], seguentCoordCiclista, grupsCiclistesEtapa[i], grupsCiclistesEtapa[i + 1], i, elapsedDataRider);
+                coordUltimCiclista = trobarUltimCiclista(elapsedDataRider[grupCiclista[k].id][i], seguentCoordCiclista, grupsCiclistesEtapa[i], grupsCiclistesEtapa[i + 1], i, elapsedDataRider);
+            //}
 
-              //afegir polygon
+            // var coordPrimerCiclistaSegGrup = trobarPrimerCiclistaSeg(seguentCoordCiclista, grupsCiclistesEtapa[i + 1]);
+            // var coordUltimCiclistaSegGrup = trobarUltimCiclistaSeg(seguentCoordCiclista, grupsCiclistesEtapa[i + 1]);
 
+            var coordPrimerCiclistaSegGrup = trobarPrimerCiclistaSeg(elapsedDataRider[grupCiclista[k].id][i], seguentCoordCiclista, grupsCiclistesEtapa[i], grupsCiclistesEtapa[i + 1], i, elapsedDataRider);
+            var coordUltimCiclistaSegGrup = trobarUltimCiclistaSeg(elapsedDataRider[grupCiclista[k].id][i], seguentCoordCiclista, grupsCiclistesEtapa[i], grupsCiclistesEtapa[i + 1], i, elapsedDataRider);
+
+            // var coordPrimerCiclista = trobarPrimerCiclista(seguentCoordCiclista, grupsCiclistesEtapa[i], grupsCiclistesEtapa[i + 1], i, elapsedDataRider);
+            // var coordUltimCiclista = trobarUltimCiclista(seguentCoordCiclista, grupsCiclistesEtapa[i], grupsCiclistesEtapa[i + 1], i, elapsedDataRider);
+
+            if(coordPrimerCiclista !== -1 && coordUltimCiclista !== -1 && coordPrimerCiclistaSegGrup !== -1 && coordUltimCiclistaSegGrup !== -1 && noExisteixPolygon(polygonGrups,coordPrimerCiclista, coordPrimerCiclistaSegGrup, coordUltimCiclistaSegGrup, coordUltimCiclista)){ //forma part d'algun grup en el km + 1
+
+              //afegir polygons
               polygonGrups.push({points: [coordPrimerCiclista, coordPrimerCiclistaSegGrup, coordUltimCiclistaSegGrup, coordUltimCiclista]})
             }
           }
         }
       }
 
-      //console.log(polygonGrups);
+      console.log(polygonGrups.length);
 
       //***********************
       //Pintar polygonsGrups
       //***********************
-
+      //console.log(grupsCiclistesEtapa);
       var poligons = function(d){
         return d.points.map(function(d) { return [xScale(d.x),yScale(d.y)].join(","); }).join(" ");
       }
@@ -293,51 +306,233 @@ SimpleGraph = function(elemid){
           .attr("points",poligons)
           .attr("clip-path", "url(#clip)")
           .attr("fill", "#A0522D")
-          .attr("fill-opacity", 0.6)
+          .attr("fill-opacity",0.5)
+
+      svg.selectAll('.line')
+        .data(elapsedDataRider)
+        .enter()
+        .append("path")
+        .attr("class", "line")
+        .attr("clip-path", "url(#clip)")
+        .style('stroke', '#A9A9A9')
+         .attr("d", line);   
 
   });
+}
+
+function canviaDeGrup(coordAnt, coordSeg, grupsAnt, grupsSeg){
+
+  var grupActual = trobarGrup(coordAnt, grupsAnt);
+  var grupSeguent = trobarGrup(coordSeg, grupsSeg);
+
+  if(sonGrupsIguals(grupActual, grupSeguent)) return false;
+  else return true;
+}
+
+function sonGrupsIguals(g1, g2){
+
+  for(var i = 0; i < g1.length; i++){
+    if(g2.indexOf(g1[i]) === -1) return false;
+  }
+
+  for(var j = 0; j < g2.length; j++){
+    if(g1.indexOf(g2[j]) === -1) return false;
+  }
+
+  return true;
+}
+
+function trobarGrup(coord, grups){
+
+  var grup = -1;
+
+  for(var i = 0; i < grups.length; i++){
+
+    grup = grups[i];
+
+    if(grup.indexOf(coord) !== -1) return grup;
+    
+  }
+
+  return -1;
 }
 
 function noExisteixPolygon(polygons, p1, p2, p3, p4){
 
   var p = [p1, p2, p3, p4]
   var o = {points: p};
-  for(i = 0; i < polygons.length; i++){
-    //console.log(polygons[i]);
+  for(var i = 0; i < polygons.length; i++){
+
     if(JSON.stringify(polygons[i]) === JSON.stringify(o)){
       return false;
     }
   }
 
-  //if(polygons.indexOf(o) === -1) return true
-  //else return false
-
   return true;
 }
 
-function trobarPrimerCiclistaSeg(coord, grups){
+function uneixGrupMesGran(numeroCiclistes, coordSeg, grupsSeg){
 
 
-  for(i = 0; i < grups.length; i++){
+  for(var i = 0; i < grupsSeg.length; i++){
 
-    var grup = grups[i];
-
-    if(grup.indexOf(coord) !== -1){
-      return grup[0];
-    }
+    var grup = grupsSeg[i];
+    if((grup.indexOf(coordSeg) !== 1) && grup.length > numeroCiclistes) return true;
+    
   }
+
+  return false;
+}
+
+function trobarUltimCiclista(coordAnt, coordSeg, grupsAnt, grupsSeg, kmActual, elapsedDataRider){
+
+  // for(var i = 0; i < grupsSeg.length; i++){
+  //   var grup = grupsSeg[i];
+    
+  //   if(grup.indexOf(coordSeg) !== -1){
+
+  //     //trobar ultim ciclista del km anterior d'aquest grup
+  //     var posicio = elapsedDataRider[grup[0].id][kmActual];
+      
+  //     if(existeixEnAlgunGrup(grupsAnt, posicio)){
+
+  //       for(var j = 0; j < grup.length; j++){
+  //         if(posicio.y <= elapsedDataRider[grup[j].id][kmActual].y && existeixEnAlgunGrup(grupsAnt, elapsedDataRider[grup[j].id][kmActual]) && existeixEnElGrupAnterior(grupsAnt, coordAnt, elapsedDataRider[grup[j].id][kmActual])){
+
+  //           posicio = elapsedDataRider[grup[j].id][kmActual];
+  //         }
+  //       }
+
+  //       return posicio;
+  //     }
+  //     else return -1
+
+  //   }
+  // }
+
+  var grupActual = trobarGrup(coordAnt, grupsAnt);
+  var grupSeguent = trobarGrup(coordSeg, grupsSeg);
+
+  if(grupActual !== -1 && grupSeguent !== -1){
+    if(coordAnt.y < grupSeguent[0].y){
+      return coordAnt;
+    }
+    else return grupActual[grupActual.length -1];
+  }
+
   return -1;
 }
 
-function trobarUltimCiclistaSeg(coord, grups){
+function trobarPrimerCiclista(coordAnt, coordSeg, grupsAnt, grupsSeg, kmActual, elapsedDataRider){
 
-  for(i = 0; i < grups.length; i++){
+  // for(var i = 0; i < grupsSeg.length; i++){
+  //   var grup = grupsSeg[i];
+
+  //   if(grup.indexOf(coordSeg) !== -1){
+
+
+  //     //trobar primer ciclista del km anterior d'aquest grup
+  //     var posicio = elapsedDataRider[grup[0].id][kmActual];
+      
+  //     for(var j = 0; j < grup.length; j++){
+
+  //       if(posicio.y >= elapsedDataRider[grup[j].id][kmActual].y && existeixEnAlgunGrup(grupsAnt, elapsedDataRider[grup[j].id][kmActual]) && existeixEnElGrupAnterior(grupsAnt, coordAnt, elapsedDataRider[grup[j].id][kmActual])){
+
+  //         posicio = elapsedDataRider[grup[j].id][kmActual];
+  //       }
+  //     }
+  //     return posicio;
+  //   }
+  // }
+
+
+
+  var grupActual = trobarGrup(coordAnt, grupsAnt);
+  var grupSeguent = trobarGrup(coordSeg, grupsSeg);
+
+  if(grupActual !== -1 && grupSeguent !== -1){
+    if(coordAnt.y > grupSeguent[0].y){
+      return coordAnt;
+    }
+    else return grupActual[0];
+  }
+
+  return -1;
+}
+
+function existeixEnElGrupAnterior(grupAnt, coordAnt, coordProposada){
+
+  for(var i = 0; i < grupAnt.length; i++){
+
+    var grup = grupAnt[i];
+
+    if(grup.indexOf(coordAnt) !== -1 &&  grup.indexOf(coordProposada) !== -1) return true
+      
+    
+  }
+  return false;
+}
+
+function existeixEnAlgunGrup(grups, coord){
+
+  for(var i = 0; i < grups.length; i++){
 
     var grup = grups[i];
 
     if(grup.indexOf(coord) !== -1){
-      return grup[grup.length - 1];
+      return true;
     }
+  }
+
+  return false;
+}
+
+function trobarPrimerCiclistaSeg(coordAnt, coordSeg, grupsAnt, grupsSeg, kmActual, elapsedDataRider){
+//function trobarPrimerCiclistaSeg(coord, grups){
+  // for(var i = 0; i < grups.length; i++){
+
+  //   var grup = grups[i];
+
+  //   if(grup.indexOf(coord) !== -1){
+
+  //     return grup[0];
+  //   }
+  // }
+
+
+  var grupActual = trobarGrup(coordAnt, grupsAnt);
+  var grupSeguent = trobarGrup(coordSeg, grupsSeg);
+
+  if(grupActual !== -1 && grupSeguent !== -1){
+
+    if(coordSeg.y > grupActual[0].y){
+      return coordSeg;
+    }
+    else return grupSeguent[0];
+  }
+
+  return -1;
+}
+
+function trobarUltimCiclistaSeg(coordAnt, coordSeg, grupsAnt, grupsSeg, kmActual, elapsedDataRider){
+// function trobarUltimCiclistaSeg(coord, grups){
+//   for(var i = 0; i < grups.length; i++){
+
+//     var grup = grups[i];
+
+//     if(grup.indexOf(coord) !== -1){
+//       return grup[grup.length - 1];
+//     }
+//   }
+
+  var grupActual = trobarGrup(coordAnt, grupsAnt);
+  var grupSeguent = trobarGrup(coordSeg, grupsSeg);
+
+  if(grupActual !== -1 && grupSeguent !== -1){
+    if(coordSeg.y < grupActual[0].y){
+      return coordSeg;
+    }
+    else return grupSeguent[grupSeguent.length - 1];
   }
   return -1;
 }
