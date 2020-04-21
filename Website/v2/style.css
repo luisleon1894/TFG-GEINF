@@ -99,10 +99,20 @@ body {
     font-size: 14px;
 }
  
+.timeGroup {
+    font-size: 12px;
+}
+
 .line {
     fill: none;
     stroke-width: 1px;
     stroke: green;
+}
+
+.line:hover {
+    stroke: #00008B !important;
+    stroke-width: 3px !important;
+    
 }
  
 .dot {
