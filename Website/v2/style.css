@@ -3,7 +3,70 @@ body {
   margin: 50px;
 }
 
-.stagelist{
+.svg-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%; /* aspect ratio */
+  vertical-align: top;
+  overflow: hidden;
+}
+.svg-content-responsive {
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  left: 0;
+}
+
+.blockWinners {
+  width: 20%;
+  height: 50px;
+  background-color: none;
+  border-style: solid;
+  font-size: 1vw;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.blockYellowWinner {
+  width: 20%;
+  height: 50px;
+  background-color: none;
+  border-style: solid;
+  font-size: 1vw;
+  
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.containerWinners  {
+
+  text-align: center;
+}
+
+.blockTitleStage {
+  width: 20%;
+  height: 50px;
+  background-color: none;
+  border-style: none;
+  font-size: 1.5vw;
+  margin-bottom: 4px;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.continerTitleStage  {
+
+  text-align: center;
+}
+
+/*.stagelist{
 
 	float: left;
     width: 20%;
@@ -17,9 +80,9 @@ body {
     width: 90%;
     height: 30%;
     background:blue;
-}
+}*/
 
-.stage_box{
+/*.stage_box{
 	float: left;
     width: 60%;
     height: 950px;
@@ -37,9 +100,9 @@ body {
 .stage2{
 
     
-}
+}*/
 
-.team_or_rider_box{
+/*.team_or_rider_box{
 	float: right;
     width: 20%;
     height: 950px;
@@ -60,17 +123,17 @@ body {
     width: 90%;
     height: 40%;
     background:blue;
-}
+}*/
 
 
-.chart {
+/*.chart {
     background-color: #F7F2C5;
     width: 960px;
     height: 500px; 
-}
+}*/
 
 
-.grid .tick {
+/*.grid .tick {
     stroke: lightgrey;
     opacity: 0.7;
     shape-rendering: crispEdges;
@@ -78,7 +141,7 @@ body {
  
 .grid path {
     stroke-width: 0;
-}
+}*/
  
 .axis path {
     fill: none;
@@ -114,9 +177,8 @@ body {
     stroke-width: 3px !important;
     
 }
- 
+ /*
 .dot {
-    /* consider the stroke-with the mouse detect radius? */
     stroke: transparent;
     stroke-width: 10px;  
     cursor: pointer;
@@ -124,4 +186,4 @@ body {
  
 .dot:hover {
     stroke: rgba(68, 127, 255, 0.3);
-}
+}*/
