@@ -68,8 +68,8 @@ SimpleGraph = function(elemid){
 
       var self = this;
       this.chart = document.getElementById(elemid);
-      this.cx = 1800; //amplada en pixels de l'interior (amb padding inclos)
-      this.cy = 800; //altura en pixels de l'interior (amb padding inclos)
+      this.cx = 1850; //amplada en pixels de l'interior (amb padding inclos)
+      this.cy = 1000; //altura en pixels de l'interior (amb padding inclos)
 
       var margin = {top: 20, right: 30, bottom: 30, left: 50},
           width = this.cx - margin.left - margin.right,
@@ -119,7 +119,7 @@ SimpleGraph = function(elemid){
          .call(zoom)
          // Responsive SVG needs these 2 attributes and no width and height attr.
          .attr("preserveAspectRatio", "xMinYMin meet")
-         .attr("viewBox", "0 0 1850 950")
+         .attr("viewBox", "0 0 1850 1000")
          // Class to make it responsive.
          .classed("svg-content-responsive", true)
          .append("g")
