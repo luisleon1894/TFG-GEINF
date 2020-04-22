@@ -3,8 +3,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="style.css">
 
-<script type="text/javascript" src="riders-graph.js"></script>
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="riders-graph.js"></script>
+<script type="text/javascript" src="riders-info.js"></script>
 
 
 
@@ -17,16 +19,53 @@
     <div class="ministage"></div>
 
   </div> -->
+    <div class = "containerAll">
 
-  <div class="stage_box">
-       
-      <div id="stage_id"></div>
-      <script type="text/javascript">
-        graph = new SimpleGraph("stage_id");
-      </script>
+      <div class = "container_stage_list">
+        hola
+        <!-- LISTA DE STAGE!!!--->
+      </div>
+
+      <div class = "container_stage_box">
+        <div id = "continerTitleStage_id" class = "continerTitleStage">
+          <div id = "Title" class = "blockTitleStage">patata</div>
+        </div>
+
+        <div id= "containerWinners_id" class="containerWinners">
+          <div id = "FirstWinner" class="blockWinners"></div>
+          <div id = "SecondWinner" class="blockWinners"></div>
+          <div id = "ThirdWinner" class="blockWinners"></div>
+          <div id = "StageWinner" class="blockYellowWinner"></div>
+       </div>
+         
+        <div id="stage_id"></div>
+        <script type="text/javascript">
+          graph = new SimpleGraph("stage_id");
+        </script>
+      </div>
+
+      <div class = "container_stage_info">
+        
+        <div class ="boxFilter">
+          <!---FILTER!!--->
+        </div>
+
+        <div class = "boxSearch">
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+
+              <ul id = "myULNamesRiders_id" class="myULNamesRiders">
+
+              </ul>
+        </div>
+
+      
+        <div class = "boxInfo">
+          <!---IMATGES!!!!--->
+        </div>          
+
+    </div>
 
   </div>
-
 <!--   <div class="team_or_rider_box">
     
     <div class="team_or_rider_list"></div>

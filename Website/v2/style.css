@@ -1,85 +1,23 @@
-body {
+body, html {
   font: 10px sans-serif;
-  margin: 50px;
 }
 
-.stagelist{
+/**** Class in D3 ****/
 
-	float: left;
-    width: 20%;
-    height: 950px;
-    background:red;
+.svg-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  vertical-align: top;
+  overflow: hidden;
+}
+.svg-content-responsive {
+  display: inline-block;
+  top: 10px;
+  left: 0;
+
 }
 
-.ministage{
-	margin: auto;
-	margin-top: 10px;
-    width: 90%;
-    height: 30%;
-    background:blue;
-}
-
-.stage_box{
-	float: left;
-    width: 60%;
-    height: 950px;
-    background:transparent;
-}
-
-.stage{
-	margin: auto;
-	margin-top: 10%;
-    width: 85%;
-    height: 85%;
-    background: green;
-}
-
-.stage2{
-
-    
-}
-
-.team_or_rider_box{
-	float: right;
-    width: 20%;
-    height: 950px;
-    background:yellow;
-}
-
-.team_or_rider_list{
-	margin: auto;
-	margin-top: 60px;
-    width: 90%;
-    height: 40%;
-    background:blue;
-}
-
-.team_or_rider_info{
-	margin: auto;
-	margin-top: 60px;
-    width: 90%;
-    height: 40%;
-    background:blue;
-}
-
-
-.chart {
-    background-color: #F7F2C5;
-    width: 960px;
-    height: 500px; 
-}
-
-
-.grid .tick {
-    stroke: lightgrey;
-    opacity: 0.7;
-    shape-rendering: crispEdges;
-}
- 
-.grid path {
-    stroke-width: 0;
-}
- 
 .axis path {
     fill: none;
     stroke: #bbb;
@@ -114,9 +52,247 @@ body {
     stroke-width: 3px !important;
     
 }
+
+/**** Class in HTML ****/
+
+.containerAll{
+
+    background:transparent;
+    display: flex;
+    height: 98vh;
+}
+
+.container_stage_list{
+
+
+    flex: 0.75 1 auto;
+
+    border-style: solid;
+    background:transparent;
+}
+
+.container_stage_box{
+
+    flex: 2 1 auto;
+
+    border-style: solid;
+    background:transparent;
+}
+
+.containerWinners  {
+
+  text-align: center;
+}
+
+.blockWinners {
+  width: 20%;
+  height: 50px;
+  background-color: none;
+  border-style: solid;
+  font-size: 1vw;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.blockYellowWinner {
+  width: 20%;
+  height: 50px;
+  background-color: none;
+  border-style: solid;
+  font-size: 1vw;
+  
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.continerTitleStage  {
+
+  text-align: center;
+}
+
+.blockTitleStage {
+  width: 20%;
+  height: 50px;
+  background-color: none;
+  border-style: none;
+  font-size: 1.5vw;
+  margin-bottom: 4px;
+
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container_stage_info{
+
+
+    flex: 0.2 1 auto;
+
+    border-style: solid;
+    background:transparent;
+
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.boxFilter{
+
+      flex: 0.5 0 0;
+      width: 100%;
+/*    height: 50px;
+*/    border-style: solid;
+}
+
+
+.boxSearch{
+
+    flex: 1 0 0;
+
+    border-style: solid;
+/*    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 75px;
+    */
+/*    height: 25px;
+*/    width: 100%;
+    overflow: auto;
+}
+
+.boxInfo{
+
+    flex: 2 0 0;
+
+    border-style: solid;
+    width: 100%;
+/*    height: 25px;
+*//*    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 15px;
+    height: 420px;*/
+}
+
+
+.myInput {
+/*  background-image: url('/css/searchicon.png');
+  background-position: 10px 12px;
+  background-repeat: no-repeat;
+  width: 80%;*/
+  font-size: 10px;
+/*  padding: 12px 20px 12px 40px;
+*/  border: 1px solid #ddd;
+/*  margin-bottom: 12px;
+*/}
+
+.myULNamesRiders {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.myLiNames {
+  border: 1px solid #ddd;
+  margin-top: -1px; /* Prevent double borders */
+  background-color: #f6f6f6;
+  padding: 6px;
+  display: block;
+}
+
+.myANames {
+  
+  text-decoration: none;
+  color: black;
+  font-size: 10px;
+}
+
+
+/*.stagelist{
+
+	float: left;
+    width: 20%;
+    height: 950px;
+    background:red;
+}
+
+.ministage{
+	margin: auto;
+	margin-top: 10px;
+    width: 90%;
+    height: 30%;
+    background:blue;
+}*/
+
+/*.stage_box{
+	float: left;
+    width: 60%;
+    height: 950px;
+    background:transparent;
+}
+
+.stage{
+	margin: auto;
+	margin-top: 10%;
+    width: 85%;
+    height: 85%;
+    background: green;
+}
+
+.stage2{
+
+    
+}*/
+
+/*.team_or_rider_box{
+	float: right;
+    width: 20%;
+    height: 950px;
+    background:yellow;
+}
+
+.team_or_rider_list{
+	margin: auto;
+	margin-top: 60px;
+    width: 90%;
+    height: 40%;
+    background:blue;
+}
+
+.team_or_rider_info{
+	margin: auto;
+	margin-top: 60px;
+    width: 90%;
+    height: 40%;
+    background:blue;
+}*/
+
+
+/*.chart {
+    background-color: #F7F2C5;
+    width: 960px;
+    height: 500px; 
+}*/
+
+
+/*.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+    shape-rendering: crispEdges;
+}
  
+.grid path {
+    stroke-width: 0;
+}*/
+ 
+
+ /*
 .dot {
-    /* consider the stroke-with the mouse detect radius? */
     stroke: transparent;
     stroke-width: 10px;  
     cursor: pointer;
@@ -124,4 +300,4 @@ body {
  
 .dot:hover {
     stroke: rgba(68, 127, 255, 0.3);
-}
+}*/
