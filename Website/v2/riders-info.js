@@ -1,3 +1,5 @@
+var riders = [];
+
 $(document).ready(function() {
     $.ajax({
         type: "GET",
@@ -6,39 +8,50 @@ $(document).ready(function() {
         success: function(data) {processDataNames(data);}
      });
 
+});
+
+
+$(document).ready(function() {
+
     var folder = "./imgs/";
 
     $.ajax({
     url : folder,
         success: function (data) {
             $(data).find("a").attr("href", function (i, val) {
-                if( val.match(/\.(jpe?g|png|gif)$/) ) { 
-                    // $("ul.myULImagesRiders").append( "<img src='"+ folder + val + " 'height=\'42\' width= \'42\'' >" );
+                if( val.match(/\.(jpe?g|png|gif)$/) && $.isNumeric(val.slice(0, 4))) { //si es imatge i es una de les imatges dels ciclistes
 
+                    //S'afegeixen les imatges dels ciclistes
                     var imageList = $("ul.myULImagesRiders");
-                    var li = $('<li/>')
-                        .addClass('myLiImages')
+                    var div = $('<div/>')
+                        .addClass('myDivImages')
                         .appendTo(imageList);
                     var img = $('<img>')
                         .addClass('imgRider')
                         .attr("src", folder + val)
-                        .appendTo(li);
+                        .appendTo(div);
 
-                    var text = $('<div>')
+                    var rider = getRiderbypng(riders, val);
+                    var boxtext = $('<section>')
                         .addClass('boxTextImg')
-                        .text("potato")
-                        .appendTo(li);
+                        .appendTo(div);
+
+                    var textName = $('<a>')
+                        .addClass('aTextImg')
+                        .text(rider[1].Name)
+                        .appendTo(boxtext);
                 } 
             });
+
         }
     });
 });
 
 
+
 function processDataNames(allText) {
     var allTextLines = allText.split(/\r\n|\n/);
     var headers = allTextLines[0].split(';');
-    var riders = [];
     var names = [];
 
     for (var i=1; i<allTextLines.length; i++) {
@@ -56,50 +69,75 @@ function processDataNames(allText) {
             }
             riders.push(tarr);
 
-            var name = tarr[1];
-            names.push(name.Name);
         }
     }
-    mainCode(riders, names)
+    appendNames(riders)
 }
 
+function getRiderbypng(riders, png_name){
 
-function mainCode(riders, names){
 
+    for(var i = 0; i < riders.length; i++){
+        var rider = riders[i];
+        if(rider[4].Photo === png_name){
+            return rider;
+        }
+    }
+
+}
+
+function appendNames(riders){
 
     var cList = $('ul.myULNamesRiders')
-    $.each(names, function(i)
-    {
+    $.each(riders, function(i)
+    {   
+        var rider = riders[i];
+
         var li = $('<li/>')
-             .addClass('myLiNames')
-             //.attr('role', 'menuitem')
+            .addClass('myLiNames')
             .appendTo(cList);
-        var aaa = $('<a/>')
+        var a = $('<a/>')
             .addClass('myANames')
-            .text(names[i])
+            .text(rider[1].Name)
             .appendTo(li);
     });
 
 }
 
 
-function myFunction() {
+function searchRider() {
+
     var input, filter, ul, li, a, i, txtValue;
     input = document.getElementById("myInput");
     filter = input.value.toUpperCase();
+
+    var ul2, div;
+
     ul = document.getElementById("myULNamesRiders_id");
     li = ul.getElementsByTagName("li");
+
+    ul2 = document.getElementById("myULImagesRiders_id");
+    div = ul2.getElementsByTagName("div")
+
 
     for (i = 0; i < li.length; i++) {
 
         a = li[i].getElementsByTagName("a")[0];
+        aImg = div[i].getElementsByTagName("a")[0];
+
         txtValue = a.textContent || a.innerText;
 
         if (txtValue.toUpperCase().indexOf(filter) > -1) {
             li[i].style.display = "";
+
+            div[i].style.display = "";
+
         } else {
             li[i].style.display = "none";
+
+            div[i].style.display = "none"
         }
     }
+
 }
 
