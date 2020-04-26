@@ -1,8 +1,21 @@
-SimpleGraph = function(elemid){
+//SimpleGraph = function(elemid){
 
 
   // Extract the list of km we want to keep in the plot. Here I keep all except the column called Species
-  d3.csv("./csv/Stage18-data-full-csv.csv", function(data){
+  d3.text("./csv/Stage18-data-full-csv.csv", function(original_data){
+
+      var infoStageTitle = original_data.split('\n')[0];
+      console.log(infoStageTitle);
+
+      // break the textblock into an array of lines
+      var linesData = original_data.split('\n');
+      // remove one line, starting at the first position
+      linesData.splice(0,1);
+      console.log(linesData);
+      // join the array back into a single string
+      var new_csv = linesData.join('\n');
+
+      
 
       //Array[Names Km]
     	columnsKmName = d3.keys(data[0]).filter(isElapsed)
@@ -55,19 +68,11 @@ SimpleGraph = function(elemid){
       }
       elapsedDataRider.pop();
 
-      var colors = [
-        'steelblue',
-        'green',
-        'red',
-        'purple'
-      ]
-
       //************************************************************
       // Create Margins and Axis and hook our zoom function
       //************************************************************
 
       var self = this;
-      this.chart = document.getElementById(elemid);
       this.cx = 1850; //amplada en pixels de l'interior (amb padding inclos)
       this.cy = 1000; //altura en pixels de l'interior (amb padding inclos)
 
@@ -90,7 +95,6 @@ SimpleGraph = function(elemid){
         .ticks(4);
 
 
-
       var yAxis = d3.axisLeft(yScale)
         .tickPadding(10)
         .tickSize(-width)
@@ -104,15 +108,9 @@ SimpleGraph = function(elemid){
       //************************************************************
       // Generate our SVG object
       //************************************************************  
-      // var svg = d3.select(this.chart).append("svg")
-      //   .call(zoom)
-      //   .attr("width", this.cx + margin.left + margin.right )
-      //   .attr("height", this.cy + margin.top + margin.bottom)
-      //   .append("g")
-      //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  
 
-      var svg = d3.select(this.chart)
+
+      var svg = d3.select("#stage_id")
          .append("div")
          // Container class to make it responsive.
          .classed("svg-container", true) 
@@ -232,131 +230,23 @@ SimpleGraph = function(elemid){
       //************************************************************
       //Trobar els grups de ciclistes que hi ha en els kms
       //************************************************************
-      var grupsCiclistesEtapa = [];
+      var grupsCiclistesEtapa = getGroupRidersStage(elapsedDataRider);
 
-      for(var i = 0; i < columnsKmName.length; i++){
-
-        var grupsCiclistesKM = [];
-
-        ////ordenar els ciclistes per km "i"
-        var posicioCiclista = [];
-        for(var j = 0; j < elapsedDataRider.length; j++){
-
-          if(!isNaN(elapsedDataRider[j][i].y)){ //comprova que sigui una coordenada válida
-            posicioCiclista.push(elapsedDataRider[j][i])
-          }
-        }
-
-        posicioCiclista.sort(function(a,b) { //ordena les posicions dels ciclistes
-            if( a.x == b.x) return a.y-b.y;
-              return a.x-b.x;
-        });
-
-        for(var k = 0; k < posicioCiclista.length; k++){
-
-          var grupN = []
-
-          if(esPotFerGrupCiclista(k, posicioCiclista)){
-
-            // if(posicioCiclista[k].y === (posicioCiclista[k+1].y - 1)){
-
-              var coordIni = k;
-              grupN.push(posicioCiclista[k]);
-
-              while(posicioCiclista[k].y === (posicioCiclista[k+1].y -1)){
-
-                k++;
-                grupN.push(posicioCiclista[k]);
-
-                if(k  === posicioCiclista.length - 1){
-                  break;
-                }
-
-              }
-              
-              grupsCiclistesKM.push(grupN);
-            //}
-          }
-          else{ // es un ciclista que va sol i no te grup
-            grupN.push(posicioCiclista[k]);
-            grupsCiclistesKM.push(grupN);
-          }
-        }
-
-        grupsCiclistesEtapa.push(grupsCiclistesKM);
-      }
       //************************************************************************************
       //Mirar en les etapes cada un del ciclistes a quin grup forma part i guardar els grups(polygons)
       //************************************************************************************
-      var polygonGrups = [];
+      var polygonGrups = getPolygonsGroups(columnsKmName, grupsCiclistesEtapa, elapsedDataRider);
 
-      for(var i = 0; i < columnsKmName.length - 1; i++){ //per cada km (d'esquerra a dreta)
 
-        var grupsCiclistaKM = grupsCiclistesEtapa[i];
+      //************************************************************************************
+      //Busca diferencia de temps entre grups
+      //************************************************************************************
 
-        for(var j = 0; j < grupsCiclistaKM.length; j++){ //per cada grup de ciclistes de cada km
-
-          var grupCiclista = grupsCiclistaKM[j];
-          var coordTractades = [];
-
-          for(var k = 0; k < grupCiclista.length; k++){ //per cada ciclista del grup de ciclistes de cada km, busca el grup que anira en km+1
-
-            //inicializem les coord del poligon
-            var coordPrimerCiclista = elapsedDataRider[grupCiclista[k].id][i];
-            var coordUltimCiclista = elapsedDataRider[grupCiclista[k].id][i];
-            var coordPrimerCiclistaSegGrup = elapsedDataRider[grupCiclista[k].id][i + 1];
-            var coordUltimCiclistaSegGrup = elapsedDataRider[grupCiclista[k].id][i + 1];
-
-            if(!coordTractades.includes(elapsedDataRider[grupCiclista[k].id][i])){
-
-                var seguentCoordCiclista = elapsedDataRider[grupCiclista[k].id][i + 1];
-                var grupSeguent = trobarGrup(seguentCoordCiclista, grupsCiclistesEtapa[i + 1]);
-
-                if(grupSeguent !== -1){ //no hi ha info del ciclista
-
-                  for(var l = k; l < grupCiclista.length; l++){
-
-                    var coordSubGrup = elapsedDataRider[grupCiclista[l].id][i]
-                    var coordSubGrupSeg = elapsedDataRider[grupCiclista[l].id][i + 1]
-                    var grupSeguentCandidat = trobarGrup(coordSubGrupSeg, grupsCiclistesEtapa[i + 1]);
-
-                    if((grupSeguentCandidat !== -1) && (sonGrupsIguals(grupSeguent, grupSeguentCandidat))){
-                      coordTractades.push(coordSubGrup)
-
-                      //Actualitza ultim ciclista del costa esq.
-                      coordUltimCiclista = coordSubGrup;
-
-                      //Actualitza coord costat dret
-                      if(coordSubGrupSeg.y > coordUltimCiclistaSegGrup.y){
-                       coordUltimCiclistaSegGrup = coordSubGrupSeg;
-                      }
-                      else if(coordSubGrupSeg.y < coordPrimerCiclistaSegGrup.y){
-                        coordPrimerCiclistaSegGrup = coordSubGrupSeg;
-                      }
-                    }
-                  }
-
-                  //Si es un ciclista que va sol
-                  if(coordPrimerCiclistaSegGrup === coordUltimCiclistaSegGrup){
-
-                    coordPrimerCiclista = {id: coordPrimerCiclista.id, x: coordPrimerCiclista.x, y: coordPrimerCiclista.y - 0.5};
-                    coordPrimerCiclistaSegGrup = {id: coordPrimerCiclistaSegGrup.id, x: coordPrimerCiclistaSegGrup.x, y: coordPrimerCiclistaSegGrup.y - 0.5};
-                    coordUltimCiclista = {id: coordUltimCiclista.id, x: coordUltimCiclista.x, y: coordUltimCiclista.y + 0.5};
-                    coordUltimCiclistaSegGrup = {id: coordUltimCiclistaSegGrup.id, x: coordUltimCiclistaSegGrup.x, y: coordUltimCiclistaSegGrup.y + 0.5};
-                  }
-                  polygonGrups.push({points: [coordPrimerCiclista, coordPrimerCiclistaSegGrup, coordUltimCiclistaSegGrup, coordUltimCiclista]});    
-                }
-            }
-          }
-        }
-      }
-
-      //console.log(polygonGrups.length);
+      var diferenciaTempsGrups = buscaDifernciaTempsGrups(grupsCiclistesEtapa, columnsKm);
 
       //***********************
       //Pintar polygonsGrups
       //***********************
-      //console.log(grupsCiclistesEtapa);
       var poligons = function(d){
         return d.points.map(function(d) { return [xScale(d.x),yScale(d.y)].join(","); }).join(" ");
       }
@@ -370,6 +260,9 @@ SimpleGraph = function(elemid){
           .attr("fill", "#A0522D")
           .attr("fill-opacity", 0.4)
 
+      //***********************
+      //Pintar les lineas (ciclistes)
+      //***********************
       svg.selectAll('.line')
         .data(elapsedDataRider)
         .enter()
@@ -403,14 +296,9 @@ SimpleGraph = function(elemid){
         //     .style('stroke-width', '1px')
         // });
 
-      //************************************************************************************
-      //Busca diferencia de temps entre grups
-      //************************************************************************************
-
-      var diferenciaTempsGrups = buscaDifernciaTempsGrups(grupsCiclistesEtapa, columnsKm);
-
-        //var diferenciaTempsGrups = []
-
+      //***********************
+      //Pintar la diferència de temps entre grups
+      //***********************
       svg.selectAll("text.timeGroup")
         .data(diferenciaTempsGrups)
         .enter()
@@ -458,9 +346,137 @@ SimpleGraph = function(elemid){
       document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[1].innerHTML = "2nd. " + winnerEtapa(2, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
       document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[2].innerHTML = "3rd. " + winnerEtapa(3, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
       document.getElementById('containerWinners_id').getElementsByClassName('blockYellowWinner')[0].innerHTML = "patata";
+
+
   });
 
 
+//}
+
+function getPolygonsGroups(columnsKmName,grupsCiclistesEtapa, elapsedDataRider){
+
+  var polygonsGrups = [];
+
+    for(var i = 0; i < columnsKmName.length - 1; i++){ //per cada km (d'esquerra a dreta)
+
+      var grupsCiclistaKM = grupsCiclistesEtapa[i];
+
+      for(var j = 0; j < grupsCiclistaKM.length; j++){ //per cada grup de ciclistes de cada km
+
+        var grupCiclista = grupsCiclistaKM[j];
+        var coordTractades = [];
+
+        for(var k = 0; k < grupCiclista.length; k++){ //per cada ciclista del grup de ciclistes de cada km, busca el grup que anira en km+1
+
+          //inicializem les coord del poligon
+          var coordPrimerCiclista = elapsedDataRider[grupCiclista[k].id][i];
+          var coordUltimCiclista = elapsedDataRider[grupCiclista[k].id][i];
+          var coordPrimerCiclistaSegGrup = elapsedDataRider[grupCiclista[k].id][i + 1];
+          var coordUltimCiclistaSegGrup = elapsedDataRider[grupCiclista[k].id][i + 1];
+
+          if(!coordTractades.includes(elapsedDataRider[grupCiclista[k].id][i])){
+
+              var seguentCoordCiclista = elapsedDataRider[grupCiclista[k].id][i + 1];
+              var grupSeguent = trobarGrup(seguentCoordCiclista, grupsCiclistesEtapa[i + 1]);
+
+              if(grupSeguent !== -1){ //no hi ha info del ciclista
+
+                for(var l = k; l < grupCiclista.length; l++){
+
+                  var coordSubGrup = elapsedDataRider[grupCiclista[l].id][i]
+                  var coordSubGrupSeg = elapsedDataRider[grupCiclista[l].id][i + 1]
+                  var grupSeguentCandidat = trobarGrup(coordSubGrupSeg, grupsCiclistesEtapa[i + 1]);
+
+                  if((grupSeguentCandidat !== -1) && (sonGrupsIguals(grupSeguent, grupSeguentCandidat))){
+                    coordTractades.push(coordSubGrup)
+
+                    //Actualitza ultim ciclista del costa esq.
+                    coordUltimCiclista = coordSubGrup;
+
+                    //Actualitza coord costat dret
+                    if(coordSubGrupSeg.y > coordUltimCiclistaSegGrup.y){
+                     coordUltimCiclistaSegGrup = coordSubGrupSeg;
+                    }
+                    else if(coordSubGrupSeg.y < coordPrimerCiclistaSegGrup.y){
+                      coordPrimerCiclistaSegGrup = coordSubGrupSeg;
+                    }
+                  }
+                }
+
+                //Si es un ciclista que va sol
+                if(coordPrimerCiclistaSegGrup === coordUltimCiclistaSegGrup){
+
+                  coordPrimerCiclista = {id: coordPrimerCiclista.id, x: coordPrimerCiclista.x, y: coordPrimerCiclista.y - 0.5};
+                  coordPrimerCiclistaSegGrup = {id: coordPrimerCiclistaSegGrup.id, x: coordPrimerCiclistaSegGrup.x, y: coordPrimerCiclistaSegGrup.y - 0.5};
+                  coordUltimCiclista = {id: coordUltimCiclista.id, x: coordUltimCiclista.x, y: coordUltimCiclista.y + 0.5};
+                  coordUltimCiclistaSegGrup = {id: coordUltimCiclistaSegGrup.id, x: coordUltimCiclistaSegGrup.x, y: coordUltimCiclistaSegGrup.y + 0.5};
+                }
+                polygonsGrups.push({points: [coordPrimerCiclista, coordPrimerCiclistaSegGrup, coordUltimCiclistaSegGrup, coordUltimCiclista]});    
+              }
+          }
+        }
+      }
+    }
+
+  return polygonsGrups;
+}
+
+function getGroupRidersStage(elapsedDataRider){
+
+    var grupsCiclistesEtapa = [];
+
+    for(var i = 0; i < columnsKmName.length; i++){
+
+      var grupsCiclistesKM = [];
+
+      ////ordenar els ciclistes per km "i"
+      var posicioCiclista = [];
+      for(var j = 0; j < elapsedDataRider.length; j++){
+
+        if(!isNaN(elapsedDataRider[j][i].y)){ //comprova que sigui una coordenada válida
+          posicioCiclista.push(elapsedDataRider[j][i])
+        }
+      }
+
+      posicioCiclista.sort(function(a,b) { //ordena les posicions dels ciclistes
+          if( a.x == b.x) return a.y-b.y;
+            return a.x-b.x;
+      });
+
+      for(var k = 0; k < posicioCiclista.length; k++){
+
+        var grupN = []
+
+        if(esPotFerGrupCiclista(k, posicioCiclista)){
+
+
+            var coordIni = k;
+            grupN.push(posicioCiclista[k]);
+
+            while(posicioCiclista[k].y === (posicioCiclista[k+1].y -1)){
+
+              k++;
+              grupN.push(posicioCiclista[k]);
+
+              if(k  === posicioCiclista.length - 1){
+                break;
+              }
+
+            }
+            
+            grupsCiclistesKM.push(grupN);
+          
+        }
+        else{ // es un ciclista que va sol i no te grup
+          grupN.push(posicioCiclista[k]);
+          grupsCiclistesKM.push(grupN);
+        }
+      }
+
+      grupsCiclistesEtapa.push(grupsCiclistesKM);
+    }
+
+    return grupsCiclistesEtapa;
 }
 
 //comprova que no sigui l'ultim ciclista i que es pugui fer grup
