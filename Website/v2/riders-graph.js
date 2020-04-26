@@ -1,466 +1,460 @@
-SimpleGraph = function(elemid){
+// Extract the list of km we want to keep in the plot.
+d3.text("./csv/Stage18-data-full-csv.csv", function(original_data){
 
+  //************************************************************
+  // S'adapta el fitxer origianl_data, titol, ElapsedTime
+  //************************************************************
 
-  // Extract the list of km we want to keep in the plot. Here I keep all except the column called Species
-  d3.csv("./csv/Stage18-data-full-csv.csv", function(data){
+  var infoStageTitle = original_data.split('\n')[0];
 
-      //Array[Names Km]
-    	columnsKmName = d3.keys(data[0]).filter(isElapsed)
+  // break the textblock into an array of lines
+  var linesData = original_data.split('\n');
+  // remove one line, starting at the first position
+  linesData.splice(0,1);
+  
+  // join the array back into a single string
+  var new_csv = linesData.join('\n');
+  
+  var data = d3.csvParse(new_csv);
 
-      //Array[Km]
-    	columnsKm = d3.keys(data[0]).filter(isnewKm) //guarda les claus que continguin "km"
-    	for(var i = 0; i < columnsKm.length; i++){
-    		columnsKm[i] = columnsKm[i].slice(0, columnsKm[i].indexOf("_")).replace("km",""); // en cada valor acosta l'string i subst. "km" per ""
-    	}
-    	columnsKm = columnsKm.filter((a, b) => columnsKm.indexOf(a) === b); //elimina repetits
+  //Array[Names Km]
+	columnsKmName = d3.keys(data[0]).filter(isElapsed)
 
-      //es modifica el valor de "Elapsed time" de data per un valor enter, representa els segons
-  	 for(var i = 0; i < data.length; i++){
+  //Array[Km]
+	columnsKm = d3.keys(data[0]).filter(isnewKm) //guarda les claus que continguin "km"
+	for(var i = 0; i < columnsKm.length; i++){
+		columnsKm[i] = columnsKm[i].slice(0, columnsKm[i].indexOf("_")).replace("km",""); // en cada valor acosta l'string i subst. "km" per ""
+	}
+	columnsKm = columnsKm.filter((a, b) => columnsKm.indexOf(a) === b); //elimina repetits
 
-    		columnsKmName.forEach(function(key) {
-  			   //modificar value, transformar minuts segons a un valor enter
-  			   var elapse = data[i][key]
+//es modifica el valor de "Elapsed time" de data per un valor enter, representa els segons
+ for(var i = 0; i < data.length; i++){
 
-           var min = elapse.slice(1, elapse.indexOf("'"));
-           var seg = elapse.substr(elapse.indexOf("'") + 1, 2);
+		columnsKmName.forEach(function(key) {
+		   //modificar value, transformar minuts segons a un valor enter
+		   var elapse = data[i][key]
 
-  			   if(elapse.includes("h")){ //si hi ha "h" és el primer i l'elapsed es = 0
-  				    data[i][key] = 0
-  			   }
-  			   else{ // altrament es transforma valor a un enter
-  				    data[i][key] = (parseInt(min) * 60) + parseInt(seg)
-  			   }
-  		  });
-      }
+       var min = elapse.slice(1, elapse.indexOf("'"));
+       var seg = elapse.substr(elapse.indexOf("'") + 1, 2);
 
-      //************************************************************
-      // Data elapsed riders
-      //************************************************************
+		   if(elapse.includes("h")){ //si hi ha "h" és el primer i l'elapsed es = 0
+			    data[i][key] = 0
+		   }
+		   else{ // altrament es transforma valor a un enter
+			    data[i][key] = (parseInt(min) * 60) + parseInt(seg)
+		   }
+	  });
+  }
 
-      var elapsedDataRider = [];
-      var riders = [];
+  //************************************************************
+  // Data elapsed riders
+  //************************************************************
 
-      for(rider in data){
+  var columns = data.columns;
+  var dataRiders = data.slice(0, data.length);
 
-        var coordinates = [];
+  var elapsedDataRider = [];
+  var riders = [];
 
-        for(var j = 0; j < columnsKmName.length; j++){
+  for(rider in dataRiders){
 
-          var positionKM = columnsKmName[j].slice(0, columnsKmName[j].indexOf("_"))+"_Position"
-          
-          coordinates.push({id: parseInt(rider), x: parseFloat(columnsKm[j]), y: data[rider][columnsKmName[j]] + parseInt(data[rider][positionKM])})
-        }
-        riders.push({id: parseInt(rider), nom: data[rider]["Rider_name"], team: data[rider]["Team"], ridernum: data[rider]["Rider_number"], lider: data[rider]["Leader"]})
-        elapsedDataRider.push(coordinates);
-      }
-      elapsedDataRider.pop();
+    var coordinates = [];
 
-      var colors = [
-        'steelblue',
-        'green',
-        'red',
-        'purple'
-      ]
+    for(var j = 0; j < columnsKmName.length; j++){
 
-      //************************************************************
-      // Create Margins and Axis and hook our zoom function
-      //************************************************************
-
-      var self = this;
-      this.chart = document.getElementById(elemid);
-      this.cx = 1850; //amplada en pixels de l'interior (amb padding inclos)
-      this.cy = 1000; //altura en pixels de l'interior (amb padding inclos)
-
-      var margin = {top: 20, right: 30, bottom: 30, left: 50},
-          width = this.cx - margin.left - margin.right,
-          height = this.cy - margin.top - margin.bottom;
+      var positionKM = columnsKmName[j].slice(0, columnsKmName[j].indexOf("_"))+"_Position"
       
-      var xScale = d3.scaleLinear()
-          //.domain([0, elapsedDataRider[0].length - 1])
-          .domain([parseFloat(columnsKm[0]) , 0])
-          .range([0, width]);
-       
-      var yScale = d3.scaleLinear()
-          .domain([0, corredorMaxElapsed(elapsedDataRider)])
-          .range([0, height])
-        
-      var xAxis = d3.axisBottom(xScale)
-        .tickSize(-height)
-        .tickPadding(10)
-        .ticks(4);
+      coordinates.push({id: parseInt(rider), x: parseFloat(columnsKm[j]), y: data[rider][columnsKmName[j]] + parseInt(data[rider][positionKM])})
+    }
+    riders.push({id: parseInt(rider), nom: data[rider]["Rider_name"], team: data[rider]["Team"], ridernum: data[rider]["Rider_number"], lider: data[rider]["Leader"]})
+    elapsedDataRider.push(coordinates);
+  }
+
+  //************************************************************
+  // Trobar els grups de ciclistes que hi ha en els kms
+  //************************************************************
+  var grupsCiclistesEtapa = getGroupRidersStage(elapsedDataRider);
+
+  //************************************************************************************
+  // Mirar en les etapes cada un del ciclistes a quin grup forma part i guardar els grups(polygons)
+  //************************************************************************************
+  var polygonGrups = getPolygonsGroups(columnsKmName, grupsCiclistesEtapa, elapsedDataRider);
+
+  //************************************************************************************
+  // Busca diferencia de temps entre grups
+  //************************************************************************************
+  var diferenciaTempsGrups = buscaDifernciaTempsGrups(grupsCiclistesEtapa, columnsKm);
+
+  //************************************************************
+  // Create Margins and Axis and hook our zoom function
+  //************************************************************
+
+  var self = this;
+  this.cx = 1850; //amplada en pixels de l'interior (amb padding inclos)
+  this.cy = 1000; //altura en pixels de l'interior (amb padding inclos)
+
+  var margin = {top: 20, right: 30, bottom: 30, left: 50},
+      width = this.cx - margin.left - margin.right,
+      height = this.cy - margin.top - margin.bottom;
+  
+  var xScale = d3.scaleLinear()
+      //.domain([0, elapsedDataRider[0].length - 1])
+      .domain([parseFloat(columnsKm[0]) , 0])
+      .range([0, width])
+   
+  var yScale = d3.scaleLinear()
+      .domain([0, corredorMaxElapsed(elapsedDataRider)])
+      .range([0, height])
+    
+  var xAxis = d3.axisBottom(xScale)
+    .tickPadding(10)
+    .tickSize(-height)
+    .ticks(5)
+
+  var yAxis = d3.axisLeft(yScale)
+    .tickPadding(10)
+    .tickSize(-width)
+    .ticks(5)
+  
+  var zoom = d3.zoom()
+      .scaleExtent([1,80])
+      .translateExtent([[0, 0], [width, height]]) 
+      .extent([[0, 0], [width, height]])
+      .on("zoom", zoomed);
+    
+  //************************************************************
+  // Generate our SVG object
+  //************************************************************  
 
 
+  var svg = d3.select("#stage_id")
+     .append("div")
+     // Container class to make it responsive.
+     .classed("svg-container", true) 
+     .append("svg")
+     .call(zoom)
+     // Responsive SVG needs these 2 attributes and no width and height attr.
+     .attr("preserveAspectRatio", "xMinYMin meet")
+     .attr("viewBox", "0 0 1850 1000")
+     // Class to make it responsive.
+     .classed("svg-content-responsive", true)
+     .append("g")
+     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");       
 
-      var yAxis = d3.axisLeft(yScale)
-        .tickPadding(10)
-        .tickSize(-width)
-      
-      var zoom = d3.zoom()
-          .scaleExtent([1,80])
-          .translateExtent([[0, 0], [width, height]]) 
-          .extent([[0, 0], [width, height]])
-          .on("zoom", zoomed);
-        
-      //************************************************************
-      // Generate our SVG object
-      //************************************************************  
-      // var svg = d3.select(this.chart).append("svg")
-      //   .call(zoom)
-      //   .attr("width", this.cx + margin.left + margin.right )
-      //   .attr("height", this.cy + margin.top + margin.bottom)
-      //   .append("g")
-      //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+ var gX = svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+   
+  var gY = svg.append("g")
+              .attr("class", "y axis")
+              .call(yAxis) 
   
 
-      var svg = d3.select(this.chart)
-         .append("div")
-         // Container class to make it responsive.
-         .classed("svg-container", true) 
-         .append("svg")
-         .call(zoom)
-         // Responsive SVG needs these 2 attributes and no width and height attr.
-         .attr("preserveAspectRatio", "xMinYMin meet")
-         .attr("viewBox", "0 0 1850 1000")
-         // Class to make it responsive.
-         .classed("svg-content-responsive", true)
-         .append("g")
-         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");       
+  svg.append("clipPath")
+    .attr("id", "clip")
+    .append("rect")
+    .attr("width", width)
+    .attr("height", height);
+
+  //************************************************************
+  // Pintar polygonsGrups
+  //************************************************************
+  var poligons = function(d){
+    return d.points.map(function(d) { return [xScale(d.x),yScale(d.y)].join(","); }).join(" ");
+  }
+
+  svg.selectAll("polygon")
+      .data(polygonGrups)
+      .enter()
+      .append("polygon")
+      .attr("points",poligons)
+      .attr("clip-path", "url(#clip)")
+      .attr("fill", "#A0522D")
+      .attr("fill-opacity", 0.4)
+
+  //************************************************************
+  // Create D3 line object + Pintar les lineas (ciclistes)
+  //************************************************************
+
+  var line = d3.line()
+      .x(function(d) { return xScale(d.x); })
+      .y(function(d) { return yScale(d.y); });   
 
 
-     var gX = svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
-       
-      var gY = svg.append("g")
-                  .attr("class", "y axis")
-                  .call(yAxis)
+  svg.selectAll('.line')
+    .data(elapsedDataRider)
+    .enter()
+    .append("path")
+    .attr("class", "line")
+    .attr("clip-path", "url(#clip)")
+    .style('stroke', '#A9A9A9')
+    .attr("d", line)
+    .on('click', function(d) {
+      mostrarRider(d[0].id, riders);
+      // transition the clicked element
+      // to have a radius of 20
 
-      // svg.append("g")
-      //   .attr("class", "y axis")
-      //   .append("text")
-      //   .attr("class", "axis-label")
-      //   .attr("transform", "rotate(-90)")
-      //   .attr("y", (-margin.left) + 10)
-      //   .attr("x", -height/2)
-      //   .text('Axis Label');  
-      
+    });
+    // .on('mouseover', function(d, i) {
+    //   console.log("mouseover on", this);
+    //   // transition the mouseover'd element
+    //   // to having a red fill
+    //   d3.select(this)
+    //     .transition()
+    //     .style('stroke', '#00008B')
+    //     .style('stroke-width', '3px')
+    // })
+    // .on('mouseout', function(d, i) {
+    //   console.log("mouseout", this);
+    //   // return the mouseover'd element
+    //   // to being smaller and black
+    //   d3.select(this)
+    //     .transition()
+    //     .style('stroke', '#A9A9A9')
+    //     .style('stroke-width', '1px')
+    // });
 
-      svg.append("clipPath")
-        .attr("id", "clip")
-        .append("rect")
-        .attr("width", width)
-        .attr("height", height);
-
-      //************************************************************
-      // Create D3 line object and draw data on our SVG object
-      //************************************************************
-      var line = d3.line()
-          .x(function(d) { return xScale(d.x); })
-          .y(function(d) { return yScale(d.y); });   
-      
-
-      // svg.selectAll('.line')
-      //   .data(elapsedDataRider)
-      //   .enter()
-      //   .append("path")
-      //   .attr("class", "line")
-      //   .attr("clip-path", "url(#clip)")
-      //   .style('stroke', '#1E90FF')
-      //    .attr("d", line);   
-        
-        
-      //************************************************************
-      // Zoom specific updates
-      //************************************************************
-      function zoomed() {
-
-        // create new scale ojects based on event
-        var new_xScale = d3.event.transform.rescaleX(xScale);
-        var new_yScale = d3.event.transform.rescaleY(yScale);
-
-        var zoomTransformString = d3.event.transform.toString();
-        var splitZoomString = zoomTransformString.split(" ");
-        var zoomScale = parseFloat(splitZoomString[1].slice(splitZoomString[1].indexOf("(") + 1, splitZoomString[1].indexOf(")")))
+  //************************************************************
+  // Pintar la diferència de temps entre grups
+  //************************************************************
+  svg.selectAll("text.timeGroup")
+    .data(diferenciaTempsGrups)
+    .enter()
+    .append("text")
+    .attr("class", "timeGroup")
+    .style('fill', 'blue')
+    .attr("clip-path", "url(#clip)")
+    .attr("x", function(d) {
+                return xScale(d.x);
+           })
+    .attr("y", function(d) {
+                return yScale(d.y);
+           })
+    .text(d=>d.timeDiff)
+    .style("visibility", function(d, i) {
+        return d.timeSeconds > 80 ? "visible" : "hidden";
+    });
 
 
-        // update axes
-        // gX.call(xAxis.scale(new_xScale));
-        // gY.call(yAxis.scale(new_yScale));
+  // var rects = svg.selectAll("rect")
+  //   .data(diferenciaTempsGrups)
+  //   .enter()
+  //   .append("rect")
+  //   .attr("x", d=> d.x1)
+  //   .attr("y", d=> d.y1)
+  //   .attr("width", d=> d.x2 - d.x1)
+  //   .attr("height", d=> d.y2 - d.y1)
+  //   .attr("fill", "teal");
 
-        // re-scale axes
-        svg.select(".y.axis")
-            .call(yAxis.scale(new_yScale));
+  // var differenceGroup = svg.selectAll("text.timeGroup")
+  //   .data(DATA)
+  //   .enter()
+  //   .append("text")
+  //   .attr("class", "timeGroup")
+  //   .attr("x", d=> d.x)
+  //   .attr("y", d=> d.y)
+  //   .text("hola")
+    //.text(function(d) { return d['name']; })
 
-        svg.select(".x.axis")
-            .call(xAxis.scale(new_xScale));
+  //************************************************************************************
+  //Mostrar guanyadors i titol
+  //************************************************************************************
 
-        // re-draw line
-        plotLine = d3.line()
-            .x(function (d) {
-                return new_xScale(d.x);
-            })
-            .y(function (d) {
-                return new_yScale(d.y);
-            });
+  var titleString = infoStageTitle.split(",");
+  document.getElementById('continerTitleStage_id').getElementsByClassName('blockTitleStage')[0].innerHTML = "Stage: " + titleString[0] + ". " + titleString[1] + " > " + titleString[2];
 
-        svg.selectAll('path.line').attr("d", plotLine);
+  document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[0].innerHTML = "1st. " + winnerEtapa(1, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
+  document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[1].innerHTML = "2nd. " + winnerEtapa(2, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
+  document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[2].innerHTML = "3rd. " + winnerEtapa(3, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
 
-        //re-draw polygons
-        polygonsScale = function(d){
-          return d.points.map(function(d) { return [new_xScale(d.x),new_yScale(d.y)].join(","); }).join(" ");
-        }
-        svg.selectAll("polygon").attr("points", polygonsScale)
+  var leaderRider = riders.filter(function(r) { return r.lider === "GC"; })
+
+  document.getElementById('containerWinners_id').getElementsByClassName('blockYellowWinner')[0].innerHTML = leaderRider[0].nom;
+
+  //************************************************************
+  // Zoom specific updates
+  //************************************************************
+  function zoomed() {
+
+    // create new scale ojects based on event
+    var new_xScale = d3.event.transform.rescaleX(xScale);
+    var new_yScale = d3.event.transform.rescaleY(yScale);
+
+    var zoomTransformString = d3.event.transform.toString();
+    var splitZoomString = zoomTransformString.split(" ");
+    var zoomScale = parseFloat(splitZoomString[1].slice(splitZoomString[1].indexOf("(") + 1, splitZoomString[1].indexOf(")")))
 
 
-        //re-draw labels
-        svg.selectAll("text.timeGroup")
-          .attr("x",  function(d) {
+    // update axes
+    gX.call(xAxis.scale(new_xScale));
+    gY.call(yAxis.scale(new_yScale));
+
+    // re-scale axes
+    svg.select(".y.axis")
+        .call(yAxis.scale(new_yScale));
+
+    svg.select(".x.axis")
+        .call(xAxis.scale(new_xScale));
+
+    // re-draw line
+    plotLine = d3.line()
+        .x(function (d) {
             return new_xScale(d.x);
-          })
-          .attr("y",  function(d) {
+        })
+        .y(function (d) {
             return new_yScale(d.y);
-          })
-          .style("visibility", function(d, i) {
-            return (d.timeSeconds * zoomScale) > 80 ? "visible" : "hidden";
-
-             //Math.trunc(zoomScaleString.k) == 2 ? "hidden" : "visible"; // <== This is _the_ line.
-        });     
-      }
-
-
-      //************************************************************
-      //Trobar els grups de ciclistes que hi ha en els kms
-      //************************************************************
-      var grupsCiclistesEtapa = [];
-
-      for(var i = 0; i < columnsKmName.length; i++){
-
-        var grupsCiclistesKM = [];
-
-        ////ordenar els ciclistes per km "i"
-        var posicioCiclista = [];
-        for(var j = 0; j < elapsedDataRider.length; j++){
-
-          if(!isNaN(elapsedDataRider[j][i].y)){ //comprova que sigui una coordenada válida
-            posicioCiclista.push(elapsedDataRider[j][i])
-          }
-        }
-
-        posicioCiclista.sort(function(a,b) { //ordena les posicions dels ciclistes
-            if( a.x == b.x) return a.y-b.y;
-              return a.x-b.x;
         });
 
-        for(var k = 0; k < posicioCiclista.length; k++){
+    svg.selectAll('path.line').attr("d", plotLine);
 
-          var grupN = []
+    //re-draw polygons
+    polygonsScale = function(d){
+      return d.points.map(function(d) { return [new_xScale(d.x),new_yScale(d.y)].join(","); }).join(" ");
+    }
+    svg.selectAll("polygon").attr("points", polygonsScale)
 
-          if(esPotFerGrupCiclista(k, posicioCiclista)){
 
-            // if(posicioCiclista[k].y === (posicioCiclista[k+1].y - 1)){
+    //re-draw labels
+    svg.selectAll("text.timeGroup")
+      .attr("x",  function(d) {
+        return new_xScale(d.x);
+      })
+      .attr("y",  function(d) {
+        return new_yScale(d.y);
+      })
+      .style("visibility", function(d, i) {
+        return (d.timeSeconds * zoomScale) > 80 ? "visible" : "hidden";
+    });     
+  }
+});
 
-              var coordIni = k;
-              grupN.push(posicioCiclista[k]);
 
-              while(posicioCiclista[k].y === (posicioCiclista[k+1].y -1)){
+function getPolygonsGroups(columnsKmName,grupsCiclistesEtapa, elapsedDataRider){
 
-                k++;
-                grupN.push(posicioCiclista[k]);
+  var polygonsGrups = [];
 
-                if(k  === posicioCiclista.length - 1){
-                  break;
-                }
+    for(var i = 0; i < columnsKmName.length - 1; i++){ //per cada km (d'esquerra a dreta)
 
-              }
-              
-              grupsCiclistesKM.push(grupN);
-            //}
-          }
-          else{ // es un ciclista que va sol i no te grup
-            grupN.push(posicioCiclista[k]);
-            grupsCiclistesKM.push(grupN);
-          }
-        }
+      var grupsCiclistaKM = grupsCiclistesEtapa[i];
 
-        grupsCiclistesEtapa.push(grupsCiclistesKM);
-      }
-      //************************************************************************************
-      //Mirar en les etapes cada un del ciclistes a quin grup forma part i guardar els grups(polygons)
-      //************************************************************************************
-      var polygonGrups = [];
+      for(var j = 0; j < grupsCiclistaKM.length; j++){ //per cada grup de ciclistes de cada km
 
-      for(var i = 0; i < columnsKmName.length - 1; i++){ //per cada km (d'esquerra a dreta)
+        var grupCiclista = grupsCiclistaKM[j];
+        var coordTractades = [];
 
-        var grupsCiclistaKM = grupsCiclistesEtapa[i];
+        for(var k = 0; k < grupCiclista.length; k++){ //per cada ciclista del grup de ciclistes de cada km, busca el grup que anira en km+1
 
-        for(var j = 0; j < grupsCiclistaKM.length; j++){ //per cada grup de ciclistes de cada km
+          //inicializem les coord del poligon
+          var coordPrimerCiclista = elapsedDataRider[grupCiclista[k].id][i];
+          var coordUltimCiclista = elapsedDataRider[grupCiclista[k].id][i];
+          var coordPrimerCiclistaSegGrup = elapsedDataRider[grupCiclista[k].id][i + 1];
+          var coordUltimCiclistaSegGrup = elapsedDataRider[grupCiclista[k].id][i + 1];
 
-          var grupCiclista = grupsCiclistaKM[j];
-          var coordTractades = [];
+          if(!coordTractades.includes(elapsedDataRider[grupCiclista[k].id][i])){
 
-          for(var k = 0; k < grupCiclista.length; k++){ //per cada ciclista del grup de ciclistes de cada km, busca el grup que anira en km+1
+              var seguentCoordCiclista = elapsedDataRider[grupCiclista[k].id][i + 1];
+              var grupSeguent = trobarGrup(seguentCoordCiclista, grupsCiclistesEtapa[i + 1]);
 
-            //inicializem les coord del poligon
-            var coordPrimerCiclista = elapsedDataRider[grupCiclista[k].id][i];
-            var coordUltimCiclista = elapsedDataRider[grupCiclista[k].id][i];
-            var coordPrimerCiclistaSegGrup = elapsedDataRider[grupCiclista[k].id][i + 1];
-            var coordUltimCiclistaSegGrup = elapsedDataRider[grupCiclista[k].id][i + 1];
+              if(grupSeguent !== -1){ //no hi ha info del ciclista
 
-            if(!coordTractades.includes(elapsedDataRider[grupCiclista[k].id][i])){
+                for(var l = k; l < grupCiclista.length; l++){
 
-                var seguentCoordCiclista = elapsedDataRider[grupCiclista[k].id][i + 1];
-                var grupSeguent = trobarGrup(seguentCoordCiclista, grupsCiclistesEtapa[i + 1]);
+                  var coordSubGrup = elapsedDataRider[grupCiclista[l].id][i]
+                  var coordSubGrupSeg = elapsedDataRider[grupCiclista[l].id][i + 1]
+                  var grupSeguentCandidat = trobarGrup(coordSubGrupSeg, grupsCiclistesEtapa[i + 1]);
 
-                if(grupSeguent !== -1){ //no hi ha info del ciclista
+                  if((grupSeguentCandidat !== -1) && (sonGrupsIguals(grupSeguent, grupSeguentCandidat))){
+                    coordTractades.push(coordSubGrup)
 
-                  for(var l = k; l < grupCiclista.length; l++){
+                    //Actualitza ultim ciclista del costa esq.
+                    coordUltimCiclista = coordSubGrup;
 
-                    var coordSubGrup = elapsedDataRider[grupCiclista[l].id][i]
-                    var coordSubGrupSeg = elapsedDataRider[grupCiclista[l].id][i + 1]
-                    var grupSeguentCandidat = trobarGrup(coordSubGrupSeg, grupsCiclistesEtapa[i + 1]);
-
-                    if((grupSeguentCandidat !== -1) && (sonGrupsIguals(grupSeguent, grupSeguentCandidat))){
-                      coordTractades.push(coordSubGrup)
-
-                      //Actualitza ultim ciclista del costa esq.
-                      coordUltimCiclista = coordSubGrup;
-
-                      //Actualitza coord costat dret
-                      if(coordSubGrupSeg.y > coordUltimCiclistaSegGrup.y){
-                       coordUltimCiclistaSegGrup = coordSubGrupSeg;
-                      }
-                      else if(coordSubGrupSeg.y < coordPrimerCiclistaSegGrup.y){
-                        coordPrimerCiclistaSegGrup = coordSubGrupSeg;
-                      }
+                    //Actualitza coord costat dret
+                    if(coordSubGrupSeg.y > coordUltimCiclistaSegGrup.y){
+                     coordUltimCiclistaSegGrup = coordSubGrupSeg;
+                    }
+                    else if(coordSubGrupSeg.y < coordPrimerCiclistaSegGrup.y){
+                      coordPrimerCiclistaSegGrup = coordSubGrupSeg;
                     }
                   }
-
-                  //Si es un ciclista que va sol
-                  if(coordPrimerCiclistaSegGrup === coordUltimCiclistaSegGrup){
-
-                    coordPrimerCiclista = {id: coordPrimerCiclista.id, x: coordPrimerCiclista.x, y: coordPrimerCiclista.y - 0.5};
-                    coordPrimerCiclistaSegGrup = {id: coordPrimerCiclistaSegGrup.id, x: coordPrimerCiclistaSegGrup.x, y: coordPrimerCiclistaSegGrup.y - 0.5};
-                    coordUltimCiclista = {id: coordUltimCiclista.id, x: coordUltimCiclista.x, y: coordUltimCiclista.y + 0.5};
-                    coordUltimCiclistaSegGrup = {id: coordUltimCiclistaSegGrup.id, x: coordUltimCiclistaSegGrup.x, y: coordUltimCiclistaSegGrup.y + 0.5};
-                  }
-                  polygonGrups.push({points: [coordPrimerCiclista, coordPrimerCiclistaSegGrup, coordUltimCiclistaSegGrup, coordUltimCiclista]});    
                 }
-            }
+
+                //Si es un ciclista que va sol
+                if(coordPrimerCiclistaSegGrup === coordUltimCiclistaSegGrup){
+
+                  coordPrimerCiclista = {id: coordPrimerCiclista.id, x: coordPrimerCiclista.x, y: coordPrimerCiclista.y - 0.5};
+                  coordPrimerCiclistaSegGrup = {id: coordPrimerCiclistaSegGrup.id, x: coordPrimerCiclistaSegGrup.x, y: coordPrimerCiclistaSegGrup.y - 0.5};
+                  coordUltimCiclista = {id: coordUltimCiclista.id, x: coordUltimCiclista.x, y: coordUltimCiclista.y + 0.5};
+                  coordUltimCiclistaSegGrup = {id: coordUltimCiclistaSegGrup.id, x: coordUltimCiclistaSegGrup.x, y: coordUltimCiclistaSegGrup.y + 0.5};
+                }
+                polygonsGrups.push({points: [coordPrimerCiclista, coordPrimerCiclistaSegGrup, coordUltimCiclistaSegGrup, coordUltimCiclista]});    
+              }
           }
         }
       }
+    }
 
-      //console.log(polygonGrups.length);
+  return polygonsGrups;
+}
 
-      //***********************
-      //Pintar polygonsGrups
-      //***********************
-      //console.log(grupsCiclistesEtapa);
-      var poligons = function(d){
-        return d.points.map(function(d) { return [xScale(d.x),yScale(d.y)].join(","); }).join(" ");
+function getGroupRidersStage(elapsedDataRider){
+
+    var grupsCiclistesEtapa = [];
+
+    for(var i = 0; i < columnsKmName.length; i++){
+
+      var grupsCiclistesKM = [];
+
+      ////ordenar els ciclistes per km "i"
+      var posicioCiclista = [];
+      for(var j = 0; j < elapsedDataRider.length; j++){
+
+        if(!isNaN(elapsedDataRider[j][i].y)){ //comprova que sigui una coordenada válida
+          posicioCiclista.push(elapsedDataRider[j][i])
+        }
       }
 
-      svg.selectAll("polygon")
-          .data(polygonGrups)
-          .enter()
-          .append("polygon")
-          .attr("points",poligons)
-          .attr("clip-path", "url(#clip)")
-          .attr("fill", "#A0522D")
-          .attr("fill-opacity", 0.4)
+      posicioCiclista.sort(function(a,b) { //ordena les posicions dels ciclistes
+          if( a.x == b.x) return a.y-b.y;
+            return a.x-b.x;
+      });
 
-      svg.selectAll('.line')
-        .data(elapsedDataRider)
-        .enter()
-        .append("path")
-        .attr("class", "line")
-        .attr("clip-path", "url(#clip)")
-        .style('stroke', '#A9A9A9')
-        .attr("d", line)
-        .on('click', function(d) {
-          mostrarRider(d[0].id, riders);
-          // transition the clicked element
-          // to have a radius of 20
+      for(var k = 0; k < posicioCiclista.length; k++){
 
-        });
-        // .on('mouseover', function(d, i) {
-        //   console.log("mouseover on", this);
-        //   // transition the mouseover'd element
-        //   // to having a red fill
-        //   d3.select(this)
-        //     .transition()
-        //     .style('stroke', '#00008B')
-        //     .style('stroke-width', '3px')
-        // })
-        // .on('mouseout', function(d, i) {
-        //   console.log("mouseout", this);
-        //   // return the mouseover'd element
-        //   // to being smaller and black
-        //   d3.select(this)
-        //     .transition()
-        //     .style('stroke', '#A9A9A9')
-        //     .style('stroke-width', '1px')
-        // });
+        var grupN = []
 
-      //************************************************************************************
-      //Busca diferencia de temps entre grups
-      //************************************************************************************
-
-      var diferenciaTempsGrups = buscaDifernciaTempsGrups(grupsCiclistesEtapa, columnsKm);
-
-        //var diferenciaTempsGrups = []
-
-      svg.selectAll("text.timeGroup")
-        .data(diferenciaTempsGrups)
-        .enter()
-        .append("text")
-        .attr("class", "timeGroup")
-        .style('fill', 'blue')
-        .attr("clip-path", "url(#clip)")
-        .attr("x", function(d) {
-                    return xScale(d.x);
-               })
-        .attr("y", function(d) {
-                    return yScale(d.y);
-               })
-        .text(d=>d.timeDiff)
-        .style("visibility", function(d, i) {
-            return d.timeSeconds > 80 ? "visible" : "hidden";
-        });
+        if(esPotFerGrupCiclista(k, posicioCiclista)){
 
 
-      // var rects = svg.selectAll("rect")
-      //   .data(diferenciaTempsGrups)
-      //   .enter()
-      //   .append("rect")
-      //   .attr("x", d=> d.x1)
-      //   .attr("y", d=> d.y1)
-      //   .attr("width", d=> d.x2 - d.x1)
-      //   .attr("height", d=> d.y2 - d.y1)
-      //   .attr("fill", "teal");
+            var coordIni = k;
+            grupN.push(posicioCiclista[k]);
 
-      // var differenceGroup = svg.selectAll("text.timeGroup")
-      //   .data(DATA)
-      //   .enter()
-      //   .append("text")
-      //   .attr("class", "timeGroup")
-      //   .attr("x", d=> d.x)
-      //   .attr("y", d=> d.y)
-      //   .text("hola")
-        //.text(function(d) { return d['name']; })
+            while(posicioCiclista[k].y === (posicioCiclista[k+1].y -1)){
 
-      //************************************************************************************
-      //Mostrar guanyadors
-      //************************************************************************************
+              k++;
+              grupN.push(posicioCiclista[k]);
 
-      document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[0].innerHTML = "1st. " + winnerEtapa(1, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
-      document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[1].innerHTML = "2nd. " + winnerEtapa(2, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
-      document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[2].innerHTML = "3rd. " + winnerEtapa(3, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
-      document.getElementById('containerWinners_id').getElementsByClassName('blockYellowWinner')[0].innerHTML = "patata";
-  });
+              if(k  === posicioCiclista.length - 1){
+                break;
+              }
 
+            }
+            
+            grupsCiclistesKM.push(grupN);
+          
+        }
+        else{ // es un ciclista que va sol i no te grup
+          grupN.push(posicioCiclista[k]);
+          grupsCiclistesKM.push(grupN);
+        }
+      }
 
+      grupsCiclistesEtapa.push(grupsCiclistesKM);
+    }
+
+    return grupsCiclistesEtapa;
 }
 
 //comprova que no sigui l'ultim ciclista i que es pugui fer grup
@@ -473,14 +467,15 @@ function winnerEtapa(position, riders, grupsFinal){
 
   var count = 0;
 
-  for(var i = 0; i < grupsFinal.length - 1; i++){
+  for(var i = 0; i < grupsFinal.length ; i++){
 
     var grup = grupsFinal[i];
 
-    for(var j = 0; j < grup.length - 1; j++){
+    for(var j = 0; j < grup.length; j++){
       
       count++;
       if(count === position){
+
         var rider = riders.find(r => r.id === grup[j].id);
         return rider.nom;
       } 
@@ -494,7 +489,7 @@ function winnerEtapa(position, riders, grupsFinal){
 function mostrarRider(id_rider, riders){
 
   var rider = riders.find(r => r.id === id_rider);
-  console.log(rider.id, rider.nom);
+  console.log("id: " + rider.id + " , short-name: " + rider.nom + ", riderNumber: " + rider.ridernum);
 }
 
 function buscaDifernciaTempsGrups(grupsEtapa, columnsKm){

@@ -5,49 +5,111 @@ $(document).ready(function() {
         type: "GET",
         url: "./csv/Riders.csv",
         dataType: "text",
-        success: function(data) {processDataNames(data);}
+        success: function(data) {
+            processDataNames(data);
+
+                var folder = "./imgs/";
+                $.ajax({
+                url : folder,
+                    success: function (data) {
+
+                        processDataImages(data, folder);
+                        // $(data).find("a").attr("href", function (i, val) {
+                        //     if( val.match(/\.(jpe?g|png|gif)$/) && $.isNumeric(val.slice(0, 4))) { //si es imatge i es una de les imatges dels ciclistes
+
+                        //         //S'afegeixen les imatges dels ciclistes
+                        //         var imageList = $("ul.myULImagesRiders");
+                        //         var div = $('<div/>')
+                        //             .addClass('myDivImages')
+                        //             .appendTo(imageList);
+                        //         var img = $('<img>')
+                        //             .addClass('imgRider')
+                        //             .attr("src", folder + val)
+                        //             .appendTo(div);
+
+                        //         var rider = getRiderbypng(riders, val);
+                        //         var boxtext = $('<section>')
+                        //             .addClass('boxTextImg')
+                        //             .appendTo(div);
+
+                        //         var textName = $('<a>')
+                        //             .addClass('aTextImg')
+                        //             .text(rider[1].Name)
+                        //             .appendTo(boxtext);
+                        //     } 
+                        // });
+
+                    }
+                });
+        }
      });
 
 });
 
 
-$(document).ready(function() {
+// $(document).ready(function() {
 
-    var folder = "./imgs/";
+//     var folder = "./imgs/";
 
-    $.ajax({
-    url : folder,
-        success: function (data) {
-            $(data).find("a").attr("href", function (i, val) {
-                if( val.match(/\.(jpe?g|png|gif)$/) && $.isNumeric(val.slice(0, 4))) { //si es imatge i es una de les imatges dels ciclistes
+//     $.ajax({
+//     url : folder,
+//         success: function (data) {
+//             $(data).find("a").attr("href", function (i, val) {
+//                 if( val.match(/\.(jpe?g|png|gif)$/) && $.isNumeric(val.slice(0, 4))) { //si es imatge i es una de les imatges dels ciclistes
 
-                    //S'afegeixen les imatges dels ciclistes
-                    var imageList = $("ul.myULImagesRiders");
-                    var div = $('<div/>')
-                        .addClass('myDivImages')
-                        .appendTo(imageList);
-                    var img = $('<img>')
-                        .addClass('imgRider')
-                        .attr("src", folder + val)
-                        .appendTo(div);
+//                     //S'afegeixen les imatges dels ciclistes
+//                     var imageList = $("ul.myULImagesRiders");
+//                     var div = $('<div/>')
+//                         .addClass('myDivImages')
+//                         .appendTo(imageList);
+//                     var img = $('<img>')
+//                         .addClass('imgRider')
+//                         .attr("src", folder + val)
+//                         .appendTo(div);
 
-                    var rider = getRiderbypng(riders, val);
-                    var boxtext = $('<section>')
-                        .addClass('boxTextImg')
-                        .appendTo(div);
+//                     var rider = getRiderbypng(riders, val);
+//                     var boxtext = $('<section>')
+//                         .addClass('boxTextImg')
+//                         .appendTo(div);
 
-                    var textName = $('<a>')
-                        .addClass('aTextImg')
-                        .text(rider[1].Name)
-                        .appendTo(boxtext);
-                } 
-            });
+//                     var textName = $('<a>')
+//                         .addClass('aTextImg')
+//                         .text(rider[1].Name)
+//                         .appendTo(boxtext);
+//                 } 
+//             });
 
-        }
+//         }
+//     });
+// });
+
+
+function processDataImages(allImages, folder){
+    $(allImages).find("a").attr("href", function (i, val) {
+        if( val.match(/\.(jpe?g|png|gif)$/) && $.isNumeric(val.slice(0, 4))) { //si es imatge i es una de les imatges dels ciclistes
+
+            //S'afegeixen les imatges dels ciclistes
+            var imageList = $("ul.myULImagesRiders");
+            var div = $('<div/>')
+                .addClass('myDivImages')
+                .appendTo(imageList);
+            var img = $('<img>')
+                .addClass('imgRider')
+                .attr("src", folder + val)
+                .appendTo(div);
+
+            var rider = getRiderbypng(riders, val);
+            var boxtext = $('<section>')
+                .addClass('boxTextImg')
+                .appendTo(div);
+
+            var textName = $('<a>')
+                .addClass('aTextImg')
+                .text(rider[1].Name)
+                .appendTo(boxtext);
+        } 
     });
-});
-
-
+}
 
 function processDataNames(allText) {
     var allTextLines = allText.split(/\r\n|\n/);
@@ -75,7 +137,6 @@ function processDataNames(allText) {
 }
 
 function getRiderbypng(riders, png_name){
-
 
     for(var i = 0; i < riders.length; i++){
         var rider = riders[i];
@@ -140,4 +201,18 @@ function searchRider() {
     }
 
 }
+var svg = $("#stage_id")
+console.log(svg);
+  svg.selectAll('.line')
+    .on('click', function(d) {
+      mostrarRider2(d[0].id, riders);
+      // transition the clicked element
+      // to have a radius of 20
 
+    });
+
+function mostrarRider2(id_rider, riders){
+
+  var rider = riders.find(r => r.id === id_rider);
+  console.log("id:um");
+}
