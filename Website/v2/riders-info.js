@@ -201,4 +201,18 @@ function searchRider() {
     }
 
 }
+var svg = $("#stage_id")
+console.log(svg);
+  svg.selectAll('.line')
+    .on('click', function(d) {
+      mostrarRider2(d[0].id, riders);
+      // transition the clicked element
+      // to have a radius of 20
 
+    });
+
+function mostrarRider2(id_rider, riders){
+
+  var rider = riders.find(r => r.id === id_rider);
+  console.log("id:um");
+}
