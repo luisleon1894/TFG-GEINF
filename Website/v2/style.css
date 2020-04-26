@@ -39,7 +39,7 @@ body, html {
 }
  
 .timeGroup {
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .line {
@@ -54,6 +54,7 @@ body, html {
     
 }
 
+
 /**** Class in HTML ****/
 
 .containerAll{
@@ -66,7 +67,7 @@ body, html {
 .container_stage_list{
 
 
-    flex: 0.75 1 auto;
+    flex: 1 1 0;
 
     border-style: solid;
     background:transparent;
@@ -74,7 +75,7 @@ body, html {
 
 .container_stage_box{
 
-    flex: 2 1 auto;
+    flex: 5 1 0;
 
     border-style: solid;
     background:transparent;
@@ -132,7 +133,7 @@ body, html {
 .container_stage_info{
 
 
-    flex: 0.2 1 auto;
+    flex: 1 1 0;
 
     border-style: solid;
     background:transparent;
