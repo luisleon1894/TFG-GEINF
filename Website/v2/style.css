@@ -1,5 +1,6 @@
 body, html {
   font: 10px sans-serif;
+  position: static;
 }
 
 /**** Class in D3 ****/
@@ -38,7 +39,7 @@ body, html {
 }
  
 .timeGroup {
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .line {
@@ -53,6 +54,7 @@ body, html {
     
 }
 
+
 /**** Class in HTML ****/
 
 .containerAll{
@@ -65,7 +67,7 @@ body, html {
 .container_stage_list{
 
 
-    flex: 0.75 1 auto;
+    flex: 1 1 0;
 
     border-style: solid;
     background:transparent;
@@ -73,7 +75,7 @@ body, html {
 
 .container_stage_box{
 
-    flex: 2 1 auto;
+    flex: 5 1 0;
 
     border-style: solid;
     background:transparent;
@@ -131,7 +133,7 @@ body, html {
 .container_stage_info{
 
 
-    flex: 0.2 1 auto;
+    flex: 1 1 0;
 
     border-style: solid;
     background:transparent;
@@ -196,30 +198,37 @@ body, html {
   list-style-type: none;
   padding: 0;
   margin: 0;
+
 }
 
-.myLiImages {
+.myDivImages {
   border: 1px solid #ddd;
   margin-top: -1px; /* Prevent double borders */
   background-color: #f6f6f6;
   padding: 6px;
   display: block;
+
 }
 
 .imgRider {
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
-  width: 75px;
+  width: 50px;
+  display:inline-block;
 }
 
 .boxTextImg{
     border: solid;
     display:inline-block;
-    width: 75px;
+    width:65%;
+    height: 50px;
+    vertical-align:top;
+    text-align: center;
 }
 
-.pTextImg {
+.aTextImg {
+  margin-top: 5px;
   text-align: right; 
   display:inline-block;
   padding: 0;
