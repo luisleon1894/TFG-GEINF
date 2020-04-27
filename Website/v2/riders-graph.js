@@ -1,5 +1,8 @@
+var ridersInfo = [];
+var riders = [];
+
 // Extract the list of km we want to keep in the plot.
-d3.text("./csv/Stage18-data-full-csv.csv", function(original_data){
+d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
 
   //************************************************************
   // S'adapta el fitxer origianl_data, titol, ElapsedTime
@@ -54,7 +57,7 @@ d3.text("./csv/Stage18-data-full-csv.csv", function(original_data){
   var dataRiders = data.slice(0, data.length);
 
   var elapsedDataRider = [];
-  var riders = [];
+  
 
   for(rider in dataRiders){
 
@@ -109,7 +112,7 @@ d3.text("./csv/Stage18-data-full-csv.csv", function(original_data){
   var xAxis = d3.axisBottom(xScale)
     .tickPadding(10)
     .tickSize(-height)
-    .ticks(5)
+    .ticks(6)
 
   var yAxis = d3.axisLeft(yScale)
     .tickPadding(10)
@@ -182,7 +185,6 @@ d3.text("./csv/Stage18-data-full-csv.csv", function(original_data){
       .x(function(d) { return xScale(d.x); })
       .y(function(d) { return yScale(d.y); });   
 
-
   svg.selectAll('.line')
     .data(elapsedDataRider)
     .enter()
@@ -191,12 +193,21 @@ d3.text("./csv/Stage18-data-full-csv.csv", function(original_data){
     .attr("clip-path", "url(#clip)")
     .style('stroke', '#A9A9A9')
     .attr("d", line)
+    .attr("id", function(d){
+      return d[0].id;
+    })
     .on('click', function(d) {
-      mostrarRider(d[0].id, riders);
+      mostrarRider(d[0].id, riders, this);
       // transition the clicked element
       // to have a radius of 20
 
     });
+
+  function idRider(e){
+    console.log(e);
+
+    return 1;
+  }
     // .on('mouseover', function(d, i) {
     //   console.log("mouseover on", this);
     //   // transition the mouseover'd element
@@ -269,9 +280,8 @@ d3.text("./csv/Stage18-data-full-csv.csv", function(original_data){
   document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[1].innerHTML = "2nd. " + winnerEtapa(2, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
   document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[2].innerHTML = "3rd. " + winnerEtapa(3, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
 
-  var leaderRider = riders.filter(function(r) { return r.lider === "GC"; })
-
-  document.getElementById('containerWinners_id').getElementsByClassName('blockYellowWinner')[0].innerHTML = leaderRider[0].nom;
+  var leaderRider = riders.find(function(r) { return r.lider === "GC"; })
+  document.getElementById('containerWinners_id').getElementsByClassName('blockYellowWinner')[0].innerHTML = leaderRider.nom;
 
   //************************************************************
   // Zoom specific updates
@@ -486,10 +496,19 @@ function winnerEtapa(position, riders, grupsFinal){
 }
 
 
-function mostrarRider(id_rider, riders){
+function mostrarRider(id_rider, riders, elem){
 
-  var rider = riders.find(r => r.id === id_rider);
-  console.log("id: " + rider.id + " , short-name: " + rider.nom + ", riderNumber: " + rider.ridernum);
+  var riderStage = riders.find(r => r.id === id_rider);
+  var rider = ridersInfo.find(r => r[0].Rider_Num === riderStage.ridernum);
+
+  var e = $.Event("keyup");
+  $("#myInput").val(rider[1].Name).trigger(e);
+
+  d3.selectAll(".line").classed("active", false);//selectAll instead of select
+  
+  var clicked = d3.select(elem);
+  clicked.classed("active", true);//set class of clicked link
+
 }
 
 function buscaDifernciaTempsGrups(grupsEtapa, columnsKm){

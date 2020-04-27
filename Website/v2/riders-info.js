@@ -1,4 +1,3 @@
-var riders = [];
 
 $(document).ready(function() {
     $.ajax({
@@ -14,30 +13,9 @@ $(document).ready(function() {
                     success: function (data) {
 
                         processDataImages(data, folder);
-                        // $(data).find("a").attr("href", function (i, val) {
-                        //     if( val.match(/\.(jpe?g|png|gif)$/) && $.isNumeric(val.slice(0, 4))) { //si es imatge i es una de les imatges dels ciclistes
 
-                        //         //S'afegeixen les imatges dels ciclistes
-                        //         var imageList = $("ul.myULImagesRiders");
-                        //         var div = $('<div/>')
-                        //             .addClass('myDivImages')
-                        //             .appendTo(imageList);
-                        //         var img = $('<img>')
-                        //             .addClass('imgRider')
-                        //             .attr("src", folder + val)
-                        //             .appendTo(div);
 
-                        //         var rider = getRiderbypng(riders, val);
-                        //         var boxtext = $('<section>')
-                        //             .addClass('boxTextImg')
-                        //             .appendTo(div);
-
-                        //         var textName = $('<a>')
-                        //             .addClass('aTextImg')
-                        //             .text(rider[1].Name)
-                        //             .appendTo(boxtext);
-                        //     } 
-                        // });
+                        interaction();
 
                     }
                 });
@@ -47,42 +25,41 @@ $(document).ready(function() {
 });
 
 
-// $(document).ready(function() {
+function interaction(){
 
-//     var folder = "./imgs/";
+    $("div.myDivImages").click(function(){
+        
+        var name = this.getElementsByClassName("aTextName")[0].innerText
+        var ridernumStr = this.getElementsByClassName("aTextRiderNum")[0].innerText
+        var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
 
-//     $.ajax({
-//     url : folder,
-//         success: function (data) {
-//             $(data).find("a").attr("href", function (i, val) {
-//                 if( val.match(/\.(jpe?g|png|gif)$/) && $.isNumeric(val.slice(0, 4))) { //si es imatge i es una de les imatges dels ciclistes
+        console.log(ridernum);
 
-//                     //S'afegeixen les imatges dels ciclistes
-//                     var imageList = $("ul.myULImagesRiders");
-//                     var div = $('<div/>')
-//                         .addClass('myDivImages')
-//                         .appendTo(imageList);
-//                     var img = $('<img>')
-//                         .addClass('imgRider')
-//                         .attr("src", folder + val)
-//                         .appendTo(div);
+        var e = $.Event("keyup");
+        $("#myInput").val(name).trigger(e);
 
-//                     var rider = getRiderbypng(riders, val);
-//                     var boxtext = $('<section>')
-//                         .addClass('boxTextImg')
-//                         .appendTo(div);
 
-//                     var textName = $('<a>')
-//                         .addClass('aTextImg')
-//                         .text(rider[1].Name)
-//                         .appendTo(boxtext);
-//                 } 
-//             });
+        d3.selectAll(".line").classed("active", false);//selectAll instead of select
+        
+        console.log(riders);
 
-//         }
-//     });
-// });
+        var riderStage = riders.find(r => r.ridernum === ridernum);
+        var clicked = d3.select("#"+riderStage.id);
+        clicked.classed("active", true);//set class of clicked link
+    })
 
+
+      // var riderStage = riders.find(r => r.id === id_rider);
+      // var rider = ridersInfo.find(r => r[0].Rider_Num === riderStage.ridernum);
+
+      // var e = $.Event("keyup");
+      // $("#myInput").val(rider[1].Name).trigger(e);
+
+      // d3.selectAll(".line").classed("active", false);//selectAll instead of select
+      
+      // var clicked = d3.select(elem);
+      // clicked.classed("active", true);//set class of clicked link
+}
 
 function processDataImages(allImages, folder){
     $(allImages).find("a").attr("href", function (i, val) {
@@ -92,21 +69,27 @@ function processDataImages(allImages, folder){
             var imageList = $("ul.myULImagesRiders");
             var div = $('<div/>')
                 .addClass('myDivImages')
-                .appendTo(imageList);
+                .appendTo(imageList)
+
             var img = $('<img>')
                 .addClass('imgRider')
                 .attr("src", folder + val)
                 .appendTo(div);
 
-            var rider = getRiderbypng(riders, val);
+            var rider = getRiderbypng(ridersInfo, val);
             var boxtext = $('<section>')
                 .addClass('boxTextImg')
                 .appendTo(div);
 
             var textName = $('<a>')
-                .addClass('aTextImg')
+                .addClass('aTextName')
                 .text(rider[1].Name)
                 .appendTo(boxtext);
+
+            var textRiderNum = $('<a>')
+                .addClass('aTextRiderNum')
+                .text("RiderNum: " +rider[0].Rider_Num)
+                .appendTo(boxtext).before("<br />");
         } 
     });
 }
@@ -129,11 +112,12 @@ function processDataNames(allText) {
                 obj[key] = data[j];
                 tarr.push(obj);
             }
-            riders.push(tarr);
+            ridersInfo.push(tarr);
 
         }
     }
-    appendNames(riders)
+    appendNames(ridersInfo)
+    document.getElementById('myInput').value = '';
 }
 
 function getRiderbypng(riders, png_name){
@@ -148,7 +132,7 @@ function getRiderbypng(riders, png_name){
 }
 
 function appendNames(riders){
-
+    console.log(riders);
     var cList = $('ul.myULNamesRiders')
     $.each(riders, function(i)
     {   
@@ -161,6 +145,7 @@ function appendNames(riders){
             .addClass('myANames')
             .text(rider[1].Name)
             .appendTo(li);
+
     });
 
 }
@@ -200,19 +185,11 @@ function searchRider() {
         }
     }
 
+    if(input.value === ""){
+        d3.selectAll(".line").classed("active", false);
+    }
 }
-var svg = $("#stage_id")
-console.log(svg);
-  svg.selectAll('.line')
-    .on('click', function(d) {
-      mostrarRider2(d[0].id, riders);
-      // transition the clicked element
-      // to have a radius of 20
 
-    });
-
-function mostrarRider2(id_rider, riders){
-
-  var rider = riders.find(r => r.id === id_rider);
-  console.log("id:um");
+function filterRider(elem){
+    console.log(elem);
 }
