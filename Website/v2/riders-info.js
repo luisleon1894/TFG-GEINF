@@ -1,3 +1,6 @@
+var ridersInfo = [];
+var teamsInfo = [];
+var riders = [];
 
 $(document).ready(function() {
     $.ajax({
@@ -7,23 +10,56 @@ $(document).ready(function() {
         success: function(data) {
             processDataNames(data);
 
-                var folder = "./imgs/";
-                $.ajax({
-                url : folder,
-                    success: function (data) {
+            var folder = "./imgs/"; //es necessita la variable per busca les imatges en metodes posteriors
+            $.ajax({
+                type: "GET",
+                url : "./imgs/",
+                dataType: "text",
+                success: function (data) {
 
-                        processDataImages(data, folder);
+                    processDataImages(data, folder);
+                    interaction();
 
-
-                        interaction();
-
-                    }
-                });
+                    $.ajax({
+                        type: "GET",
+                        url: "./csv/Teams.csv",
+                        dataType: "text",
+                        success: function(data){
+                            processDataTeams(data);
+                        }
+                    });
+                }
+            });
         }
-     });
-
+    });
 });
 
+
+function processDataTeams(allText) {
+    var allTextLines = allText.split(/\r\n|\n/);
+    var headers = allTextLines[0].split(';');
+
+    for (var i=1; i<allTextLines.length; i++) {
+        var data = allTextLines[i].split(';');
+        if (data.length == headers.length) {
+
+            var tarr = [];
+
+            for (var j=0; j<headers.length; j++) {
+                
+                var key = headers[j];
+                var obj = {};
+                obj[key] = data[j];
+                tarr.push(obj);
+            }
+            teamsInfo.push(tarr);
+
+        }
+    }
+    console.log(teamsInfo);
+    // appendNames(teamsInfo)
+    // document.getElementById('myInput').value = '';
+}
 
 function interaction(){
 
@@ -33,32 +69,15 @@ function interaction(){
         var ridernumStr = this.getElementsByClassName("aTextRiderNum")[0].innerText
         var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
 
-        console.log(ridernum);
-
         var e = $.Event("keyup");
         $("#myInput").val(name).trigger(e);
 
-
         d3.selectAll(".line").classed("active", false);//selectAll instead of select
         
-        console.log(riders);
-
         var riderStage = riders.find(r => r.ridernum === ridernum);
-        var clicked = d3.select("#"+riderStage.id);
+        var clicked = d3.select("#r"+riderStage.id);
         clicked.classed("active", true);//set class of clicked link
     })
-
-
-      // var riderStage = riders.find(r => r.id === id_rider);
-      // var rider = ridersInfo.find(r => r[0].Rider_Num === riderStage.ridernum);
-
-      // var e = $.Event("keyup");
-      // $("#myInput").val(rider[1].Name).trigger(e);
-
-      // d3.selectAll(".line").classed("active", false);//selectAll instead of select
-      
-      // var clicked = d3.select(elem);
-      // clicked.classed("active", true);//set class of clicked link
 }
 
 function processDataImages(allImages, folder){
@@ -94,10 +113,11 @@ function processDataImages(allImages, folder){
     });
 }
 
+
+
 function processDataNames(allText) {
     var allTextLines = allText.split(/\r\n|\n/);
     var headers = allTextLines[0].split(';');
-    var names = [];
 
     for (var i=1; i<allTextLines.length; i++) {
         var data = allTextLines[i].split(';');
@@ -132,7 +152,7 @@ function getRiderbypng(riders, png_name){
 }
 
 function appendNames(riders){
-    console.log(riders);
+
     var cList = $('ul.myULNamesRiders')
     $.each(riders, function(i)
     {   
