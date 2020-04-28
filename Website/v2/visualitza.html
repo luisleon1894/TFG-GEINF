@@ -5,8 +5,8 @@
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script type="text/javascript" src="riders-graph.js"></script>
 <script type="text/javascript" src="riders-info.js"></script>
+<script type="text/javascript" src="riders-graph.js"></script>
 
 <body>
 
@@ -34,16 +34,24 @@
 
       <div class = "container_stage_info">
         
-        <div class ="boxFilter">
-          <!---FILTER!!--->
+        <div id="myBtnContainer" class ="boxFilter">
+
+          <button class="active btn" id="riderShow_id">Riders</button>
+          <button class="btn" id="teamShow_id">Teams</button>
+
         </div>
+
 
         <div class = "boxSearch">
             <input type="text" id="myInput" onkeyup="searchRider()" placeholder="Search for names..">
 
-              <ul id = "myULNamesRiders_id" class="myULNamesRiders">
 
-              </ul>
+              <div class="filter rider">
+
+                <ul id = "myULNamesRiders_id" class="myULNamesRiders">
+                </ul>
+                
+              </div>
         </div>
 
       

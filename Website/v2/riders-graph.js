@@ -1,6 +1,5 @@
-var ridersInfo = [];
-var riders = [];
 
+var showNAxisChart = 3;
 // Extract the list of km we want to keep in the plot.
 d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
 
@@ -48,7 +47,6 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
 		   }
 	  });
   }
-
   //************************************************************
   // Data elapsed riders
   //************************************************************
@@ -72,7 +70,6 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
     riders.push({id: parseInt(rider), nom: data[rider]["Rider_name"], team: data[rider]["Team"], ridernum: data[rider]["Rider_number"], lider: data[rider]["Leader"]})
     elapsedDataRider.push(coordinates);
   }
-
   //************************************************************
   // Trobar els grups de ciclistes que hi ha en els kms
   //************************************************************
@@ -99,20 +96,21 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
   var margin = {top: 20, right: 30, bottom: 30, left: 50},
       width = this.cx - margin.left - margin.right,
       height = this.cy - margin.top - margin.bottom;
-  
   var xScale = d3.scaleLinear()
       //.domain([0, elapsedDataRider[0].length - 1])
       .domain([parseFloat(columnsKm[0]) , 0])
       .range([0, width])
-   
+
   var yScale = d3.scaleLinear()
       .domain([0, corredorMaxElapsed(elapsedDataRider)])
       .range([0, height])
     
   var xAxis = d3.axisBottom(xScale)
+    .tickValues(columnsKm)
+    .tickFormat(d3.format('.1f'))
     .tickPadding(10)
     .tickSize(-height)
-    .ticks(6)
+    // .ticks(6)
 
   var yAxis = d3.axisLeft(yScale)
     .tickPadding(10)
@@ -144,16 +142,20 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
      .append("g")
      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");       
 
-
+ var arr_kmMostrar = updateAxisXKm(xScale.domain(), columnsKm);
  var gX = svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
+            .call(xAxis)
+            .selectAll(".tick")
+            .style("display", function(){
+              if(arr_kmMostrar.includes(parseFloat(this.textContent))) return "";
+              else return "none";
+            });
    
   var gY = svg.append("g")
               .attr("class", "y axis")
               .call(yAxis) 
-  
 
   svg.append("clipPath")
     .attr("id", "clip")
@@ -194,7 +196,7 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
     .style('stroke', '#A9A9A9')
     .attr("d", line)
     .attr("id", function(d){
-      return d[0].id;
+      return "r"+d[0].id;
     })
     .on('click', function(d) {
       mostrarRider(d[0].id, riders, this);
@@ -203,11 +205,6 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
 
     });
 
-  function idRider(e){
-    console.log(e);
-
-    return 1;
-  }
     // .on('mouseover', function(d, i) {
     //   console.log("mouseover on", this);
     //   // transition the mouseover'd element
@@ -292,21 +289,37 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
     var new_xScale = d3.event.transform.rescaleX(xScale);
     var new_yScale = d3.event.transform.rescaleY(yScale);
 
+    //busca l'escala actual, per despres mostrar o no els temps de elapsed, entre grups
     var zoomTransformString = d3.event.transform.toString();
     var splitZoomString = zoomTransformString.split(" ");
     var zoomScale = parseFloat(splitZoomString[1].slice(splitZoomString[1].indexOf("(") + 1, splitZoomString[1].indexOf(")")))
 
+    var arr_kmMostrar = updateAxisXKm(new_xScale.domain(), columnsKm);
 
     // update axes
-    gX.call(xAxis.scale(new_xScale));
-    gY.call(yAxis.scale(new_yScale));
+    // gX.call(xAxis.scale(new_xScale));
+    // gY.call(yAxis.scale(new_yScale));
 
     // re-scale axes
     svg.select(".y.axis")
         .call(yAxis.scale(new_yScale));
 
     svg.select(".x.axis")
-        .call(xAxis.scale(new_xScale));
+        .call(xAxis.scale(new_xScale))
+        .selectAll(".tick")
+        .style("display", function(){
+          if(arr_kmMostrar.includes(parseFloat(this.textContent))) return "";
+          else return "none";
+        });
+
+//     svg.call(axis).selectAll(".tick").each(function(data) {
+//   var tick = d3.select(this);
+//   // pull the transform data out of the tick
+//   var transform = d3.transform(tick.attr("transform")).translate;
+
+//   // passed in "data" is the value of the tick, transform[0] holds the X value
+//   console.log("each tick", data, transform);
+// });
 
     // re-draw line
     plotLine = d3.line()
@@ -340,6 +353,37 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
   }
 });
 
+function updateAxisXKm(arryDomain, columnsKm){
+
+    var km_maxim_vist = arryDomain[0];
+    var km_minim_vist = arryDomain[1];
+    var rang_visio = km_maxim_vist - km_minim_vist;
+
+    var arrKmMostrar = [];
+    if(rang_visio > (10 * (showNAxisChart + 1))){
+
+      for(var k = 1; k <= showNAxisChart; k++){
+
+        var km = (Math.round((km_minim_vist + (k * rang_visio / (showNAxisChart + 1))) / 10 )) * 10;
+        arrKmMostrar.push(km);
+      }
+    }
+    else{
+      var inici;
+      for(var i = 0; i < columnsKm.length; i++){
+        if(km_maxim_vist >= parseFloat(columnsKm[i])){
+          inici = i;
+          break;
+        }
+      }
+
+      for(var j = inici; j < columnsKm.length; j++){
+        arrKmMostrar.push(parseFloat(columnsKm[j]))
+      }
+    }
+
+    return arrKmMostrar;
+}
 
 function getPolygonsGroups(columnsKmName,grupsCiclistesEtapa, elapsedDataRider){
 
