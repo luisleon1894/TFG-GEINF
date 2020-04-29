@@ -143,19 +143,24 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");       
 
  var arr_kmMostrar = updateAxisXKm(xScale.domain(), columnsKm);
+
+ xAxis.tickValues(arr_kmMostrar); //-----> linea nova
+
  var gX = svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis)
-            .selectAll(".tick")
-            .style("display", function(){
-              if(arr_kmMostrar.includes(parseFloat(this.textContent))) return "";
-              else return "none";
-            });
+            //.selectAll(".tick")
+            // .style("display", function(){
+            //   if(arr_kmMostrar.includes(parseFloat(this.textContent))) return "";
+            //   else return "none";
+            // });
    
   var gY = svg.append("g")
               .attr("class", "y axis")
-              .call(yAxis) 
+              .call(yAxis)
+              .selectAll(".tick")
+              .style("display", "none");
 
   svg.append("clipPath")
     .attr("id", "clip")
@@ -296,30 +301,21 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
 
     var arr_kmMostrar = updateAxisXKm(new_xScale.domain(), columnsKm);
 
-    // update axes
-    // gX.call(xAxis.scale(new_xScale));
-    // gY.call(yAxis.scale(new_yScale));
-
+     xAxis.tickValues(arr_kmMostrar); //-----> linea nova
     // re-scale axes
     svg.select(".y.axis")
-        .call(yAxis.scale(new_yScale));
+        .call(yAxis.scale(new_yScale))
+        .selectAll(".tick")
+        .style("display", "none");;
 
     svg.select(".x.axis")
         .call(xAxis.scale(new_xScale))
-        .selectAll(".tick")
-        .style("display", function(){
-          if(arr_kmMostrar.includes(parseFloat(this.textContent))) return "";
-          else return "none";
-        });
+        // .selectAll(".tick")
+        // .style("display", function(){
+        //   if(arr_kmMostrar.includes(parseFloat(this.textContent))) return "";
+        //   else return "none";
+        // });
 
-//     svg.call(axis).selectAll(".tick").each(function(data) {
-//   var tick = d3.select(this);
-//   // pull the transform data out of the tick
-//   var transform = d3.transform(tick.attr("transform")).translate;
-
-//   // passed in "data" is the value of the tick, transform[0] holds the X value
-//   console.log("each tick", data, transform);
-// });
 
     // re-draw line
     plotLine = d3.line()
@@ -364,7 +360,9 @@ function updateAxisXKm(arryDomain, columnsKm){
 
       for(var k = 1; k <= showNAxisChart; k++){
 
-        var km = (Math.round((km_minim_vist + (k * rang_visio / (showNAxisChart + 1))) / 10 )) * 10;
+        // var km = (Math.round((km_minim_vist + (k * rang_visio / (showNAxisChart + 1))) / 10 )) * 10;
+      var km = km_minim_vist + (k * rang_visio / (showNAxisChart + 1)) ;
+
         arrKmMostrar.push(km);
       }
     }
@@ -381,7 +379,9 @@ function updateAxisXKm(arryDomain, columnsKm){
         arrKmMostrar.push(parseFloat(columnsKm[j]))
       }
     }
-
+    console.log("domini: " +arryDomain);
+    console.log("a mostrar: "+ arrKmMostrar);
+    console.log("----");
     return arrKmMostrar;
 }
 

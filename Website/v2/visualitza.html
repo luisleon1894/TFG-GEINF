@@ -14,6 +14,11 @@
 
       <div class = "container_stage_list">
         <!-- LISTA DE STAGE!!!--->
+
+        
+          <button class="active btn" id="riderShow_id">Riders</button>
+          <button class="btn" id="teamShow_id">Teams</button>
+
       </div>
 
       <div class = "container_stage_box">
@@ -35,32 +40,46 @@
       <div class = "container_stage_info">
         
         <div id="myBtnContainer" class ="boxFilter">
-
+<!-- 
           <button class="active btn" id="riderShow_id">Riders</button>
           <button class="btn" id="teamShow_id">Teams</button>
-
+ -->
         </div>
 
 
         <div class = "boxSearch">
             <input type="text" id="myInput" onkeyup="searchRider()" placeholder="Search for names..">
 
-
-              <div class="filter rider">
-
-                <ul id = "myULNamesRiders_id" class="myULNamesRiders">
-                </ul>
-                
+              <div id="namesInfoRider_id">  
+                  <!-- visualitza els noms i el search de riders -->
+                  <div class="filter rider">
+                    <ul id = "myULNamesRiders_id" class="myULNamesRiders"></ul>
+                  </div>
               </div>
+
+              <div id="namesInfoTeam_id"> 
+                  <!-- visualitza els noms i el search de teams -->
+                  <div class="filter teams">
+                    <ul id = "myULNamesTeams_id" class="myULNamesTeams"></ul>
+                  </div>
+              </div>
+
         </div>
 
-      
-        <div class = "boxInfo">
-            
-            <ul id = "myULImagesRiders_id" class="myULImagesRiders">
+        <div id="imagesInfoRider_id">
+            <!-- visualitza les imatges dels riders -->
+            <div class = "boxInfo">
+                <ul id = "myULImagesRiders_id" class="myULImagesRiders"></ul>
+            </div>  
+        </div> 
 
-            </ul>
-        </div>          
+        <div id="imagesInfoTeam_id">
+            <!-- visualitza les imatges dels teams -->
+            <div class = "boxInfoTeams">
+                <ul id = "myULImagesTeams_id" class="myULImagesTeams"></ul>
+            </div>
+
+        </div>      
 
     </div>
 

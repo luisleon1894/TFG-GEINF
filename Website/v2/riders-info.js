@@ -2,6 +2,8 @@ var ridersInfo = [];
 var teamsInfo = [];
 var riders = [];
 
+var imatges;
+
 $(document).ready(function() {
     $.ajax({
         type: "GET",
@@ -17,8 +19,9 @@ $(document).ready(function() {
                 dataType: "text",
                 success: function (data) {
 
+                    imatges = data;
                     processDataImages(data, folder);
-                    interaction();
+                    
 
                     $.ajax({
                         type: "GET",
@@ -26,6 +29,10 @@ $(document).ready(function() {
                         dataType: "text",
                         success: function(data){
                             processDataTeams(data);
+
+                            processDataImagesTeams(imatges, folder);
+
+                            interaction();
                         }
                     });
                 }
@@ -57,7 +64,7 @@ function processDataTeams(allText) {
         }
     }
     console.log(teamsInfo);
-    // appendNames(teamsInfo)
+    appendNamesTeams(teamsInfo)
     // document.getElementById('myInput').value = '';
 }
 
@@ -78,6 +85,64 @@ function interaction(){
         var clicked = d3.select("#r"+riderStage.id);
         clicked.classed("active", true);//set class of clicked link
     })
+
+    var $btns = $('.btn').click(function() {
+
+        //primer mirem lista de noms
+      if (this.id === 'riderShow_id') {
+        $('#namesInfoRider_id > div').show();
+        $('#imagesInfoRider_id > div').show();
+
+        $('#namesInfoTeam_id > div').hide();
+        $('#imagesInfoTeam_id > div').hide();       
+
+      } else if(this.id === 'teamShow_id') {
+
+        $('#namesInfoRider_id > div').hide();
+        $('#imagesInfoRider_id > div').hide();
+
+        $('#namesInfoTeam_id > div').show();
+        $('#imagesInfoTeam_id > div').show();
+      }
+      $btns.removeClass('active');
+      $(this).addClass('active');
+    })
+          console.log($btns);
+
+
+}
+
+function processDataImagesTeams(allImages, folder){
+    $(allImages).find("a").attr("href", function (i, val) {
+        if( val.match(/\.(jpe?g|png|gif)$/) && (val.slice(-9) === "shirt.png")) { //si es imatge i es una de les imatges dels ciclistes
+
+            //S'afegeixen les imatges dels ciclistes
+            var imageList = $("ul.myULImagesTeams");
+            var div = $('<div/>')
+                .addClass('myDivImages')
+                .appendTo(imageList)
+
+            var img = $('<img>')
+                .addClass('imgTeam')
+                .attr("src", folder + val)
+                .appendTo(div);
+
+            var team = getTeambypng(teamsInfo, val);
+            var boxtext = $('<section>')
+                .addClass('boxTextImg')
+                .appendTo(div);
+
+            var textName = $('<a>')
+                .addClass('aTextName')
+                .text(team[2].Team_Name)
+                .appendTo(boxtext);
+
+            var textTeamNum = $('<a>')
+                .addClass('aTextRiderNum')
+                .text("TeamNum: " + team[0].Team_Num)
+                .appendTo(boxtext).before("<br />");
+        } 
+    });
 }
 
 function processDataImages(allImages, folder){
@@ -140,6 +205,18 @@ function processDataNames(allText) {
     document.getElementById('myInput').value = '';
 }
 
+function getTeambypng(teams, png_name){
+
+    for(var i = 0; i < teams.length; i++){
+        var team = teams[i];
+        if(team[4].Shirt === png_name){
+            return team;
+        }
+    }
+
+}
+
+
 function getRiderbypng(riders, png_name){
 
     for(var i = 0; i < riders.length; i++){
@@ -149,6 +226,24 @@ function getRiderbypng(riders, png_name){
         }
     }
 
+}
+
+function appendNamesTeams(teams){
+
+    var cList = $('ul.myULNamesTeams')
+    $.each(teams, function(i)
+    {   
+        var team = teams[i];
+
+        var li = $('<li/>')
+            .addClass('myLiNames')
+            .appendTo(cList);
+        var a = $('<a/>')
+            .addClass('myANames')
+            .text(team[2].Team_Name)
+            .appendTo(li);
+
+    });
 }
 
 function appendNames(riders){
@@ -167,7 +262,6 @@ function appendNames(riders){
             .appendTo(li);
 
     });
-
 }
 
 
