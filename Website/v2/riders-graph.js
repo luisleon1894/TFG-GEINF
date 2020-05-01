@@ -1,5 +1,5 @@
 
-var showNAxisChart = 3;
+var showNAxisChart = 4;
 // Extract the list of km we want to keep in the plot.
 d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
 
@@ -70,6 +70,7 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
     riders.push({id: parseInt(rider), nom: data[rider]["Rider_name"], team: data[rider]["Team"], ridernum: data[rider]["Rider_number"], lider: data[rider]["Leader"]})
     elapsedDataRider.push(coordinates);
   }
+  console.log(riders);
   //************************************************************
   // Trobar els grups de ciclistes que hi ha en els kms
   //************************************************************
@@ -144,17 +145,17 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
 
  var arr_kmMostrar = updateAxisXKm(xScale.domain(), columnsKm);
 
- xAxis.tickValues(arr_kmMostrar); //-----> linea nova
+ //xAxis.tickValues(arr_kmMostrar); //-----> linea nova
 
  var gX = svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis)
-            //.selectAll(".tick")
-            // .style("display", function(){
-            //   if(arr_kmMostrar.includes(parseFloat(this.textContent))) return "";
-            //   else return "none";
-            // });
+            .selectAll(".tick")
+            .style("display", function(){
+              if(arr_kmMostrar.includes(parseFloat(this.textContent))) return "";
+              else return "none";
+            });
    
   var gY = svg.append("g")
               .attr("class", "y axis")
@@ -301,7 +302,7 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
 
     var arr_kmMostrar = updateAxisXKm(new_xScale.domain(), columnsKm);
 
-     xAxis.tickValues(arr_kmMostrar); //-----> linea nova
+     //xAxis.tickValues(arr_kmMostrar); //-----> linea nova
     // re-scale axes
     svg.select(".y.axis")
         .call(yAxis.scale(new_yScale))
@@ -310,11 +311,11 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
 
     svg.select(".x.axis")
         .call(xAxis.scale(new_xScale))
-        // .selectAll(".tick")
-        // .style("display", function(){
-        //   if(arr_kmMostrar.includes(parseFloat(this.textContent))) return "";
-        //   else return "none";
-        // });
+        .selectAll(".tick")
+        .style("display", function(){
+          if(arr_kmMostrar.includes(parseFloat(this.textContent))) return "";
+          else return "none";
+        });
 
 
     // re-draw line
@@ -355,14 +356,47 @@ function updateAxisXKm(arryDomain, columnsKm){
     var km_minim_vist = arryDomain[1];
     var rang_visio = km_maxim_vist - km_minim_vist;
 
+    // var arrKmMostrar = [];
+    // if(rang_visio > (10 * (showNAxisChart + 1))){
+
+    //   for(var k = 1; k <= showNAxisChart; k++){
+
+    //     // var km = (Math.round((km_minim_vist + (k * rang_visio / (showNAxisChart + 1))) / 10 )) * 10;
+    //   var km = km_minim_vist + (k * rang_visio / (showNAxisChart + 1)) ;
+
+    //     arrKmMostrar.push(km);
+    //   }
+    // }
+    // else{
+    //   var inici;
+    //   for(var i = 0; i < columnsKm.length; i++){
+    //     if(km_maxim_vist >= parseFloat(columnsKm[i])){
+    //       inici = i;
+    //       break;
+    //     }
+    //   }
+
+    //   for(var j = inici; j < columnsKm.length; j++){
+    //     arrKmMostrar.push(parseFloat(columnsKm[j]))
+    //   }
+    // }
+
+    var inc = rang_visio /(showNAxisChart + 1);
+
+    var inc_ampliat = Math.ceil(inc/10) * 10;
+
+    var rang_ampliat = inc_ampliat * (showNAxisChart + 1);
+
+    var inc_rang = rang_ampliat - rang_visio;
+
+    var km_min = km_minim_vist - inc_rang / 2;
+
     var arrKmMostrar = [];
+
     if(rang_visio > (10 * (showNAxisChart + 1))){
 
-      for(var k = 1; k <= showNAxisChart; k++){
-
-        // var km = (Math.round((km_minim_vist + (k * rang_visio / (showNAxisChart + 1))) / 10 )) * 10;
-      var km = km_minim_vist + (k * rang_visio / (showNAxisChart + 1)) ;
-
+      for (var i = 1; i <= showNAxisChart ; i++){
+        var km = Math.round((km_min + i * inc_ampliat) / 10) * 10;
         arrKmMostrar.push(km);
       }
     }
@@ -379,6 +413,7 @@ function updateAxisXKm(arryDomain, columnsKm){
         arrKmMostrar.push(parseFloat(columnsKm[j]))
       }
     }
+
     console.log("domini: " +arryDomain);
     console.log("a mostrar: "+ arrKmMostrar);
     console.log("----");
@@ -543,10 +578,10 @@ function winnerEtapa(position, riders, grupsFinal){
 function mostrarRider(id_rider, riders, elem){
 
   var riderStage = riders.find(r => r.id === id_rider);
-  var rider = ridersInfo.find(r => r[0].Rider_Num === riderStage.ridernum);
+  var rider = ridersInfo.find(r => r.Rider_Num === riderStage.ridernum);
 
   var e = $.Event("keyup");
-  $("#myInput").val(rider[1].Name).trigger(e);
+  $("#myInput").val(rider.Name).trigger(e);
 
   d3.selectAll(".line").classed("active", false);//selectAll instead of select
   

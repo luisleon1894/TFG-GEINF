@@ -15,10 +15,6 @@
       <div class = "container_stage_list">
         <!-- LISTA DE STAGE!!!--->
 
-        
-          <button class="active btn" id="riderShow_id">Riders</button>
-          <button class="btn" id="teamShow_id">Teams</button>
-
       </div>
 
       <div class = "container_stage_box">
@@ -40,47 +36,47 @@
       <div class = "container_stage_info">
         
         <div id="myBtnContainer" class ="boxFilter">
-<!-- 
+
           <button class="active btn" id="riderShow_id">Riders</button>
           <button class="btn" id="teamShow_id">Teams</button>
- -->
+
         </div>
 
 
         <div class = "boxSearch">
-            <input type="text" id="myInput" onkeyup="searchRider()" placeholder="Search for names..">
+            <input type="text" id="myInput" onkeyup="search()" placeholder="Search for names..">
 
-              <div id="namesInfoRider_id">  
-                  <!-- visualitza els noms i el search de riders -->
-                  <div class="filter rider">
+              <!-- visualitza els noms i el search de riders -->
+              <!-- <div id="namesInfoRider_id">   -->
+                  <div class="filter rider" id="namesInfoRider_id">
                     <ul id = "myULNamesRiders_id" class="myULNamesRiders"></ul>
                   </div>
-              </div>
+              <!-- </div> -->
 
-              <div id="namesInfoTeam_id"> 
-                  <!-- visualitza els noms i el search de teams -->
-                  <div class="filter teams">
+              <!-- visualitza els noms i el search de teams -->
+              <!-- <div id="namesInfoTeam_id">  -->
+                  <div class="filter teams" id="namesInfoTeam_id">
                     <ul id = "myULNamesTeams_id" class="myULNamesTeams"></ul>
                   </div>
-              </div>
+              <!-- </div> -->
 
         </div>
 
-        <div id="imagesInfoRider_id">
+        <div class = "boxInfo">
+        <!-- <div id="imagesInfoRider_id"> -->
             <!-- visualitza les imatges dels riders -->
-            <div class = "boxInfo">
+            <div class = "showRidersImg" id="imagesInfoRider_id">
                 <ul id = "myULImagesRiders_id" class="myULImagesRiders"></ul>
             </div>  
-        </div> 
+        <!-- </div>  -->
 
-        <div id="imagesInfoTeam_id">
-            <!-- visualitza les imatges dels teams -->
-            <div class = "boxInfoTeams">
+        <!-- visualitza les imatges dels teams -->
+        <!-- <div id="imagesInfoTeam_id"> -->
+            <div class = "showTeamsImg" id="imagesInfoTeam_id">
                 <ul id = "myULImagesTeams_id" class="myULImagesTeams"></ul>
             </div>
-
-        </div>      
-
+        <!-- </div>       -->
+        </div>
     </div>
 
   </div>
