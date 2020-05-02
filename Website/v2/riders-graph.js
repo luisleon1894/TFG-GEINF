@@ -1,10 +1,19 @@
+var svg;
+var height;
+var elapsedDataRider = [];
+var labelsDataRider = []; //informacio de les etiquetes
+
+var xScaleLabel;
+var yScaleLabel;
+
 
 var showNAxisChart = 4;
 // Extract the list of km we want to keep in the plot.
 d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
 
   //************************************************************
-  // S'adapta el fitxer origianl_data, titol, ElapsedTime
+  // S'adapta: el fitxer origianl_data, titol, 
+  // ElapsedTime, kmX_GC_prov_position, kmX_GC_prov_delay
   //************************************************************
 
   var infoStageTitle = original_data.split('\n')[0];
@@ -19,8 +28,14 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
   
   var data = d3.csvParse(new_csv);
 
-  //Array[Names Km]
-	columnsKmName = d3.keys(data[0]).filter(isElapsed)
+  //Array[Names Elapsed Km]
+	columnsNameElapsedKm = d3.keys(data[0]).filter(infoColumn => infoColumn.includes("Elapsed"))
+
+  //Array[Name GC Prov Position]
+  columnsNameGCProvPosition = d3.keys(data[0]).filter(infoColumn => infoColumn.includes("GC_prov_position"));
+
+  //Array[Name GC Prov Delay]
+  columnsNameGCProvDelay = d3.keys(data[0]).filter(infoColumn => infoColumn.includes("GC_prov_delay"));
 
   //Array[Km]
 	columnsKm = d3.keys(data[0]).filter(isnewKm) //guarda les claus que continguin "km"
@@ -32,7 +47,7 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
 //es modifica el valor de "Elapsed time" de data per un valor enter, representa els segons
  for(var i = 0; i < data.length; i++){
 
-		columnsKmName.forEach(function(key) {
+		columnsNameElapsedKm.forEach(function(key) {
 		   //modificar value, transformar minuts segons a un valor enter
 		   var elapse = data[i][key]
 
@@ -54,23 +69,34 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
   var columns = data.columns;
   var dataRiders = data.slice(0, data.length);
 
-  var elapsedDataRider = [];
+  
   
 
   for(rider in dataRiders){
 
     var coordinates = [];
 
-    for(var j = 0; j < columnsKmName.length; j++){
+    for(var j = 0; j < columnsNameElapsedKm.length; j++){
 
-      var positionKM = columnsKmName[j].slice(0, columnsKmName[j].indexOf("_"))+"_Position"
+      var positionKM = columnsNameElapsedKm[j].slice(0, columnsNameElapsedKm[j].indexOf("_"))+"_Position"
       
-      coordinates.push({id: parseInt(rider), x: parseFloat(columnsKm[j]), y: data[rider][columnsKmName[j]] + parseInt(data[rider][positionKM])})
+      coordinates.push({id: parseInt(rider),
+                        x: parseFloat(columnsKm[j]),
+                        y: data[rider][columnsNameElapsedKm[j]] + parseInt(data[rider][positionKM]), 
+                      });
+
+      labelsDataRider.push({id: parseInt(rider),
+                            x: parseFloat(columnsKm[j]),
+                            y: data[rider][columnsNameElapsedKm[j]] + parseInt(data[rider][positionKM]),
+                            elapsedTime: myTime(data[rider][columnsNameElapsedKm[j]]),
+                            provPos: data[rider][columnsNameGCProvPosition[j]],
+                            provDelay: data[rider][columnsNameGCProvDelay[j]]
+                          })
     }
     riders.push({id: parseInt(rider), nom: data[rider]["Rider_name"], team: data[rider]["Team"], ridernum: data[rider]["Rider_number"], lider: data[rider]["Leader"]})
     elapsedDataRider.push(coordinates);
   }
-  console.log(riders);
+
   //************************************************************
   // Trobar els grups de ciclistes que hi ha en els kms
   //************************************************************
@@ -79,12 +105,12 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
   //************************************************************************************
   // Mirar en les etapes cada un del ciclistes a quin grup forma part i guardar els grups(polygons)
   //************************************************************************************
-  var polygonGrups = getPolygonsGroups(columnsKmName, grupsCiclistesEtapa, elapsedDataRider);
+  var polygonGrups = getPolygonsGroups(columnsNameElapsedKm, grupsCiclistesEtapa, elapsedDataRider);
 
   //************************************************************************************
   // Busca diferencia de temps entre grups
   //************************************************************************************
-  var diferenciaTempsGrups = buscaDifernciaTempsGrups(grupsCiclistesEtapa, columnsKm);
+  var diferenciaTempsGrups = buscaDiferenciaTempsGrups(grupsCiclistesEtapa, columnsKm);
 
   //************************************************************
   // Create Margins and Axis and hook our zoom function
@@ -95,16 +121,22 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
   this.cy = 1000; //altura en pixels de l'interior (amb padding inclos)
 
   var margin = {top: 20, right: 30, bottom: 30, left: 50},
-      width = this.cx - margin.left - margin.right,
-      height = this.cy - margin.top - margin.bottom;
+      width = this.cx - margin.left - margin.right;
+
+  height = this.cy - margin.top - margin.bottom;
+
   var xScale = d3.scaleLinear()
       //.domain([0, elapsedDataRider[0].length - 1])
       .domain([parseFloat(columnsKm[0]) , 0])
       .range([0, width])
 
+  xScaleLabel = xScale;
+
   var yScale = d3.scaleLinear()
       .domain([0, corredorMaxElapsed(elapsedDataRider)])
       .range([0, height])
+
+  yScaleLabel = yScale;
     
   var xAxis = d3.axisBottom(xScale)
     .tickValues(columnsKm)
@@ -129,7 +161,7 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
   //************************************************************  
 
 
-  var svg = d3.select("#stage_id")
+  svg = d3.select("#stage_id")
      .append("div")
      // Container class to make it responsive.
      .classed("svg-container", true) 
@@ -203,13 +235,13 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
     .attr("d", line)
     .attr("id", function(d){
       return "r"+d[0].id;
-    })
-    .on('click', function(d) {
-      mostrarRider(d[0].id, riders, this);
-      // transition the clicked element
-      // to have a radius of 20
-
     });
+    // .on('click', function(d) {
+    //   mostrarRider(d[0].id, riders, this);
+    //   // transition the clicked element
+    //   // to have a radius of 20
+
+    // });
 
     // .on('mouseover', function(d, i) {
     //   console.log("mouseover on", this);
@@ -251,26 +283,34 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
         return d.timeSeconds > 80 ? "visible" : "hidden";
     });
 
+  // Define the div for the tooltip
+  // var div = d3.select("body").append("div") 
+  //   .attr("class", "tooltip")       
+  //   .style("opacity", 0);
 
-  // var rects = svg.selectAll("rect")
-  //   .data(diferenciaTempsGrups)
-  //   .enter()
-  //   .append("rect")
-  //   .attr("x", d=> d.x1)
-  //   .attr("y", d=> d.y1)
-  //   .attr("width", d=> d.x2 - d.x1)
-  //   .attr("height", d=> d.y2 - d.y1)
-  //   .attr("fill", "teal");
+  // svg.selectAll("dot")  
+  //   .data(labelsDataRider)     
+  //   .enter().append("circle")               
+  //       .attr("r", 5)   
+  //       .attr("cx", function(d) { return xScale(d.x); })     
+  //       .attr("cy", function(d) { if(isNaN(yScale(d.y))){
+  //                                                    return height; 
+  //                                                  } 
+  //                                                  else return yScale(d.y); })   
+  //       .on("mouseover", function(d) {    
+  //           div.transition()    
+  //              .duration(200)    
+  //              .style("opacity", .9);    
 
-  // var differenceGroup = svg.selectAll("text.timeGroup")
-  //   .data(DATA)
-  //   .enter()
-  //   .append("text")
-  //   .attr("class", "timeGroup")
-  //   .attr("x", d=> d.x)
-  //   .attr("y", d=> d.y)
-  //   .text("hola")
-    //.text(function(d) { return d['name']; })
+  //           div.html("Elapsed time: " + d.elapsedTime + "<br/>"  + "Provisional Delay: " + d.provDelay + "<br/>"  + "Provisional Position: " + d.provPos)  
+  //              .style("left", (d3.event.pageX) + "px")   
+  //              .style("top", (d3.event.pageY - 28) + "px");  
+  //           })          
+  //       .on("mouseout", function(d) {   
+  //           div.transition()    
+  //              .duration(500)    
+  //              .style("opacity", 0); 
+  //       });
 
   //************************************************************************************
   //Mostrar guanyadors i titol
@@ -294,6 +334,10 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
     // create new scale ojects based on event
     var new_xScale = d3.event.transform.rescaleX(xScale);
     var new_yScale = d3.event.transform.rescaleY(yScale);
+
+    // guarda scale dels labels per si es fa selectRider despres de zoom
+    xScaleLabel = new_xScale; 
+    yScaleLabel = new_yScale;
 
     //busca l'escala actual, per despres mostrar o no els temps de elapsed, entre grups
     var zoomTransformString = d3.event.transform.toString();
@@ -346,7 +390,16 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
       })
       .style("visibility", function(d, i) {
         return (d.timeSeconds * zoomScale) > 80 ? "visible" : "hidden";
-    });     
+    });   
+
+    //re-draw dots
+    svg.selectAll("circle")
+      .attr("cx",  function(d) {
+        return new_xScale(d.x);
+      })
+      .attr("cy",  function(d) {
+        return new_yScale(d.y);
+      })   
   }
 });
 
@@ -420,11 +473,11 @@ function updateAxisXKm(arryDomain, columnsKm){
     return arrKmMostrar;
 }
 
-function getPolygonsGroups(columnsKmName,grupsCiclistesEtapa, elapsedDataRider){
+function getPolygonsGroups(columnsNameElapsedKm,grupsCiclistesEtapa, elapsedDataRider){
 
   var polygonsGrups = [];
 
-    for(var i = 0; i < columnsKmName.length - 1; i++){ //per cada km (d'esquerra a dreta)
+    for(var i = 0; i < columnsNameElapsedKm.length - 1; i++){ //per cada km (d'esquerra a dreta)
 
       var grupsCiclistaKM = grupsCiclistesEtapa[i];
 
@@ -492,7 +545,7 @@ function getGroupRidersStage(elapsedDataRider){
 
     var grupsCiclistesEtapa = [];
 
-    for(var i = 0; i < columnsKmName.length; i++){
+    for(var i = 0; i < columnsNameElapsedKm.length; i++){
 
       var grupsCiclistesKM = [];
 
@@ -574,23 +627,7 @@ function winnerEtapa(position, riders, grupsFinal){
 
 }
 
-
-function mostrarRider(id_rider, riders, elem){
-
-  var riderStage = riders.find(r => r.id === id_rider);
-  var rider = ridersInfo.find(r => r.Rider_Num === riderStage.ridernum);
-
-  var e = $.Event("keyup");
-  $("#myInput").val(rider.Name).trigger(e);
-
-  d3.selectAll(".line").classed("active", false);//selectAll instead of select
-  
-  var clicked = d3.select(elem);
-  clicked.classed("active", true);//set class of clicked link
-
-}
-
-function buscaDifernciaTempsGrups(grupsEtapa, columnsKm){
+function buscaDiferenciaTempsGrups(grupsEtapa, columnsKm){
 
   var res = []
 
@@ -624,6 +661,7 @@ function myTime(time) {
   if (hr > 0) {
      sec_min += "" + hrs + ":" + (min < 10 ? "0" : "");
   }
+  if(isNaN(sec)) return "-";
   sec_min += "" + min + "' " + (sec < 10 ? "0" : "");
   sec_min += "" + sec + "\"";
   return sec_min;
@@ -829,4 +867,12 @@ function isNotElapsed(infoColumn){
 
 function isElapsed(infoColumn){
   return infoColumn.includes("Elapsed");
+}
+
+function isProvPosition(infoColumn){
+  return infoColumn.includes("");
+}
+
+function isProvDelay(infoColumn){
+  return infoColumn.includes
 }
