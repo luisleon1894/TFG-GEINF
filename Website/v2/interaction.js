@@ -68,7 +68,7 @@ $("div.myDivImagesTeams").click(function(){
 })
 
 $("li.myLiNamesTeam").click(function(){
-    console.log(teamsInfo);
+
     var name = this.innerText + " "; //s'afegeix un espai perque en el fitxer hi ha un espai despres del nom del ciclista
     var team = teamsInfo.find(t => t.Team_Name === name);
     var teamnum = team.Team_Num
@@ -156,7 +156,7 @@ function mostrarRider(id_rider, riders, elem){
   document.getElementById("riderShow_id").click();
 
   var riderStage = riders.filter(r => r.id === id_rider);
-  console.log(riderStage);
+
   var rider = ridersInfo.find(r => r.Rider_Num === riderStage[0].ridernum);
 
   var e = $.Event("keyup");
@@ -247,3 +247,5 @@ function search() {
         d3.selectAll("circle").remove();
     }
 }
+
+document.getElementById("riderShow_id").click();

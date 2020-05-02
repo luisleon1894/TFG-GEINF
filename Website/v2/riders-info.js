@@ -3,6 +3,7 @@ var teamsInfo = [];
 var riders = [];
 
 var imatges;
+var folder = "./imgs/"; //es necessita la variable per busca les imatges en metodes posteriors
 
 $(document).ready(function() {
     $.ajax({
@@ -42,6 +43,9 @@ $(document).ready(function() {
         }
     });
 });
+
+
+
 
 
 function processDataTeams(allText) {
@@ -106,7 +110,11 @@ function processDataImagesTeams(allImages, folder){
                 .text("TeamNum: " + team.Team_Num)
                 .appendTo(boxtext).before("<br />");
         } 
+
+            document.getElementById("riderShow_id").click();
+
     });
+
 }
 
 function processDataImages(allImages, folder){
