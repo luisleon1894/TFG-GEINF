@@ -173,7 +173,7 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
      // Class to make it responsive.
      .classed("svg-content-responsive", true)
      .append("g")
-     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");       
+     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
  var arr_kmMostrar = updateAxisXKm(xScale.domain(), columnsKm);
 
@@ -231,7 +231,6 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
     .append("path")
     .attr("class", "line")
     .attr("clip-path", "url(#clip)")
-    .style('stroke', '#A9A9A9')
     .attr("d", line)
     .attr("id", function(d){
       return "r"+d[0].id;

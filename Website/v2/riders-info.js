@@ -3,6 +3,13 @@ var teamsInfo = [];
 var riders = [];
 
 var imatges;
+var folder = "./imgs/"; //es necessita la variable per busca les imatges en metodes posteriors
+
+var individual_mini = "Individual_mini.png";
+var points_mini = "Points_mini.png";
+var climber_mini = "Climber_mini.png";
+var youth_mini = "Youth_mini.png";
+var teams_mini = "Teams.png";
 
 $(document).ready(function() {
     $.ajax({
@@ -42,6 +49,9 @@ $(document).ready(function() {
         }
     });
 });
+
+
+
 
 
 function processDataTeams(allText) {
@@ -106,7 +116,11 @@ function processDataImagesTeams(allImages, folder){
                 .text("TeamNum: " + team.Team_Num)
                 .appendTo(boxtext).before("<br />");
         } 
+
+            document.getElementById("riderShow_id").click();
+
     });
+
 }
 
 function processDataImages(allImages, folder){

@@ -11,6 +11,7 @@ body, html {
   width: 100%;
   vertical-align: top;
   overflow: hidden;
+  
 }
 .svg-content-responsive {
   display: inline-block;
@@ -51,12 +52,12 @@ body, html {
 .line {
     fill: none;
     stroke-width: 1px;
-    stroke: green;
+    stroke: #A9A9A9;
 }
 
 .active, .line:hover {
     stroke: #1d7625 !important;
-    stroke-width: 3px !important;   
+    stroke-width: 2px !important;   
 }
 
 .line--clicked {
@@ -176,7 +177,7 @@ div.tooltip {
 
 .boxFilter{
 
-      flex: 0.5 0 0;
+      flex: 0.3 0 0;
       width: 100%;
 
 /*    height: 50px;
@@ -191,20 +192,19 @@ div.tooltip {
 
 .boxSearch{
 
-    flex: 1 0 0;
+    flex: 1.5 0 0;
 
-    border-style: groove;
     width: 100%;
     overflow: auto;
-
+    border: 1px solid #80a976;;
     margin-bottom: 10px;
 }
 
 .boxInfo{
 
-    flex: 2 0 0;
+    flex: 1.5 0 0;
 
-    border-style: groove;
+    /*border: 2px solid #8aa883;*/
     width: 100%;
     overflow: auto;
 
@@ -221,10 +221,17 @@ div.tooltip {
 }
 
 
-.myInput {
 
-  font-size: 10px;
+.input {
   border: 1px solid #ddd;
+  margin-bottom: : 0px; /* Prevent double borders */
+  /*background-color: #f6f6f6;*/
+  background-color: transparent;
+  display: block;
+  color: black;
+  font-size: 12px;
+  /*width: 100%;*/
+  padding: 10px;
 }
 
 .myULNamesRiders {
@@ -240,21 +247,25 @@ div.tooltip {
 }
 
 .myLiNamesRider {
-  border: 1px solid #ddd;
+  border: 1px solid #8aa883;
   margin-top: -1px; /* Prevent double borders */
-  background-color: #f6f6f6;
-  padding: 6px;
-  display: block;
+  /*background-color: #f6f6f6;*/
+  background-color: transparent;
+  padding: 12px;
+  /*display: block;*/
   cursor: pointer;
+  /*width: 100%;*/
 }
 
 .myLiNamesTeam {
-  border: 1px solid #ddd;
+  border: 1px solid #8aa883;
   margin-top: -1px; /* Prevent double borders */
-  background-color: #f6f6f6;
-  padding: 6px;
-  display: block;
+  /*background-color: #f6f6f6;*/
+  background-color: transparent;
+  padding: 12px;
+  /*display: block;*/
   cursor: pointer;
+  /*width: 100%;*/
 }
 
 .myULImagesTeams {
@@ -272,18 +283,18 @@ div.tooltip {
 }
 
 .myDivImagesRiders {
-  border: 1px solid #ddd;
-  margin-top: -1px; /* Prevent double borders */
-  background-color: #f6f6f6;
+  border: 1px solid #8aa883;
+  /*margin-top: 0px;  Prevent double borders */
+  background-color: none;/*#f6f6f6*/
   padding: 6px;
   display: block;
   cursor: pointer;
 }
 
 .myDivImagesTeams {
-  border: 1px solid #ddd;
-  margin-top: -1px; /* Prevent double borders */
-  background-color: #f6f6f6;
+  border: 1px solid #8aa883;
+  /*margin-top: -1px;  Prevent double borders */
+  background-color: none;/*#f6f6f6*/
   padding: 6px;
   display: block;
   cursor: pointer;
@@ -291,26 +302,27 @@ div.tooltip {
 }
 
 .imgRider {
+  margin-top: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
-  width: 50px;
+  width: 35%;
   display:inline-block;
 }
 
 .imgTeam {
+  margin-top: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
-  width: 50px;
+  width: 35%;
   display:inline-block;
 }
 
 .boxTextImg{
-    border: solid;
-    display:inline-block;
-    width:65%;
-    height: 50px;
+    border: none;
+    width:100%;
+    height: 30px;
     vertical-align:top;
     text-align: center;
 }
@@ -320,6 +332,7 @@ div.tooltip {
   text-align: right; 
   display:inline-block;
   padding: 0;
+  font-size: 12px;
 }
 
 .aTextRiderNum {
@@ -327,7 +340,7 @@ div.tooltip {
   text-align: right; 
   display:inline-block;
   padding: 0;
-
+  font-size: 12px;
   /*Perque no es mostri el text*/
   text-indent: 100%;
   white-space: nowrap;
@@ -350,7 +363,7 @@ div.tooltip {
   
   text-decoration: none;
   color: black;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .btn {
@@ -369,4 +382,16 @@ div.tooltip {
 .btn.active {
   background-color: #666;
   color: white;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 75%;
+  margin: auto;
+  text-align: center;
+  font-family: arial;
+}
+
+.pTextProfile{
+    font-size: 15px;
 }
