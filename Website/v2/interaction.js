@@ -131,13 +131,17 @@ var $btns = $('.btn').click(function() {
 function showLabelInformation(riders){
 //*** Show label information of rider select ***//
     
-    var labelRidersSelect = [];//labelsDataRider.filter(label => label.id === id_rider);
+    var labelRidersSelect = [];
     riders.map((rider) => {
         labelRidersSelect = labelRidersSelect.concat(labelsDataRider.filter(label => label.id === rider.id));
     });
 
     var div = d3.select("body").append("div") 
         .attr("class", "tooltip")       
+        .style("opacity", 0);
+
+    var divRider = d3.select("body").append("div") 
+        .attr("class", "tooltipRider")       
         .style("opacity", 0);
 
     svg.selectAll("dot")  
@@ -151,19 +155,37 @@ function showLabelInformation(riders){
                                  return height; 
                                 } 
                                 else return yScaleLabel(d.y); })   
-        .on("mouseover", function(d) {    
+        .on("mouseover", function(d) {   
+
+            if(riders.length > 1){ //es vol mostrar un equip
+
+                divRider.transition()    
+                    .duration(200)    
+                    .style("opacity", .9);    
+
+                var rider = riders.find(r => r.id === d.id)
+                divRider.html(rider.nom + "<br/>" + "n. " + rider.ridernum + "<br/>" + rider.team)
+                   .style("left", (d3.event.pageX - 170) + "px")   
+                   .style("top", (d3.event.pageY - 30) + "px"); 
+            }
+            
             div.transition()    
                .duration(200)    
                .style("opacity", .9);    
 
             div.html("Elapsed time: " + d.elapsedTime + "<br/>"  + "Provisional Delay: " + d.provDelay + "<br/>"  + "Provisional Position: " + d.provPos)  
-               .style("left", (d3.event.pageX) + "px")   
-               .style("top", (d3.event.pageY - 28) + "px");  
-            })          
+               .style("left", (d3.event.pageX + 5) + "px")   
+               .style("top", (d3.event.pageY - 30) + "px"); 
+            
+        })          
         .on("mouseout", function(d) {   
             div.transition()    
                .duration(500)    
                .style("opacity", 0); 
+
+            divRider.transition()    
+               .duration(500)    
+               .style("opacity", 0);
         });
 }
 
@@ -224,7 +246,7 @@ function mostrarRiderInfo(rider, image, teamObject){
 
     var nameText = $('<p>')
         .addClass("pTextProfile")
-        .text("NAME: " + shortName).appendTo(div);
+        .text(shortName).appendTo(div);
 
     var numText = $('<p>')
         .addClass("pTextProfile")
@@ -258,8 +280,6 @@ function mostrarRiderInfo(rider, image, teamObject){
 
 //image === DOMelement or path img
 function mostrarTeamInfo(team, riders){
-    console.log(team);
-    console.log(riders);
 
     var teamText = team.Team_Name;
 
