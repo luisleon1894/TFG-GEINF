@@ -5,6 +5,12 @@ var riders = [];
 var imatges;
 var folder = "./imgs/"; //es necessita la variable per busca les imatges en metodes posteriors
 
+var individual_mini = "Individual_mini.png";
+var points_mini = "Points_mini.png";
+var climber_mini = "Climber_mini.png";
+var youth_mini = "Youth_mini.png";
+var teams_mini = "Teams.png";
+
 $(document).ready(function() {
     $.ajax({
         type: "GET",
