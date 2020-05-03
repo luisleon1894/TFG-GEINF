@@ -77,6 +77,7 @@ $("div.myDivImagesTeams").click(function(){
         clicked.classed("active", true);//set class of clicked link
     })
 
+    mostrarTeamInfo(teamSeleccionat, teamStage);
     showLabelInformation(teamStage);
 })
 
@@ -99,6 +100,7 @@ $("li.myLiNamesTeam").click(function(){
         clicked.classed("active", true);//set class of clicked link
     })
 
+    mostrarTeamInfo(teamSeleccionat, teamStage);
     showLabelInformation(teamStage);
 })
 
@@ -123,6 +125,7 @@ var $btns = $('.btn').click(function() {
   }
   $btns.removeClass('active');
   $(this).addClass('active');
+
 })
 
 function showLabelInformation(riders){
@@ -253,6 +256,50 @@ function mostrarRiderInfo(rider, image, teamObject){
 
 }
 
+//image === DOMelement or path img
+function mostrarTeamInfo(team, riders){
+    console.log(team);
+    console.log(riders);
+
+    var teamText = team.Team_Name;
+
+    var imageList = $("ul.myULImagesTeams");
+
+    var div = $('<div/>')
+                .addClass('card')
+                .appendTo(imageList)
+
+    var img = $('<img>')
+        .attr("src", folder + team.Logo)
+        .attr("width", "100%")
+        .appendTo(div);
+
+    var nameText = $('<h3>')
+        .addClass("pTextProfileTeam")
+        .text(teamText).appendTo(div);
+
+    riders.map((rider) => {
+        var riderText = $('<p>')
+            .addClass("pTextProfile")
+            .text(rider.nom + " (n." + rider.ridernum + ")").appendTo(div);
+    })
+
+    //hide other images riders
+    var ulTeamsImg = document.getElementById("myULImagesTeams_id");
+    var divTeams = ulTeamsImg.getElementsByClassName("myDivImagesTeams")
+
+    var ulTeamName = document.getElementById("myULNamesTeams_id");
+    var liTeams = ulTeamName.getElementsByClassName("myLiNamesTeam")
+
+    for(var i = 0; i < divTeams.length; i++){
+        divTeams[i].style.display = "none"
+    }
+    for(var i = 0; i < liTeams.length; i++){
+        liTeams[i].style.display = "none"
+    }
+
+}
+
 function getMaillot(rider, miniMaillot){
 
     if(rider.lider === "Youth"){
@@ -341,6 +388,7 @@ function search() {
     }
 
 
+
     //refresh all
     // if(input.value === ""){
     //     d3.selectAll(".line").classed("active", false);
@@ -352,6 +400,7 @@ function search() {
 
 //refresh all on delete keyboard event
 function refresh(){
+
     d3.selectAll(".line").classed("active", false);
     d3.selectAll("circle").remove();
     $( ".card" ).remove();     

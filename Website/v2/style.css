@@ -192,17 +192,17 @@ div.tooltip {
 
 .boxSearch{
 
-    flex: 1.5 0 0;
+    flex: 1 0 0;
 
     width: 100%;
     overflow: auto;
-    border: 1px solid #80a976;;
+    border: 1px solid #80a976;
     margin-bottom: 10px;
 }
 
 .boxInfo{
 
-    flex: 1.5 0 0;
+    flex: 2 0 0;
 
     /*border: 2px solid #8aa883;*/
     width: 100%;
@@ -386,7 +386,7 @@ div.tooltip {
 
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  max-width: 75%;
+  max-width: 70%;
   margin: auto;
   text-align: center;
   font-family: arial;
