@@ -3,7 +3,6 @@ var teamsInfo = [];
 var riders = [];
 
 var imatges;
-var folder = "./imgs/"; //es necessita la variable per busca les imatges en metodes posteriors
 
 var individual_mini = "Individual_mini.png";
 var points_mini = "Points_mini.png";
@@ -51,9 +50,6 @@ $(document).ready(function() {
 });
 
 
-
-
-
 function processDataTeams(allText) {
     var allTextLines = allText.split(/\r\n|\n/);
     var headers = allTextLines[0].split(';');
@@ -86,6 +82,7 @@ function processDataTeams(allText) {
 
 
 function processDataImagesTeams(allImages, folder){
+
     $(allImages).find("a").attr("href", function (i, val) {
         if( val.match(/\.(jpe?g|png|gif)$/) && (val.slice(-9) === "shirt.png")) { //si es imatge i es una de les imatges dels equips
 
@@ -115,6 +112,7 @@ function processDataImagesTeams(allImages, folder){
                 .addClass('aTextTeamNum')
                 .text("TeamNum: " + team.Team_Num)
                 .appendTo(boxtext).before("<br />");
+
         } 
 
             document.getElementById("riderShow_id").click();

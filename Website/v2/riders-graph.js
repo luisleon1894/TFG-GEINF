@@ -9,7 +9,7 @@ var yScaleLabel;
 
 var showNAxisChart = 4;
 // Extract the list of km we want to keep in the plot.
-d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
+d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_data){
 
   //************************************************************
   // S'adapta: el fitxer origianl_data, titol, 
@@ -69,9 +69,6 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
   var columns = data.columns;
   var dataRiders = data.slice(0, data.length);
 
-  
-  
-
   for(rider in dataRiders){
 
     var coordinates = [];
@@ -117,10 +114,10 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
   //************************************************************
 
   var self = this;
-  this.cx = 1850; //amplada en pixels de l'interior (amb padding inclos)
-  this.cy = 1000; //altura en pixels de l'interior (amb padding inclos)
+  this.cx = 1650; //amplada en pixels de l'interior (amb padding inclos)
+  this.cy = 850; //altura en pixels de l'interior (amb padding inclos)
 
-  var margin = {top: 20, right: 30, bottom: 30, left: 50},
+  var margin = {top: 0, right: 40, bottom: 30, left: 40},
       width = this.cx - margin.left - margin.right;
 
   height = this.cy - margin.top - margin.bottom;
@@ -169,15 +166,14 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
      .call(zoom)
      // Responsive SVG needs these 2 attributes and no width and height attr.
      .attr("preserveAspectRatio", "xMinYMin meet")
-     .attr("viewBox", "0 0 1850 1000")
+     .attr("viewBox", "0 0 1650 850")
      // Class to make it responsive.
      .classed("svg-content-responsive", true)
      .append("g")
      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+     .style("border-style", "solid")
 
  var arr_kmMostrar = updateAxisXKm(xScale.domain(), columnsKm);
-
- //xAxis.tickValues(arr_kmMostrar); //-----> linea nova
 
  var gX = svg.append("g")
             .attr("class", "x axis")
@@ -235,31 +231,6 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
     .attr("id", function(d){
       return "r"+d[0].id;
     });
-    // .on('click', function(d) {
-    //   mostrarRider(d[0].id, riders, this);
-    //   // transition the clicked element
-    //   // to have a radius of 20
-
-    // });
-
-    // .on('mouseover', function(d, i) {
-    //   console.log("mouseover on", this);
-    //   // transition the mouseover'd element
-    //   // to having a red fill
-    //   d3.select(this)
-    //     .transition()
-    //     .style('stroke', '#00008B')
-    //     .style('stroke-width', '3px')
-    // })
-    // .on('mouseout', function(d, i) {
-    //   console.log("mouseout", this);
-    //   // return the mouseover'd element
-    //   // to being smaller and black
-    //   d3.select(this)
-    //     .transition()
-    //     .style('stroke', '#A9A9A9')
-    //     .style('stroke-width', '1px')
-    // });
 
   //************************************************************
   // Pintar la diferència de temps entre grups
@@ -282,48 +253,62 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
         return d.timeSeconds > 80 ? "visible" : "hidden";
     });
 
-  // Define the div for the tooltip
-  // var div = d3.select("body").append("div") 
-  //   .attr("class", "tooltip")       
-  //   .style("opacity", 0);
-
-  // svg.selectAll("dot")  
-  //   .data(labelsDataRider)     
-  //   .enter().append("circle")               
-  //       .attr("r", 5)   
-  //       .attr("cx", function(d) { return xScale(d.x); })     
-  //       .attr("cy", function(d) { if(isNaN(yScale(d.y))){
-  //                                                    return height; 
-  //                                                  } 
-  //                                                  else return yScale(d.y); })   
-  //       .on("mouseover", function(d) {    
-  //           div.transition()    
-  //              .duration(200)    
-  //              .style("opacity", .9);    
-
-  //           div.html("Elapsed time: " + d.elapsedTime + "<br/>"  + "Provisional Delay: " + d.provDelay + "<br/>"  + "Provisional Position: " + d.provPos)  
-  //              .style("left", (d3.event.pageX) + "px")   
-  //              .style("top", (d3.event.pageY - 28) + "px");  
-  //           })          
-  //       .on("mouseout", function(d) {   
-  //           div.transition()    
-  //              .duration(500)    
-  //              .style("opacity", 0); 
-  //       });
 
   //************************************************************************************
   //Mostrar guanyadors i titol
   //************************************************************************************
 
-  var titleString = infoStageTitle.split(",");
-  document.getElementById('continerTitleStage_id').getElementsByClassName('blockTitleStage')[0].innerHTML = "Stage: " + titleString[0] + ". " + titleString[1] + " > " + titleString[2];
 
-  document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[0].innerHTML = "1st. " + winnerEtapa(1, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
-  document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[1].innerHTML = "2nd. " + winnerEtapa(2, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
-  document.getElementById('containerWinners_id').getElementsByClassName('blockWinners')[2].innerHTML = "3rd. " + winnerEtapa(3, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
+  //var titleString = infoStageTitle.split(",");
+  // var imgTitleStage = $("div.continerTitleStage");
+  // var divTitle = $('<div/>')
+  //     .addClass('myDivImageTitle')
+  //     .appendTo(imgTitleStage)
+
+  // var imgtitle = $('<img>')
+  //     .attr("src", "./imgs/profiles_stages/" + "tour-de-france-2018-stage-13-title.png")
+  //     .addClass('imgStageTitle')
+  //     .appendTo(divTitle);
+
+  var imgStart = $("div.imgStart");
+  var imgtitle = $('<img>')
+      .attr("src", "./imgs/start.png")
+      .addClass('imgStart')
+      .appendTo(imgStart);
+
+  $('.origenalignleft').append(stages[currentStage - 1].origen);
+
+  var imgFinal = $("div.imgFinal");
+  var imgtitle = $('<img>')
+      .attr("src", "./imgs/final.png")
+      .addClass('imgFinal')
+      .appendTo(imgFinal);
+
+  $('.destialignright').append(stages[currentStage - 1].desti);
+
+
+  //document.getElementById('continerTitleStage_id').getElementsByClassName('blockTitleStage')[0].innerHTML = "Stage: " + titleString[0] + ". " + titleString[1] + " > " + titleString[2];
+
+  document.getElementById('containerWinners_id').getElementsByClassName('first')[0].innerHTML = "1st. " + winnerEtapa(1, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
+  document.getElementById('containerWinners_id').getElementsByClassName('second')[0].innerHTML = "2nd. " + winnerEtapa(2, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
+  document.getElementById('containerWinners_id').getElementsByClassName('third')[0].innerHTML = "3rd. " + winnerEtapa(3, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
 
   var leaderRider = riders.find(function(r) { return r.lider === "GC"; })
-  document.getElementById('containerWinners_id').getElementsByClassName('blockYellowWinner')[0].innerHTML = leaderRider.nom;
+  document.getElementById('containerWinners_id').getElementsByClassName('yellow')[0].innerHTML = leaderRider.nom;
+
+  var imgProfileStage = $("div.classProfileStage");
+
+  var div = $('<div/>')
+            .addClass('myDivImageProfile')
+            .appendTo(imgProfileStage)
+
+  var img = $('<img>')
+      .attr("src", "./imgs/profiles_stages/" + "tour-de-france-2018-stage-" + currentStage + "-profile.png")
+      .addClass('imgProfile')
+      .attr("height", "175px")
+      .attr("width", "1500px")
+      .appendTo(div);
+
 
   //************************************************************
   // Zoom specific updates
@@ -345,7 +330,6 @@ d3.text("./csv/Stage13-data-full-csv.csv", function(original_data){
 
     var arr_kmMostrar = updateAxisXKm(new_xScale.domain(), columnsKm);
 
-     //xAxis.tickValues(arr_kmMostrar); //-----> linea nova
     // re-scale axes
     svg.select(".y.axis")
         .call(yAxis.scale(new_yScale))

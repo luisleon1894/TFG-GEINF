@@ -1,7 +1,19 @@
-svg.selectAll('.line')
-    .on('click', function(d) {
-      mostrarRiderLinea(d[0].id, riders, this);
-});
+// svg.selectAll('.line')
+//     .on('click', function(d) {
+//         console.log(d);
+//       mostrarRiderLinea(d[0].id, riders, this);
+// });
+
+// $("path.line").on("click", function(d){
+
+//     mostrarRiderLinea(d.currentTarget.__data__[0].id, riders, this);
+//     console.log("asdf");
+// })
+
+$(document).on('click', 'path.line', function(d){
+    mostrarRiderLinea(d.currentTarget.__data__[0].id, riders, this);
+    console.log("asdf");
+    });
 
 $("div.myDivImagesRiders").click(function(){
 
@@ -301,7 +313,7 @@ function mostrarTeamInfo(team, riders){
     riders.map((rider) => {
         var riderText = $('<p>')
             .addClass("pTextProfile")
-            .text(rider.nom + " (n." + rider.ridernum + ")").appendTo(div);
+            .text((rider.nom).slice(2,rider.nom.length) + " (" + rider.ridernum + ")").appendTo(div);
     })
 
     //hide other images riders
@@ -417,6 +429,32 @@ function search() {
     //     $( ".card" ).remove();
     // }
 }
+
+$("div.myDivImagesStages").click(function(){
+
+    console.log(this);
+
+    var myimg = this.getElementsByTagName('img')[0];
+    var idStage = myimg.id;
+    id = idStage.slice(1, idStage.length);
+    d3.select("svg").remove();
+    $("div.svg-container").remove()
+
+    $("div.myDivImageProfile").remove()
+    $("#stageProfile").append("<img src='./imgs/profiles_stages/tour-de-france-2018-stage-"+ id +" />")
+    $("div.imgStart").children().remove()
+    // $("p.origenalignleft").remove()
+    document.getElementsByClassName('origenalignleft')[0].innerHTML = "";
+    document.getElementsByClassName('destialignright')[0].innerHTML = "";
+    // $("p.destialignright").remove()
+    $("div.imgFinal").children().remove()
+
+    currentStage = parseInt(id) + 1;
+
+    $.getScript('riders-graph.js');
+    
+})
+
 
 //refresh all on delete keyboard event
 function refresh(){

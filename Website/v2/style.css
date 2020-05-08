@@ -1,6 +1,7 @@
 body, html {
   font: 10px sans-serif;
   position: static;
+  font-size:100%;
 }
 
 /**** Class in D3 ****/
@@ -99,38 +100,104 @@ div.tooltipRider {
 
 /**** Class in HTML ****/
 
+
 .containerAll{
 
     background:transparent;
     display: flex;
     height: 98vh;
+    margin-bottom: 0px;
 }
 
+/* Franja esquerra */
 .container_stage_list{
 
-
-    flex: 1 1 0;
+    flex: 1.1 1 0;
 
     border-style: none;
     background:transparent;
+
+    overflow: auto;
+
 }
 
+/* Franja centre */
 .container_stage_box{
 
     flex: 5 1 0;
 
     border-style: none;
     background:transparent;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
+/* Titol */
+.continerTitleStage  {
+
+  /*text-align: center;*/
+  border-style: none;
+  flex: 0.2 1 0;
+  width: 100%;
+
+}
+
+.imgStart{
+    float: left;
+    height: 35px;
+    width: 35px;
+    margin-left: 15px;
+    margin-top: 10px;
+    vertical-align: middle;
+}
+
+.imgFinal{
+    float: right;
+    height: 35px;
+    width: 50px;
+    margin-right: 0px;
+    margin-top: 10px;
+    vertical-align: middle;
+}
+
+.origenalignleft {
+    float: left;
+    /*position: relative;*/
+    margin-left: 25px;
+    margin-top: 30px;
+    font-weight: bold;
+}
+.destialignright {
+    float: right;
+    margin-right: 30px;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-left: 10px;
+}
+
+/* Guanyadors */
 .containerWinners  {
 
   text-align: center;
+  border-style: none;
+  flex: 0.25 1 0;
+  width: 100%;
+
+  display: flex;
+      align-items: stretch;
+    justify-content: left;
+    text-align: center;
+
+    font-weight: bold;
 }
 
-.blockWinners {
-  width: 20%;
-  height: 50px;
+/*.blockWinners {
+  width: 25%;
+  
   background-color: none;
   border-style: groove;
   font-size: 1vw;
@@ -141,8 +208,6 @@ div.tooltipRider {
 }
 
 .blockYellowWinner {
-  width: 20%;
-  height: 50px;
   background-color: none;
   border-style: groove;
   font-size: 1vw;
@@ -151,31 +216,50 @@ div.tooltipRider {
   justify-content: center;
   align-items: center;
   
+}*/
+
+.first {
+    flex: 1 1 auto;
+    font-size: 15px
 }
 
-.continerTitleStage  {
-
-  text-align: center;
+.second {
+    flex: 1 1 auto;
+    font-size: 15px
 }
 
-.blockTitleStage {
-  width: 80%;
-  height: 50px;
-  background-color: none;
-  border-style: none;
-  font-size: 1.5vw;
-  margin-bottom: 4px;
-
-
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
+.third {
+    flex: 1 1 auto;
+    font-size: 15px
 }
 
+.yellow{
+    flex: 1 1 auto;
+    font-size: 15px
+
+}
+
+/* SVG graph */
+.classStage{
+    flex: 3 1 0;
+    margin-top: 25px;
+}
+
+/* Perfil de abaix */
+.classProfileStage{
+    flex: 1 1 0;
+    border-style: none;
+}
+
+.imgProfile{
+    max-width: 100%;
+}
+
+/* Franja de la dreta */
 .container_stage_info{
 
 
-    flex: 1 1 0;
+    flex: 0.75 1 0;
 
     border-style: none;
     background:transparent;
@@ -188,21 +272,21 @@ div.tooltipRider {
     text-align: center;
 }
 
+
+/* Filtre */
 .boxFilter{
 
       flex: 0.3 0 0;
       width: 100%;
 
-/*    height: 50px;
-*/    border-style: none;
+    border-style: none;ne;
 
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-
-
+/* Buscador */
 .boxSearch{
 
     flex: 1 0 0;
@@ -210,30 +294,8 @@ div.tooltipRider {
     width: 100%;
     overflow: auto;
     border: 1px solid #80a976;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
-
-.boxInfo{
-
-    flex: 2 0 0;
-
-    /*border: 2px solid #8aa883;*/
-    width: 100%;
-    overflow: auto;
-
-}
-
-.boxInfoTeams{
-
-    flex: 2 0 0;
-
-    border-style: none;
-    width: 100%;
-    overflow: auto;
-
-}
-
-
 
 .input {
   border: 1px solid #ddd;
@@ -247,13 +309,18 @@ div.tooltipRider {
   padding: 10px;
 }
 
-.myULNamesRiders {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+/* Contenidor noms de ciclistes */ 
+.boxInfo{
+
+    flex: 2 0 0;
+
+    border-style: none;
+    width: 100%;
+    overflow: auto;
+
 }
 
-.myULNamesTeams {
+.myULNamesRiders {
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -268,6 +335,61 @@ div.tooltipRider {
   /*display: block;*/
   cursor: pointer;
   /*width: 100%;*/
+}
+
+.myULImagesRiders {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+}
+
+.myDivImagesRiders {
+  border: 1px solid #8aa883;
+  /*margin-top: 0px;  Prevent double borders */
+  background-color: none;/*#f6f6f6*/
+  padding: 6px;
+  display: block;
+  cursor: pointer;
+}
+
+.imgRider {
+  margin-top: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 35%;
+  display:inline-block;
+}
+
+.aTextRiderNum {
+  margin-top: 5px;
+  text-align: right; 
+  display:inline-block;
+  padding: 0;
+  font-size: 12px;
+  /*Perque no es mostri el text*/
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Contenidor noms d'equips */ 
+
+.boxInfoTeams{
+
+    flex: 2 0 0;
+
+    border-style: none;
+    width: 100%;
+    overflow: auto;
+
+}
+
+.myULNamesTeams {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
 .myLiNamesTeam {
@@ -288,22 +410,6 @@ div.tooltipRider {
 
 }
 
-.myULImagesRiders {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-
-}
-
-.myDivImagesRiders {
-  border: 1px solid #8aa883;
-  /*margin-top: 0px;  Prevent double borders */
-  background-color: none;/*#f6f6f6*/
-  padding: 6px;
-  display: block;
-  cursor: pointer;
-}
-
 .myDivImagesTeams {
   border: 1px solid #8aa883;
   /*margin-top: -1px;  Prevent double borders */
@@ -314,15 +420,6 @@ div.tooltipRider {
 
 }
 
-.imgRider {
-  margin-top: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 5px;
-  width: 35%;
-  display:inline-block;
-}
-
 .imgTeam {
   margin-top: 12px;
   border: 1px solid #ddd;
@@ -330,34 +427,6 @@ div.tooltipRider {
   padding: 5px;
   width: 35%;
   display:inline-block;
-}
-
-.boxTextImg{
-    border: none;
-    width:100%;
-    height: 30px;
-    vertical-align:top;
-    text-align: center;
-}
-
-.aTextName {
-  margin-top: 5px;
-  text-align: right; 
-  display:inline-block;
-  padding: 0;
-  font-size: 12px;
-}
-
-.aTextRiderNum {
-  margin-top: 5px;
-  text-align: right; 
-  display:inline-block;
-  padding: 0;
-  font-size: 12px;
-  /*Perque no es mostri el text*/
-  text-indent: 100%;
-  white-space: nowrap;
-  overflow: hidden;
 }
 
 .aTextTeamNum {
@@ -372,6 +441,25 @@ div.tooltipRider {
   overflow: hidden;
 }
 
+.boxTextImg{
+    border: none;
+    width:100%;
+    height: 30px;
+    vertical-align:top;
+    text-align: center;
+}
+
+
+/* Els dos estils seguents es tenen en comú per ciclistes i equips */
+.aTextName {
+  margin-top: 5px;
+  text-align: right; 
+  display:inline-block;
+  padding: 0;
+  font-size: 12px;
+}
+
+
 .myANames {
   
   text-decoration: none;
@@ -379,6 +467,7 @@ div.tooltipRider {
   font-size: 12px;
 }
 
+/* Caracteristiques del button Rider or Team */
 .btn {
 
   text-align: center;  
@@ -397,6 +486,7 @@ div.tooltipRider {
   color: white;
 }
 
+/* Card que visualitza el Rider o el Team */
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   max-width: 70%;
@@ -408,3 +498,75 @@ div.tooltipRider {
 .pTextProfile{
     font-size: 15px;
 }
+
+
+/* Mini-Perfils de l'esquerra */
+
+.boxStages{
+    border-style: none;
+    width: 100%;
+    overflow: auto;
+}
+
+.myULImagesStages{
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.myDivImagesStages{
+  border: 1px solid #8aa883;
+  /*margin-top: 0px;  Prevent double borders */
+  background-color: none;/*#f6f6f6*/
+  padding: 6px;
+  display: block;
+  cursor: pointer;
+  width: 90%
+}
+
+.boxTextStage{
+    border: none;
+    width:100%;
+    height: 30px;
+    margin-bottom: 20px;
+    vertical-align:top;
+    text-align: center;
+}
+
+.imgStage {
+  margin-top: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 90%;
+  display:inline-block;
+  height: 65px;
+  max-width: 100%;
+}
+
+/* Perfil de la part d'abaix */
+.myDivImageProfile{
+
+    margin-right: 25px;
+    margin-bottom: 0px;
+}
+
+.imgProfileStage {
+
+}
+
+
+/* Titol de l'etapa */
+.myDivImageTitle{
+}
+
+
+.imgStageTitle{
+  width: 1100px;
+  height: 35px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
