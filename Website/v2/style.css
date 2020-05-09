@@ -2,6 +2,7 @@ body, html {
   font: 10px sans-serif;
   position: static;
   font-size:100%;
+  font-family: Verdana, Geneva, sans-serif
 }
 
 /**** Class in D3 ****/
@@ -143,6 +144,7 @@ div.tooltipRider {
   border-style: none;
   flex: 0.2 1 0;
   width: 100%;
+  margin-top: 0px;
 
 }
 
@@ -182,17 +184,19 @@ div.tooltipRider {
 /* Guanyadors */
 .containerWinners  {
 
-  text-align: center;
+  /*text-align: center;*/
   border-style: none;
   flex: 0.25 1 0;
   width: 100%;
 
+  margin-left: 60px;
+  margin-top: 10px;
   display: flex;
-      align-items: stretch;
-    justify-content: left;
-    text-align: center;
+  align-items: flex-start;
+/*    justify-content: left;
+    text-align: center;*/
 
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 /*.blockWinners {
@@ -218,25 +222,72 @@ div.tooltipRider {
   
 }*/
 
+.numberCircle {
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    padding: 8px;
+
+    background: #fff;
+    border: 2px solid #666;
+    color: #666;
+    text-align: center;
+
+    font: 16px Arial, sans-serif;
+
+    display : inline-block;
+    vertical-align : middle;
+
+    margin-right: 8px;
+}
+
+.pWinner{
+    /*display : inline-block;*/
+    /*vertical-align:250px;*/
+
+
+}
+
 .first {
-    flex: 1 1 auto;
-    font-size: 15px
+    /*flex: 1 1 auto;*/
+    margin-right: 75px;
+    font-size: 15px;
+    display : inline-block;
+    vertical-align : middle;
+    font-family: Verdana, Geneva, sans-serif
 }
 
 .second {
-    flex: 1 1 auto;
-    font-size: 15px
+    /*flex: 1 1 auto;*/
+    margin-right: 75px;
+    font-size: 15px;
+    display : inline-block;
+    vertical-align : middle;
+    font-family: Verdana, Geneva, sans-serif
 }
 
 .third {
-    flex: 1 1 auto;
-    font-size: 15px
+    /*flex: 1 1 auto;*/
+    margin-right: 75px;
+    font-size: 15px;
+    display : inline-block;
+    vertical-align : middle;
+    font-family: Verdana, Geneva, sans-serif
 }
 
-.yellow{
-    flex: 1 1 auto;
-    font-size: 15px
+.yellow {
+    /*flex: 1 1 auto;*/
 
+/*    display : inline-block;
+    vertical-align : middle;*/
+    font-size: 15px;
+    font-family: Verdana, Geneva, sans-serif
+}
+
+.maillotYellow{
+    display : inline-block;
+    vertical-align : middle;
+    margin-right: 8px;
 }
 
 /* SVG graph */
@@ -251,8 +302,10 @@ div.tooltipRider {
     border-style: none;
 }
 
+
 .imgProfile{
     max-width: 100%;
+
 }
 
 /* Franja de la dreta */
@@ -455,8 +508,9 @@ div.tooltipRider {
   margin-top: 5px;
   text-align: right; 
   display:inline-block;
-  padding: 0;
-  font-size: 12px;
+  padding: 0px;
+  font-size: 11px;
+
 }
 
 
@@ -528,7 +582,7 @@ div.tooltipRider {
     border: none;
     width:100%;
     height: 30px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     vertical-align:top;
     text-align: center;
 }
@@ -549,7 +603,17 @@ div.tooltipRider {
 
     margin-right: 25px;
     margin-bottom: 0px;
+
+    position: relative;
+  display: inline-block;
 }
+
+.myDivImageProfile svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 
 .imgProfileStage {
 

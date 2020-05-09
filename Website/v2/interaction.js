@@ -1,14 +1,3 @@
-// svg.selectAll('.line')
-//     .on('click', function(d) {
-//         console.log(d);
-//       mostrarRiderLinea(d[0].id, riders, this);
-// });
-
-// $("path.line").on("click", function(d){
-
-//     mostrarRiderLinea(d.currentTarget.__data__[0].id, riders, this);
-//     console.log("asdf");
-// })
 
 $(document).on('click', 'path.line', function(d){
     mostrarRiderLinea(d.currentTarget.__data__[0].id, riders, this);
@@ -448,6 +437,8 @@ $("div.myDivImagesStages").click(function(){
     document.getElementsByClassName('destialignright')[0].innerHTML = "";
     // $("p.destialignright").remove()
     $("div.imgFinal").children().remove()
+
+    $("pWinner").remove()
 
     currentStage = parseInt(id) + 1;
 

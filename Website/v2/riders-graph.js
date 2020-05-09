@@ -8,6 +8,7 @@ var yScaleLabel;
 
 
 var showNAxisChart = 4;
+var separacioEntreKm = 10;
 // Extract the list of km we want to keep in the plot.
 d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_data){
 
@@ -115,7 +116,7 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
 
   var self = this;
   this.cx = 1650; //amplada en pixels de l'interior (amb padding inclos)
-  this.cy = 850; //altura en pixels de l'interior (amb padding inclos)
+  this.cy = 750; //altura en pixels de l'interior (amb padding inclos)
 
   var margin = {top: 0, right: 40, bottom: 30, left: 40},
       width = this.cx - margin.left - margin.right;
@@ -166,7 +167,7 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
      .call(zoom)
      // Responsive SVG needs these 2 attributes and no width and height attr.
      .attr("preserveAspectRatio", "xMinYMin meet")
-     .attr("viewBox", "0 0 1650 850")
+     .attr("viewBox", "0 0 1650 750")
      // Class to make it responsive.
      .classed("svg-content-responsive", true)
      .append("g")
@@ -174,6 +175,7 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
      .style("border-style", "solid")
 
  var arr_kmMostrar = updateAxisXKm(xScale.domain(), columnsKm);
+
 
  var gX = svg.append("g")
             .attr("class", "x axis")
@@ -289,12 +291,32 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
 
   //document.getElementById('continerTitleStage_id').getElementsByClassName('blockTitleStage')[0].innerHTML = "Stage: " + titleString[0] + ". " + titleString[1] + " > " + titleString[2];
 
-  document.getElementById('containerWinners_id').getElementsByClassName('first')[0].innerHTML = "1st. " + winnerEtapa(1, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
-  document.getElementById('containerWinners_id').getElementsByClassName('second')[0].innerHTML = "2nd. " + winnerEtapa(2, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
-  document.getElementById('containerWinners_id').getElementsByClassName('third')[0].innerHTML = "3rd. " + winnerEtapa(3, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
+  // document.getElementById('containerWinners_id').getElementsByClassName('first')[0].innerHTML = "1st. " + winnerEtapa(1, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
+  // document.getElementById('containerWinners_id').getElementsByClassName('second')[0].innerHTML = "2nd. " + winnerEtapa(2, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
+  // document.getElementById('containerWinners_id').getElementsByClassName('third')[0].innerHTML = "3rd. " + winnerEtapa(3, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
+
+  var primer = document.createElement("pWinner");  
+  var textprimer = document.createTextNode(winnerEtapa(1, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1])); 
+  primer.appendChild(textprimer);
+  document.getElementById('FirstWinner').appendChild(primer)
+
+  var segon = document.createElement("pWinner");  
+  var textsegon = document.createTextNode(winnerEtapa(2, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1])); 
+  segon.appendChild(textsegon);
+  document.getElementById('SecondWinner').appendChild(segon)
+
+  var tercer = document.createElement("pWinner");  
+  var texttercer = document.createTextNode(winnerEtapa(3, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1])); 
+  tercer.appendChild(texttercer);
+  document.getElementById('ThirdWinner').appendChild(tercer)
 
   var leaderRider = riders.find(function(r) { return r.lider === "GC"; })
-  document.getElementById('containerWinners_id').getElementsByClassName('yellow')[0].innerHTML = leaderRider.nom;
+
+  var groc = document.createElement("pWinner"); 
+  var textgroc = document.createTextNode(leaderRider.nom); 
+  groc.appendChild(textgroc);
+  document.getElementById('StageWinner').appendChild(groc)
+  //document.getElementById('containerWinners_id').getElementsByClassName('yellow')[0].innerHTML = leaderRider.nom;
 
   var imgProfileStage = $("div.classProfileStage");
 
@@ -305,10 +327,24 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
   var img = $('<img>')
       .attr("src", "./imgs/profiles_stages/" + "tour-de-france-2018-stage-" + currentStage + "-profile.png")
       .addClass('imgProfile')
-      .attr("height", "175px")
+      .attr("height", "180px")
       .attr("width", "1500px")
       .appendTo(div);
 
+   // Make an SVG Container
+   var svgContainer = d3.select("div.myDivImageProfile").append("svg")
+                                      // .attr("viewBox", "0 0 200 26")
+                                        .attr("width", "100%")
+                                        .attr("height", "100%");
+   
+   //Draw the Rectangle
+   var rectangle = svgContainer.append("rect")
+                                .attr("id", "brush")
+                               .attr("x", "2.5%")
+                               .attr("y", 0)
+                               .attr("fill-opacity", 0.3)
+                              .attr("width", "97.5%")
+                              .attr("height", "100%");
 
   //************************************************************
   // Zoom specific updates
@@ -382,72 +418,124 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
       })
       .attr("cy",  function(d) {
         return new_yScale(d.y);
-      })   
+      })
+
+      console.log(new_xScale.domain())
+    //Stage Profile
+    var newAttrX = (Math.abs(97.5 - (new_xScale.domain()[0] * 100) / columnsKm[0])).toString() + "%";
+    var newWidth = 100 - Math.abs(97.5 - (new_xScale.domain()[0] * 100) / columnsKm[0]);
+
+    var newAttrwidht = (Math.abs(newWidth - (new_xScale.domain()[1] * 100) / columnsKm[0])).toString() + "%";
+
+    $("#brush").attr("x", newAttrX) 
+    $("#brush").attr("width", newAttrwidht) 
+
+
+
   }
 });
 
 function updateAxisXKm(arryDomain, columnsKm){
-
     var km_maxim_vist = arryDomain[0];
     var km_minim_vist = arryDomain[1];
     var rang_visio = km_maxim_vist - km_minim_vist;
 
-    // var arrKmMostrar = [];
-    // if(rang_visio > (10 * (showNAxisChart + 1))){
-
-    //   for(var k = 1; k <= showNAxisChart; k++){
-
-    //     // var km = (Math.round((km_minim_vist + (k * rang_visio / (showNAxisChart + 1))) / 10 )) * 10;
-    //   var km = km_minim_vist + (k * rang_visio / (showNAxisChart + 1)) ;
-
-    //     arrKmMostrar.push(km);
-    //   }
-    // }
-    // else{
-    //   var inici;
-    //   for(var i = 0; i < columnsKm.length; i++){
-    //     if(km_maxim_vist >= parseFloat(columnsKm[i])){
-    //       inici = i;
-    //       break;
-    //     }
-    //   }
-
-    //   for(var j = inici; j < columnsKm.length; j++){
-    //     arrKmMostrar.push(parseFloat(columnsKm[j]))
-    //   }
-    // }
-
     var inc = rang_visio /(showNAxisChart + 1);
 
-    var inc_ampliat = Math.ceil(inc/10) * 10;
+    var inc_ampliat = Math.ceil(inc/separacioEntreKm) * separacioEntreKm;
 
     var rang_ampliat = inc_ampliat * (showNAxisChart + 1);
 
     var inc_rang = rang_ampliat - rang_visio;
 
     var km_min = km_minim_vist - inc_rang / 2;
-
     var arrKmMostrar = [];
 
-    if(rang_visio > (10 * (showNAxisChart + 1))){
+    if(rang_visio > (separacioEntreKm * (showNAxisChart + 1))){
 
       for (var i = 1; i <= showNAxisChart ; i++){
-        var km = Math.round((km_min + i * inc_ampliat) / 10) * 10;
+        var km = Math.round((km_min + i * inc_ampliat) / separacioEntreKm) * separacioEntreKm;
         arrKmMostrar.push(km);
       }
     }
     else{
+      // var inici;
+      // for(var i = 0; i < columnsKm.length; i++){
+      //   if(km_maxim_vist >= parseFloat(columnsKm[i])){
+      //     inici = i;
+      //     break;
+      //   }
+      // }
+
+      // for(var j = inici; j < columnsKm.length; j++){
+      //   arrKmMostrar.push(parseFloat(columnsKm[j]))
+      // }
       var inici;
-      for(var i = 0; i < columnsKm.length; i++){
-        if(km_maxim_vist >= parseFloat(columnsKm[i])){
-          inici = i;
+      for(var i = 0; i < columnsKm.length; i++){ //busquem el primer km vist(ho tens)
+        if(km_maxim_vist >= parseFloat(columnsKm[i])){ 
+          inici = i; 
           break;
         }
       }
-
-      for(var j = inici; j < columnsKm.length; j++){
-        arrKmMostrar.push(parseFloat(columnsKm[j]))
+      var final = columnsKm.length - 1;
+      for(var i = inici + 1; i < columnsKm.length; i++){ //busquem el darrer km vist
+        // console.log("columns [i]: " + columnsKm[i]);
+        // console.log("parseFloat(columnsKm[i]): " + parseFloat(columnsKm[i]));
+        if(km_minim_vist <= parseFloat(columnsKm[i])){
+         final = i;
+         // break; 
+        }
       }
+      // console.log("km_minim_vist: " + km_minim_vist);
+      // console.log("km_maxim_vist: " + km_maxim_vist);
+      // console.log("columnsLengh: " + columnsKm);
+      // console.log("final: " + final);
+      // console.log("inici: " + inici);
+      if(final - inici < showNAxisChart){ //si no n'hi ha masses, els guardo tots
+      //el for que tens acabant a <=final -> carregues tots els km que hi ha per mostrar-los
+        for(var j = inici; j < columnsKm.length; j++){
+          arrKmMostrar.push(parseFloat(columnsKm[j]))
+        }
+      }
+      else{ //n'hi ha masses, miro quins hauria de mostrar i els busco
+        var kms =[];
+
+        for(var i = 0; i < showNAxisChart; i++){
+          kms.unshift(km_min + i * inc_ampliat)
+        }
+        // console.log("kms[]: " +kms);
+        var j=0;
+        for(var i = inici; i < final-1 && j < showNAxisChart; i++){
+
+          // console.log("columnsKm[i]: " + columnsKm[i]);
+          // console.log(">=");
+          // console.log("kms[j]: " + kms[j]);
+          // console.log("&&");
+          // console.log("columnsKm[i+1]: " + columnsKm[i+1]);
+          // console.log("<");
+          // console.log("kms[j]: " + kms[j]);
+
+          if(columnsKm[i] >= kms[j] && columnsKm[i+1] < kms[j]){
+          //si el j que volem mostrar està entre l'[i] i l'[i+1] que existeixen mostrem l'[i]. 
+            arrKmMostrar.push(parseFloat(columnsKm[i]))
+            j++;
+          //Per anar bé suposo que alguna vegada hauria caldria mostrar l'[i+1]. 
+          //Potser caldria mostrar el més proper a kms[j], no ho sé... 
+          //Si fos així hauria de ser 
+          //if(columsKm[i]-kms[j]<=columsKm[i+1]-kms[j]) -> mostrar [i] else [i+1] arrKmMostrar.push(columnsKm[i]); j++;
+            
+
+            // if(columsKm[i] - kms[j] <= columsKm[i + 1] - kms[j]){
+            //   mostrar [i] 
+            // }
+            // else{
+            //   mostrar [i+1] 
+            //   arrKmMostrar.push(columnsKm[i]); 
+            //   j++;
+            // }
+          }
+        }
+      }      
     }
 
     console.log("domini: " +arryDomain);
