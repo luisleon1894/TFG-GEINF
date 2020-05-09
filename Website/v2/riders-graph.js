@@ -2,13 +2,16 @@ var svg;
 var height;
 var elapsedDataRider = [];
 var labelsDataRider = []; //informacio de les etiquetes
+var arrKmMostrar = [];
+
+var varEtiquetesTemps = 80;
 
 var xScaleLabel;
 var yScaleLabel;
 
 
 var showNAxisChart = 4;
-var separacioEntreKm = 10;
+var separacioEntreKm = 5;
 // Extract the list of km we want to keep in the plot.
 d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_data){
 
@@ -245,14 +248,14 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
     .style('fill', 'blue')
     .attr("clip-path", "url(#clip)")
     .attr("x", function(d) {
-                return xScale(d.x);
+                return xScale(d.x) + 10;
            })
     .attr("y", function(d) {
                 return yScale(d.y);
            })
     .text(d=>d.timeDiff)
     .style("visibility", function(d, i) {
-        return d.timeSeconds > 80 ? "visible" : "hidden";
+        return d.timeSeconds > corredorMaxElapsed(elapsedDataRider) * varEtiquetesTemps / height && arrKmMostrar.includes(d.x) ? "visible" : "hidden";
     });
 
 
@@ -402,13 +405,13 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
     //re-draw labels
     svg.selectAll("text.timeGroup")
       .attr("x",  function(d) {
-        return new_xScale(d.x);
+        return new_xScale(d.x) + 10;
       })
       .attr("y",  function(d) {
         return new_yScale(d.y);
       })
       .style("visibility", function(d, i) {
-        return (d.timeSeconds * zoomScale) > 80 ? "visible" : "hidden";
+        return (d.timeSeconds * zoomScale) > corredorMaxElapsed(elapsedDataRider) * varEtiquetesTemps / height && arrKmMostrar.includes(d.x) ? "visible" : "hidden";
     });   
 
     //re-draw dots
@@ -420,7 +423,6 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
         return new_yScale(d.y);
       })
 
-      console.log(new_xScale.domain())
     //Stage Profile
     var newAttrX = (Math.abs(97.5 - (new_xScale.domain()[0] * 100) / columnsKm[0])).toString() + "%";
     var newWidth = 100 - Math.abs(97.5 - (new_xScale.domain()[0] * 100) / columnsKm[0]);
@@ -449,7 +451,7 @@ function updateAxisXKm(arryDomain, columnsKm){
     var inc_rang = rang_ampliat - rang_visio;
 
     var km_min = km_minim_vist - inc_rang / 2;
-    var arrKmMostrar = [];
+    arrKmMostrar = [];
 
     if(rang_visio > (separacioEntreKm * (showNAxisChart + 1))){
 
