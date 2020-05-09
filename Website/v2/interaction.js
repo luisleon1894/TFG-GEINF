@@ -418,7 +418,7 @@ function search() {
     //     $( ".card" ).remove();
     // }
 }
-
+ 
 $("div.myDivImagesStages").click(function(){
 
     var thisStage = this;
