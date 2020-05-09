@@ -418,32 +418,47 @@ function search() {
     //     $( ".card" ).remove();
     // }
 }
-
+ 
 $("div.myDivImagesStages").click(function(){
 
-    $("div.myDivImagesStages").css("background", "transparent")
-    $(this).css("background", "#d3aeae");
-
-    var myimg = this.getElementsByTagName('img')[0];
+    var thisStage = this;
+    var myimg = thisStage.getElementsByTagName('img')[0];
     var idStage = myimg.id;
     id = idStage.slice(1, idStage.length);
-    d3.select("svg").remove();
-    $("div.svg-container").remove()
 
-    $("div.myDivImageProfile").remove()
-    $("#stageProfile").append("<img src='./imgs/profiles_stages/tour-de-france-2018-stage-"+ id +" />")
-    $("div.imgStart").children().remove()
-    // $("p.origenalignleft").remove()
-    document.getElementsByClassName('origenalignleft')[0].innerHTML = "";
-    document.getElementsByClassName('destialignright')[0].innerHTML = "";
-    // $("p.destialignright").remove()
-    $("div.imgFinal").children().remove()
+    $.ajax({
+        url:"./csv/Stage" + (parseInt(id) + 1).toString() + "-data-full-csv.csv",
+        type:'HEAD',
+        error: function()
+        {
+            alert("No hi han dades d'aquesta etapa")
+        },
+        success: function()
+        {
+            $("div.myDivImagesStages").css("background", "transparent")
+            $(thisStage).css("background", "#d3aeae");
 
-    $("pWinner").remove()
 
-    currentStage = parseInt(id) + 1;
 
-    $.getScript('riders-graph.js');
+            d3.select("svg").remove();
+            $("div.svg-container").remove()
+
+            $("div.myDivImageProfile").remove()
+            $("#stageProfile").append("<img src='./imgs/profiles_stages/tour-de-france-2018-stage-"+ id +" />")
+            $("div.imgStart").children().remove()
+            document.getElementsByClassName('origenalignleft')[0].innerHTML = "";
+            document.getElementsByClassName('destialignright')[0].innerHTML = "";
+            $("div.imgFinal").children().remove()
+
+            $("pWinner").remove()
+
+            currentStage = parseInt(id) + 1;
+
+            $.getScript('riders-graph.js');
+        }
+    });
+
+    
     
 })
 
