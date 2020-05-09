@@ -18,6 +18,10 @@ $(document).ready(function() {
 
     var div = $('<div/>')
         .addClass('myDivImagesStages')
+        .css("background", function(){
+            if(i === 13 - 1) return "#d3aeae"
+            else return "transparent" 
+        })
         .appendTo(imageList)
 
     var boxtext = $('<section>')
