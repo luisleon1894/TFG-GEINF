@@ -421,7 +421,8 @@ function search() {
 
 $("div.myDivImagesStages").click(function(){
 
-    console.log(this);
+    $("div.myDivImagesStages").css("background", "transparent")
+    $(this).css("background", "#d3aeae");
 
     var myimg = this.getElementsByTagName('img')[0];
     var idStage = myimg.id;
