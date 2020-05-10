@@ -3,6 +3,7 @@ var height;
 var elapsedDataRider = [];
 var labelsDataRider = []; //informacio de les etiquetes
 var arrKmMostrar = [];
+var riders = [];
 
 var varEtiquetesTemps = 80;
 

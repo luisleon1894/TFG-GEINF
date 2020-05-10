@@ -21,7 +21,6 @@ $( "#myULImagesRiders_id" ).selectable({
                              var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
 
                              var riderStage = riders.filter(r => r.ridernum === ridernum);
-
                             if(riderStage.length > 0){
 
                                 var clicked = d3.select("#r"+riderStage[0].id);
@@ -31,14 +30,10 @@ $( "#myULImagesRiders_id" ).selectable({
 
                                 // divelement.style("background", colors[index])
                                 divelement.style.background = colors[index]
-
                                 showLabelInformation(riderStage);
                             }
                             else{
-                                // console.log(this);
-                                // console.log(riderSelect);
                                 alert(name + " is not at this stage, sorry");
-                                // this.removeClass('.ui-selected')
                             }
 
                         });
@@ -207,8 +202,8 @@ var $btns = $('.btn').click(function() {
 
 function showLabelInformation(riders){
 //*** Show label information of rider select ***//
-    
-    var labelRidersSelect = [];
+    let labelRidersSelect = [];
+
     riders.map((rider) => {
         labelRidersSelect = labelRidersSelect.concat(labelsDataRider.filter(label => label.id === rider.id));
     });
@@ -495,16 +490,6 @@ function search() {
             divTeams[i].style.display = "none"
         }
     }
-
-
-
-    //refresh all
-    // if(input.value === ""){
-    //     d3.selectAll(".line").classed("active", false);
-    //     d3.selectAll("circle").remove();
-        
-    //     $( ".card" ).remove();
-    // }
 }
  
 $("div.myDivImagesStages").click(function(){
@@ -541,6 +526,11 @@ $("div.myDivImagesStages").click(function(){
             $("pWinner").remove()
 
             currentStage = parseInt(id) + 1;
+
+            elapsedDataRider = [];
+            labelsDataRider = []; //informacio de les etiquetes
+            arrKmMostrar = [];
+            labelRidersSelect = [];
 
             $.getScript('riders-graph.js');
         }
