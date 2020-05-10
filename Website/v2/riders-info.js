@@ -1,6 +1,5 @@
 var ridersInfo = [];
 var teamsInfo = [];
-var riders = [];
 
 var imatges;
 

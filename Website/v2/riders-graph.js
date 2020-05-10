@@ -12,7 +12,9 @@ var yScaleLabel;
 
 
 var showNAxisChart = 4;
-var separacioEntreKm = 5;
+var separacioEntreKm;
+if(currentStage === 11) separacioEntreKm = 5;
+else separacioEntreKm = 10;
 // Extract the list of km we want to keep in the plot.
 d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_data){
 
@@ -120,9 +122,9 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
 
   var self = this;
   this.cx = 1650; //amplada en pixels de l'interior (amb padding inclos)
-  this.cy = 750; //altura en pixels de l'interior (amb padding inclos)
+  this.cy = 700; //altura en pixels de l'interior (amb padding inclos)
 
-  var margin = {top: 0, right: 40, bottom: 30, left: 40},
+  var margin = {top: 0, right: 40, bottom: 20, left: 40},
       width = this.cx - margin.left - margin.right;
 
   height = this.cy - margin.top - margin.bottom;
@@ -172,6 +174,8 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
      // Responsive SVG needs these 2 attributes and no width and height attr.
      .attr("preserveAspectRatio", "xMinYMin meet")
      .attr("viewBox", "0 0 1650 750")
+      // .attr("width",  width)
+      // .attr("height", height)
      // Class to make it responsive.
      .classed("svg-content-responsive", true)
      .append("g")
@@ -440,6 +444,8 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
 });
 
 function updateAxisXKm(arryDomain, columnsKm){
+
+    console.log(arryDomain);
     var km_maxim_vist = arryDomain[0];
     var km_minim_vist = arryDomain[1];
     var rang_visio = km_maxim_vist - km_minim_vist;
@@ -541,10 +547,14 @@ function updateAxisXKm(arryDomain, columnsKm){
         }
       }      
     }
-
+    console.log(arrKmMostrar)
+    arrKmMostrar = arrKmMostrar.filter(function(element){
+      return element <= arryDomain[0] && element >= arryDomain[1];
+    });
     console.log("domini: " +arryDomain);
     console.log("a mostrar: "+ arrKmMostrar);
     console.log("----");
+    console.log(arrKmMostrar);
     return arrKmMostrar;
 }
 
