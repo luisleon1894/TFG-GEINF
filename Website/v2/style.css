@@ -406,7 +406,7 @@ div.tooltipRider {
   cursor: pointer;
 }
 
-.ui-selected { background: #EEEEEE; color: #000000; }
+.ui-selected { color: #000000; }
 
 .imgRider {
   margin-top: 12px;
