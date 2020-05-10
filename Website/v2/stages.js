@@ -19,7 +19,7 @@ $(document).ready(function() {
     var div = $('<div/>')
         .addClass('myDivImagesStages')
         .css("background", function(){
-            if(i === 13 - 1) return "#d3aeae"
+            if(i === 13 - 1) return "#DEA78D"
             else return "transparent" 
         })
         .appendTo(imageList)

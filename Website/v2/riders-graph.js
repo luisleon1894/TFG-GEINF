@@ -215,8 +215,8 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
       .append("polygon")
       .attr("points",poligons)
       .attr("clip-path", "url(#clip)")
-      .attr("fill", "#A0522D")
-      .attr("fill-opacity", 0.4)
+      .attr("fill", "#e6550d")
+      .attr("fill-opacity", 0.3)
 
   //************************************************************
   // Create D3 line object + Pintar les lineas (ciclistes)
@@ -342,12 +342,13 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
    
    //Draw the Rectangle
    var rectangle = svgContainer.append("rect")
-                                .attr("id", "brush")
+                               .attr("id", "brush")
                                .attr("x", "2.5%")
                                .attr("y", 0)
-                               .attr("fill-opacity", 0.3)
-                              .attr("width", "97.5%")
-                              .attr("height", "100%");
+                               .attr("color", "#A9A9A9")
+                               .attr("fill-opacity", 0.2)
+                               .attr("width", "97.5%")
+                               .attr("height", "100%");
 
   //************************************************************
   // Zoom specific updates

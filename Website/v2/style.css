@@ -58,15 +58,15 @@ body, html {
 }
 
 .active, .line:hover {
-    stroke: #1d7625 !important;
-    stroke-width: 2px !important;   
+    stroke: #269630 !important;
+    stroke-width: 2.5px !important;   
 }
 
-.line--clicked {
+/*.line--clicked {
   fill: none;
   stroke: red;
   stroke-width: 2px;
-}
+}*/
 
 .textTimeProvPos{
     font-size: 10px;
@@ -405,6 +405,8 @@ div.tooltipRider {
   display: block;
   cursor: pointer;
 }
+
+.ui-selected { background: #EEEEEE; color: #000000; }
 
 .imgRider {
   margin-top: 12px;

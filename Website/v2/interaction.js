@@ -1,36 +1,124 @@
 
 $(document).on('click', 'path.line', function(d){
     mostrarRiderLinea(d.currentTarget.__data__[0].id, riders, this);
-    console.log("asdf");
-    });
+});
 
-$("div.myDivImagesRiders").click(function(){
+$( "#myULImagesRiders_id" ).selectable({
+               selected: function(e) {
+                  // var result = $( "#result" ).empty();
 
-    var name = this.getElementsByClassName("aTextName")[0].innerText
-    var ridernumStr = this.getElementsByClassName("aTextRiderNum")[0].innerText
-    var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
+                    if(e.metaKey){
+                        d3.selectAll(".line").classed("active", false);
 
-    var e = $.Event("keyup");
-    $("#myInput").val(name).trigger(e);
+                        $( ".ui-selected", this ).each(function() {
+                             var index = $( "#myULImagesRiders_id div.myDivImagesRiders" ).index( this );
+                             var riderSelect = $( "#myULImagesRiders_id div.myDivImagesRiders" )[index];
 
-    d3.selectAll(".line").classed("active", false);//selectAll instead of select
+                             var name = riderSelect.getElementsByClassName("aTextName")[0].innerText
+                             var ridernumStr = riderSelect.getElementsByClassName("aTextRiderNum")[0].innerText
+                             var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
+
+                             var riderStage = riders.filter(r => r.ridernum === ridernum);
+
+                            if(riderStage.length > 0){
+
+                                var clicked = d3.select("#r"+riderStage[0].id);
+                                clicked.classed("active", true);//set class of clicked link
+
+                                var rider = ridersInfo.find(r => r.Rider_Num === riderStage[0].ridernum);
+                                showLabelInformation(riderStage);
+                            }
+                            else{
+                                // console.log(this);
+                                // console.log(riderSelect);
+                                alert(name + " is not at this stage, sorry");
+                                // this.removeClass('.ui-selected')
+                            }
+
+                        });
+                    } 
+                    else{      
+                        refresh();                  
+                        var index;
+                        $( ".ui-selected", this ).each(function() {
+
+                             index = $( "#myULImagesRiders_id div.myDivImagesRiders" ).index( this );
+                        });
+                        var riderSelect = $( "#myULImagesRiders_id div.myDivImagesRiders" )[index]
+
+                        var name = riderSelect.getElementsByClassName("aTextName")[0].innerText
+                        var ridernumStr = riderSelect.getElementsByClassName("aTextRiderNum")[0].innerText
+                        var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
+
+                        var e = $.Event("keyup");
+                         $("#myInput").val(name).trigger(e);
+
+                        d3.selectAll(".line").classed("active", false);//selectAll instead of select
+                        
+                        var riderStage = riders.filter(r => r.ridernum === ridernum);
+
+                        if(riderStage.length > 0){
+
+                            var clicked = d3.select("#r"+riderStage[0].id);
+                            clicked.classed("active", true);//set class of clicked link
+
+                            var rider = ridersInfo.find(r => r.Rider_Num === riderStage[0].ridernum);
+                            var team = teamsInfo.find(team => team.Team_Num === rider.Team_Num) 
+                            mostrarRiderInfo(riderStage, riderSelect, team)
+                            showLabelInformation(riderStage);
+                        }
+                        else{
+                            alert(name + " is not at this stage, sorry");
+                        }
+
+                    }
+                },
+                unselected: function(event, riderUnselected){
+                    var element = riderUnselected.unselected;
+
+                    var name = element.getElementsByClassName("aTextName")[0].innerText
+                    var ridernumStr = element.getElementsByClassName("aTextRiderNum")[0].innerText
+                    var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
+
+                    var riderStage = riders.filter(r => r.ridernum === ridernum);
+                    if(riderStage.length > 0){
+
+                        var clicked = d3.select("#r"+riderStage[0].id);
+                        clicked.classed("active", false);//set class of clicked link
+
+                        var rider = ridersInfo.find(r => r.Rider_Num === riderStage[0].ridernum);
+                        hideLabelInformation(riderStage);
+                    }
+                }
+});
+
+
+// $("div.myDivImagesRiders").click(function(){
+//     var name = this.getElementsByClassName("aTextName")[0].innerText
+//     var ridernumStr = this.getElementsByClassName("aTextRiderNum")[0].innerText
+//     var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
+
+//     var e = $.Event("keyup");
+//     // $("#myInput").val(name).trigger(e);
+
+//     d3.selectAll(".line").classed("active", false);//selectAll instead of select
     
-    var riderStage = riders.filter(r => r.ridernum === ridernum);
+//     var riderStage = riders.filter(r => r.ridernum === ridernum);
 
-    if(riderStage.length > 0){
+//     if(riderStage.length > 0){
 
-        var clicked = d3.select("#r"+riderStage[0].id);
-        clicked.classed("active", true);//set class of clicked link
+//         var clicked = d3.select("#r"+riderStage[0].id);
+//         clicked.classed("active", true);//set class of clicked link
 
-        var rider = ridersInfo.find(r => r.Rider_Num === riderStage[0].ridernum);
-        var team = teamsInfo.find(team => team.Team_Num === rider.Team_Num) 
-        mostrarRiderInfo(riderStage, this, team)
-        showLabelInformation(riderStage);
-    }
-    else{
-        alert(name + " is not at this stage, sorry");
-    }
-})
+//         var rider = ridersInfo.find(r => r.Rider_Num === riderStage[0].ridernum);
+//         var team = teamsInfo.find(team => team.Team_Num === rider.Team_Num) 
+//         // mostrarRiderInfo(riderStage, this, team)
+//         showLabelInformation(riderStage);
+//     }
+//     else{
+//         alert(name + " is not at this stage, sorry");
+//     }
+// })
 
 $("li.myLiNamesRider").click(function(){
     var name = this.innerText + " ";  //s'afegeix un espai perque en el fitxer hi ha un espai despres del nom del ciclista
@@ -190,6 +278,19 @@ function showLabelInformation(riders){
         });
 }
 
+function hideLabelInformation(riders){
+    var labelRidersUnselect = [];
+    riders.map((rider) => {
+        labelRidersUnselect = labelRidersUnselect.concat(labelsDataRider.filter(label => label.id === rider.id));
+    });
+
+    svg.selectAll('circle').each(function(d,i) { 
+
+        if(d.id === labelRidersUnselect[0].id)
+        this.remove();
+    });
+}
+
 function mostrarRiderLinea(id_rider, riders, elem){
 
   refresh();
@@ -346,7 +447,6 @@ function search() {
     input = document.getElementById("myInput");
     filter = input.value.toUpperCase();
 
-
     //search per riders
     var ulRiders, liRiders;
     var ulRidersImg, divRiders;
@@ -436,7 +536,7 @@ $("div.myDivImagesStages").click(function(){
         success: function()
         {
             $("div.myDivImagesStages").css("background", "transparent")
-            $(thisStage).css("background", "#d3aeae");
+            $(thisStage).css("background", "#DEA78D");
 
 
 
@@ -472,7 +572,10 @@ function refresh(){
 }
 
 $(document).keydown(function(e) {
-    if(e.key === "Backspace") refresh();     
+    if(e.key === "Backspace"){
+        $('#myULImagesRiders_id .ui-selected').removeClass('ui-selected')
+        refresh();     
+    }
 });  
 
 
