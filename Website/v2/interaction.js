@@ -3,16 +3,18 @@ $(document).on('click', 'path.line', function(d){
     mostrarRiderLinea(d.currentTarget.__data__[0].id, riders, this);
 });
 
+var colors = ["#e41a1c", "#377eb8", "#4daf4a", "#7570b3"]
+
 $( "#myULImagesRiders_id" ).selectable({
                selected: function(e) {
-                  // var result = $( "#result" ).empty();
 
                     if(e.metaKey){
                         d3.selectAll(".line").classed("active", false);
 
-                        $( ".ui-selected", this ).each(function() {
-                             var index = $( "#myULImagesRiders_id div.myDivImagesRiders" ).index( this );
-                             var riderSelect = $( "#myULImagesRiders_id div.myDivImagesRiders" )[index];
+                        $( ".ui-selected", this ).each(function(index, divelement) {
+
+                             var indexDivBox = $( "#myULImagesRiders_id div.myDivImagesRiders" ).index( this );
+                             var riderSelect = $( "#myULImagesRiders_id div.myDivImagesRiders" )[indexDivBox];
 
                              var name = riderSelect.getElementsByClassName("aTextName")[0].innerText
                              var ridernumStr = riderSelect.getElementsByClassName("aTextRiderNum")[0].innerText
@@ -23,9 +25,13 @@ $( "#myULImagesRiders_id" ).selectable({
                             if(riderStage.length > 0){
 
                                 var clicked = d3.select("#r"+riderStage[0].id);
-                                clicked.classed("active", true);//set class of clicked link
+                                // clicked.classed("active", true);//set class of clicked link
+                                clicked.style("stroke", colors[index])
+                                       .style("stroke-width", "2.5px");
 
-                                var rider = ridersInfo.find(r => r.Rider_Num === riderStage[0].ridernum);
+                                // divelement.style("background", colors[index])
+                                divelement.style.background = colors[index]
+
                                 showLabelInformation(riderStage);
                             }
                             else{
@@ -46,6 +52,8 @@ $( "#myULImagesRiders_id" ).selectable({
                         });
                         var riderSelect = $( "#myULImagesRiders_id div.myDivImagesRiders" )[index]
 
+                        // riderSelect.style.background = ""
+
                         var name = riderSelect.getElementsByClassName("aTextName")[0].innerText
                         var ridernumStr = riderSelect.getElementsByClassName("aTextRiderNum")[0].innerText
                         var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
@@ -54,6 +62,8 @@ $( "#myULImagesRiders_id" ).selectable({
                          $("#myInput").val(name).trigger(e);
 
                         d3.selectAll(".line").classed("active", false);//selectAll instead of select
+                        d3.selectAll(".line").style("stroke", "")
+                        d3.selectAll(".line").style("stroke-width", "1px");
                         
                         var riderStage = riders.filter(r => r.ridernum === ridernum);
 
@@ -75,6 +85,7 @@ $( "#myULImagesRiders_id" ).selectable({
                 },
                 unselected: function(event, riderUnselected){
                     var element = riderUnselected.unselected;
+                    element.style.background = ""
 
                     var name = element.getElementsByClassName("aTextName")[0].innerText
                     var ridernumStr = element.getElementsByClassName("aTextRiderNum")[0].innerText
@@ -85,6 +96,9 @@ $( "#myULImagesRiders_id" ).selectable({
 
                         var clicked = d3.select("#r"+riderStage[0].id);
                         clicked.classed("active", false);//set class of clicked link
+                        clicked.style("stroke", "")
+                        clicked.style("stroke-width", "1px");
+
 
                         var rider = ridersInfo.find(r => r.Rider_Num === riderStage[0].ridernum);
                         hideLabelInformation(riderStage);
@@ -92,33 +106,6 @@ $( "#myULImagesRiders_id" ).selectable({
                 }
 });
 
-
-// $("div.myDivImagesRiders").click(function(){
-//     var name = this.getElementsByClassName("aTextName")[0].innerText
-//     var ridernumStr = this.getElementsByClassName("aTextRiderNum")[0].innerText
-//     var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
-
-//     var e = $.Event("keyup");
-//     // $("#myInput").val(name).trigger(e);
-
-//     d3.selectAll(".line").classed("active", false);//selectAll instead of select
-    
-//     var riderStage = riders.filter(r => r.ridernum === ridernum);
-
-//     if(riderStage.length > 0){
-
-//         var clicked = d3.select("#r"+riderStage[0].id);
-//         clicked.classed("active", true);//set class of clicked link
-
-//         var rider = ridersInfo.find(r => r.Rider_Num === riderStage[0].ridernum);
-//         var team = teamsInfo.find(team => team.Team_Num === rider.Team_Num) 
-//         // mostrarRiderInfo(riderStage, this, team)
-//         showLabelInformation(riderStage);
-//     }
-//     else{
-//         alert(name + " is not at this stage, sorry");
-//     }
-// })
 
 $("li.myLiNamesRider").click(function(){
     var name = this.innerText + " ";  //s'afegeix un espai perque en el fitxer hi ha un espai despres del nom del ciclista
@@ -196,6 +183,7 @@ $("li.myLiNamesTeam").click(function(){
 
 var $btns = $('.btn').click(function() {
 
+  refresh();
     //primer mirem lista de noms
   if (this.id === 'riderShow_id') {
     $('#namesInfoRider_id > ul').show();
@@ -566,7 +554,17 @@ $("div.myDivImagesStages").click(function(){
 //refresh all on delete keyboard event
 function refresh(){
 
-    d3.selectAll(".line").classed("active", false);
+    var e = $.Event("keyup");
+    $("#myInput").val("").trigger(e);
+
+    $( "#myULImagesRiders_id div.myDivImagesRiders" ).each(function(){
+        this.style.background = ""
+    })
+
+    d3.selectAll(".line").classed("active", false)
+                         .style("stroke", "")
+                         .style("stroke-width", "1px");
+
     d3.selectAll("circle").remove();
     $( ".card" ).remove();     
 }
