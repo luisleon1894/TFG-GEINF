@@ -522,6 +522,7 @@ $("div.myDivImagesStages").click(function(){
             $("div.imgStart").children().remove()
             document.getElementsByClassName('origenalignleft')[0].innerHTML = "";
             document.getElementsByClassName('destialignright')[0].innerHTML = "";
+            document.getElementsByClassName('pstageData')[0].innerHTML = "";
             $("div.imgFinal").children().remove()
 
             $("pWinner").remove()
