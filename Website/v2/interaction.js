@@ -103,6 +103,7 @@ $( "#myULImagesRiders_id" ).selectable({
 
 
 $("li.myLiNamesRider").click(function(){
+    refresh(); 
     var name = this.innerText + " ";  //s'afegeix un espai perque en el fitxer hi ha un espai despres del nom del ciclista
     var rider = ridersInfo.find(r => r.Name === name);
     var ridernum = rider.Rider_Num

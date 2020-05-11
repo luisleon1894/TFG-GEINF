@@ -146,6 +146,9 @@ div.tooltipRider {
   width: 100%;
   margin-top: 0px;
 
+  display: flex;
+  justify-content: space-between;
+
 }
 
 .imgStart{
@@ -179,6 +182,11 @@ div.tooltipRider {
     font-weight: bold;
     margin-top: 30px;
     margin-left: 10px;
+}
+
+.pstageData{
+    margin-top: 30px;
+    font-weight: bold;
 }
 
 /* Guanyadors */

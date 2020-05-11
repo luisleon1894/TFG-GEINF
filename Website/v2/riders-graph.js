@@ -268,18 +268,6 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
   //Mostrar guanyadors i titol
   //************************************************************************************
 
-
-  //var titleString = infoStageTitle.split(",");
-  // var imgTitleStage = $("div.continerTitleStage");
-  // var divTitle = $('<div/>')
-  //     .addClass('myDivImageTitle')
-  //     .appendTo(imgTitleStage)
-
-  // var imgtitle = $('<img>')
-  //     .attr("src", "./imgs/profiles_stages/" + "tour-de-france-2018-stage-13-title.png")
-  //     .addClass('imgStageTitle')
-  //     .appendTo(divTitle);
-
   var imgStart = $("div.imgStart");
   var imgtitle = $('<img>')
       .attr("src", "./imgs/start.png")
@@ -288,6 +276,8 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
 
   $('.origenalignleft').append(stages[currentStage - 1].origen);
 
+  $('.pstageData').append("Stage " + currentStage + " (" + stages[currentStage - 1].km + ")");
+
   var imgFinal = $("div.imgFinal");
   var imgtitle = $('<img>')
       .attr("src", "./imgs/final.png")
@@ -295,13 +285,6 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
       .appendTo(imgFinal);
 
   $('.destialignright').append(stages[currentStage - 1].desti);
-
-
-  //document.getElementById('continerTitleStage_id').getElementsByClassName('blockTitleStage')[0].innerHTML = "Stage: " + titleString[0] + ". " + titleString[1] + " > " + titleString[2];
-
-  // document.getElementById('containerWinners_id').getElementsByClassName('first')[0].innerHTML = "1st. " + winnerEtapa(1, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
-  // document.getElementById('containerWinners_id').getElementsByClassName('second')[0].innerHTML = "2nd. " + winnerEtapa(2, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
-  // document.getElementById('containerWinners_id').getElementsByClassName('third')[0].innerHTML = "3rd. " + winnerEtapa(3, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1]);
 
   var primer = document.createElement("pWinner");  
   var textprimer = document.createTextNode(winnerEtapa(1, riders, grupsCiclistesEtapa[grupsCiclistesEtapa.length - 1])); 
@@ -437,8 +420,6 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
 
     $("#brush").attr("x", newAttrX) 
     $("#brush").attr("width", newAttrwidht) 
-
-
 
   }
 });
