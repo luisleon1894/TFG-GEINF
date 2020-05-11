@@ -546,6 +546,7 @@ $("div.myDivImagesStages").click(function(){
 //refresh all on delete keyboard event
 function refresh(){
 
+    $('#myULImagesRiders_id .ui-selected').removeClass('ui-selected')
     var e = $.Event("keyup");
     $("#myInput").val("").trigger(e);
 
@@ -563,7 +564,7 @@ function refresh(){
 
 $(document).keydown(function(e) {
     if(e.key === "Backspace"){
-        $('#myULImagesRiders_id .ui-selected').removeClass('ui-selected')
+        // $('#myULImagesRiders_id .ui-selected').removeClass('ui-selected')
         refresh();     
     }
 });  
