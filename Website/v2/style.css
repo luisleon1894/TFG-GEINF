@@ -75,7 +75,7 @@ body, html {
 div.tooltip {   
     position: absolute;         
     text-align: left;         
-    width: 150px;                    
+    width: 170px;                    
     height: 35px;                   
     padding: 7px;               
     font: 12px sans-serif;      
@@ -88,7 +88,7 @@ div.tooltip {
 div.tooltipRider {   
     position: absolute;         
     text-align: right;         
-    width: 150px;                    
+    width: 170px;                    
     height: 35px;                   
     padding: 7px;               
     font: 12px sans-serif;      
