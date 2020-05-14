@@ -180,6 +180,7 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
      .classed("svg-content-responsive", true)
      .append("g")
      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+     // .attr("id", "chart_id")
      .style("border-style", "solid")
 
  var arr_kmMostrar = updateAxisXKm(xScale.domain(), columnsKm);
@@ -426,7 +427,6 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
 
 function updateAxisXKm(arryDomain, columnsKm){
 
-    console.log(arryDomain);
     var km_maxim_vist = arryDomain[0];
     var km_minim_vist = arryDomain[1];
     var rang_visio = km_maxim_vist - km_minim_vist;
@@ -470,18 +470,13 @@ function updateAxisXKm(arryDomain, columnsKm){
       }
       var final = columnsKm.length - 1;
       for(var i = inici + 1; i < columnsKm.length; i++){ //busquem el darrer km vist
-        // console.log("columns [i]: " + columnsKm[i]);
-        // console.log("parseFloat(columnsKm[i]): " + parseFloat(columnsKm[i]));
+
         if(km_minim_vist <= parseFloat(columnsKm[i])){
          final = i;
          // break; 
         }
       }
-      // console.log("km_minim_vist: " + km_minim_vist);
-      // console.log("km_maxim_vist: " + km_maxim_vist);
-      // console.log("columnsLengh: " + columnsKm);
-      // console.log("final: " + final);
-      // console.log("inici: " + inici);
+
       if(final - inici < showNAxisChart){ //si no n'hi ha masses, els guardo tots
       //el for que tens acabant a <=final -> carregues tots els km que hi ha per mostrar-los
         for(var j = inici; j < columnsKm.length; j++){
@@ -498,37 +493,14 @@ function updateAxisXKm(arryDomain, columnsKm){
         var j=0;
         for(var i = inici; i < final-1 && j < showNAxisChart; i++){
 
-          // console.log("columnsKm[i]: " + columnsKm[i]);
-          // console.log(">=");
-          // console.log("kms[j]: " + kms[j]);
-          // console.log("&&");
-          // console.log("columnsKm[i+1]: " + columnsKm[i+1]);
-          // console.log("<");
-          // console.log("kms[j]: " + kms[j]);
-
           if(columnsKm[i] >= kms[j] && columnsKm[i+1] < kms[j]){
-          //si el j que volem mostrar està entre l'[i] i l'[i+1] que existeixen mostrem l'[i]. 
             arrKmMostrar.push(parseFloat(columnsKm[i]))
             j++;
-          //Per anar bé suposo que alguna vegada hauria caldria mostrar l'[i+1]. 
-          //Potser caldria mostrar el més proper a kms[j], no ho sé... 
-          //Si fos així hauria de ser 
-          //if(columsKm[i]-kms[j]<=columsKm[i+1]-kms[j]) -> mostrar [i] else [i+1] arrKmMostrar.push(columnsKm[i]); j++;
-            
 
-            // if(columsKm[i] - kms[j] <= columsKm[i + 1] - kms[j]){
-            //   mostrar [i] 
-            // }
-            // else{
-            //   mostrar [i+1] 
-            //   arrKmMostrar.push(columnsKm[i]); 
-            //   j++;
-            // }
           }
         }
       }      
     }
-    console.log(arrKmMostrar)
     arrKmMostrar = arrKmMostrar.filter(function(element){
       return element <= arryDomain[0] && element >= arryDomain[1];
     });
