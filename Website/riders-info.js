@@ -8,7 +8,7 @@ var points_mini = "Points_mini.png";
 var climber_mini = "Climber_mini.png";
 var youth_mini = "Youth_mini.png";
 var teams_mini = "Teams.png";
-
+ 
 $(document).ready(function() {
     $.ajax({
         type: "GET",
