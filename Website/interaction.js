@@ -37,33 +37,20 @@ $(document).on('click', "#containerAll_id" , function(event, i){
     
     if(event.target.id === ""){
         refresh();
+        indexColor = 0;
         var e = $.Event("keyup");
         $("#myInput").val("").trigger(e);
+        $('#myULImagesRiders_id .ui-selected').removeClass('ui-selected')
     }
-
-
 });
 
-$(document).on('click', "#containerAll_id" , function(e){
-    e.preventDefault();
-
-    var $this = $(this);
-
-    // Detecting ctrl (windows) / meta (mac) key.
-    if (e.ctrlKey || e.metaKey)
-    {   
-        console.log(e.ctrlKey + " ctrl");
-        console.log(e.metaKey + " meta");
-                      
-    }
-})
 
 $( "#myULImagesRiders_id" ).selectable({
 
        selected: function(e) {
-            console.log(e);
-            if((e.metaKey || e.ctrlKey) && indexColor <= 1){
 
+            if((e.metaKey || e.ctrlKey) && indexColor <= 1){
+                console.log("1");
                 $( ".card" ).remove(); 
                 // d3.selectAll(".line").classed("active", false);
 
@@ -99,7 +86,8 @@ $( "#myULImagesRiders_id" ).selectable({
 
                 
             } 
-            else if((e.metaKey || e.ctrlKey) && indexColor >= 2){     
+            else if((e.metaKey || e.ctrlKey) && indexColor >= 2){   
+                console.log("2");  
                 indexColor = 0; 
                 refresh();
 
@@ -140,6 +128,7 @@ $( "#myULImagesRiders_id" ).selectable({
                 }
             }
             else if (!e.metaKey || !e.ctrlKey){
+                console.log("3");
                 indexColor = 0; 
                 refresh();                  
                 var index;
