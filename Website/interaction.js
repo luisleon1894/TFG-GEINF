@@ -33,6 +33,18 @@ $(document).on('click', 'path.line', function(event, i){
 
 });
 
+$(document).on('click', "#containerAll_id" , function(event, i){
+    
+    if(event.target.id === ""){
+        console.log(event.target.id);
+        refresh();
+        var e = $.Event("keyup");
+        $("#myInput").val("").trigger(e);
+    }
+
+
+});
+
 
 $( "#myULImagesRiders_id" ).selectable({
 
@@ -131,8 +143,7 @@ $( "#myULImagesRiders_id" ).selectable({
                 var ridernumStr = riderSelect.getElementsByClassName("aTextRiderNum")[0].innerText
                 var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
 
-                var e = $.Event("keyup");
-                 $("#myInput").val(name).trigger(e);
+                
 
                 // d3.selectAll(".line").classed("active", false);//selectAll instead of select
                 // d3.selectAll(".line").style("stroke", "")
@@ -141,6 +152,8 @@ $( "#myULImagesRiders_id" ).selectable({
                 var riderStage = riders.filter(r => r.ridernum === ridernum);
 
                 if(riderStage.length > 0){
+                    var e = $.Event("keyup");
+                    $("#myInput").val(name).trigger(e);
 
                     var clicked = d3.select("#r"+riderStage[0].id);
                     // clicked.classed("active", true);//set class of clicked link
@@ -325,7 +338,7 @@ function showLabelInformation(riders){
 
                 var rider = riders.find(r => r.id === d.id)
                 divRider.html(rider.nom + "<br/>" + "n. " + rider.ridernum + "<br/>" + rider.team)
-                   .style("left", (d3.event.pageX - 170) + "px")   
+                   .style("left", (d3.event.pageX - 195) + "px")   
                    .style("top", (d3.event.pageY - 30) + "px"); 
             }
             
@@ -664,7 +677,7 @@ $("div.myDivImagesStages").click(function(){
         type:'HEAD',
         error: function()
         {
-            alert("No hi han dades d'aquesta etapa")
+            alert("There are no data from this stage")
         },
         success: function()
         {
@@ -696,9 +709,6 @@ $("div.myDivImagesStages").click(function(){
             $.getScript('riders-graph.js');
         }
     });
-
-    
-    
 })
 
 

@@ -17,7 +17,7 @@ $(document).ready(function() {
         success: function(data) {
             processDataNames(data);
 
-            var folder = "./imgs/"; //es necessita la variable per busca les imatges en metodes posteriors
+            var folder = "./imgs/"; 
             $.ajax({
                 type: "GET",
                 url : "./imgs/",
@@ -38,6 +38,7 @@ $(document).ready(function() {
                             processDataImagesTeams(imatges, folder);
 
                             $(function () {
+                                $.getScript('riders-graph.js');
                                 $.getScript('interaction.js');
                             });
                         }
@@ -90,20 +91,24 @@ function processDataImagesTeams(allImages, folder){
             var imageList = $("ul.myULImagesTeams");
             var div = $('<div/>')
                 .addClass('myDivImagesTeams')
+                .attr("id","idDivImageTeam"+i)
                 .appendTo(imageList)
 
             var img = $('<img>')
                 .addClass('imgTeam')
+                .attr("id","idImgImageTeam"+i)
                 .attr("src", folder + val)
                 .appendTo(div);
 
             var team = getTeambypng(teamsInfo, val);
             var boxtext = $('<section>')
                 .addClass('boxTextImg')
+                .attr("id","idBoxImageTeam"+i)
                 .appendTo(div);
 
             var textName = $('<a>')
                 .addClass('aTextName')
+                .attr("id","idAImageTeam"+i)
                 .text(team.Team_Name)
                 .appendTo(boxtext);
 
@@ -211,11 +216,13 @@ function appendNamesTeams(teams){
 
         var li = $('<li/>')
             .addClass('myLiNamesTeam')
-            .appendTo(cList);
+            .appendTo(cList)
+            .attr("id","idLiNameTeam"+i);
         var a = $('<a/>')
             .addClass('myANames')
             .text(team.Team_Name)
-            .appendTo(li);
+            .appendTo(li)
+            .attr("id","idANameTeam"+i);
 
     });
 }
@@ -229,11 +236,13 @@ function appendNames(riders){
 
         var li = $('<li/>')
             .addClass('myLiNamesRider')
-            .appendTo(cList);
+            .appendTo(cList)
+            .attr("id","idLiNameRider"+i);;
         var a = $('<a/>')
             .addClass('myANames')
             .text(rider.Name)
-            .appendTo(li);
+            .appendTo(li)
+            .attr("id","idANameRider"+i);
 
     });
 }

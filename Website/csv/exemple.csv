@@ -1,0 +1,48 @@
+//Format input etapes
+numeroEtapa,OrigenEtapa,DestiEtapa,KM_Totals_Etapa
+Rider_name,Rider_number,Team,Leader,kmX_Position,kmX_Elapsed_time,kmX_GC_prov_position,kmX_GC_prov_delay,kmXX_Position,kmXX_Elapsed_time,kmXX_GC_prov_position,kmXX_GC_prov_delay,kmXXX_Position,kmXXX_Elapsed_time,kmXXX_GC_prov_position,kmXXX_GC_prov_delay...
+NOM_R,NUM_R,NOM_T,si/no,POS_X,TempsET_X,POS_PROV_X,DELAY_PROV_X,POS_XX,TempsET_XX,POS_PROV_XX,DELAY_PROV_XX,POS_XXX,TempsET_XXX,POS_PROV_XXX,DELAY_PROV_XXX
+NOM_R,NUM_R,NOM_T,si/no,POS_X,TempsET_X,POS_PROV_X,DELAY_PROV_X,POS_XX,TempsET_XX,POS_PROV_XX,DELAY_PROV_XX,POS_XXX,TempsET_XXX,POS_PROV_XXX,DELAY_PROV_XXX
+NOM_R,NUM_R,NOM_T,si/no,POS_X,TempsET_X,POS_PROV_X,DELAY_PROV_X,POS_XX,TempsET_XX,POS_PROV_XX,DELAY_PROV_XX,POS_XXX,TempsET_XXX,POS_PROV_XXX,DELAY_PROV_XXX
+NOM_R,NUM_R,NOM_T,si/no,POS_X,TempsET_X,POS_PROV_X,DELAY_PROV_X,POS_XX,TempsET_XX,POS_PROV_XX,DELAY_PROV_XX,POS_XXX,TempsET_XXX,POS_PROV_XXX,DELAY_PROV_XXX
+....
+
+//Exemple de l'input d'etapes
+13,Bourg d'Oisans,Valence,"169,5"
+Rider_name,Rider_number,Team,Leader,km169.5_Position,km169.5_Elapsed_time,km169.5_GC_prov_position,km169.5_GC_prov_delay,km160_Position,km160_Elapsed_time,km160_GC_prov_position,km160_GC_prov_delay,km150_Position,km150_Elapsed_time,km150_GC_prov_position,km150_GC_prov_delay...
+C. FROOME,1,SKY,no,1,+0'00'',2,0:01:39,126,+0'58'',2,0:01:39,102,+1'45'',2,0:01:39...
+E. BERNAL GOMEZ,2,SKY,no,2,+0'00'',19,0:21:22,81,+0'58'',18,0:21:22,65,+1'45'',18,0:21:22...
+J. CASTROVIEJO,3,SKY,no,3,+0'00'',103,1:44:35,41,+0'58'',102,1:44:35,66,+1'45'',102,1:44:35...
+M. KWIATKOWSKI,4,SKY,no,4,+0'00'',59,1:18:59,24,+0'58'',58,1:18:59,12,+1'45'',58,1:18:59...
+...
+
+//Format input equips
+Team_Num,Team_id,Team_Name,Logo,Shirt,Icon_Shirt
+NUM_T,ID_T,NOM_T,LOGO_NAME,SHIRT_NAME,ICON_SHIRT_NAME
+NUM_T,ID_T,NOM_T,LOGO_NAME,SHIRT_NAME,ICON_SHIRT_NAME
+NUM_T,ID_T,NOM_T,LOGO_NAME,SHIRT_NAME,ICON_SHIRT_NAME
+...
+
+//Exemple de l'input d'equips
+Team_Num,Team_id,Team_Name,Logo,Shirt,Icon_Shirt
+0,SKY,TEAM SKY ,Sky_logo.png,Sky_shirt.png,Sky_shirt_mini.png
+1,EFD,TEAM EF EDUCATION FIRST - DRAPAC P/B CANNONDALE ,Education_First_logo.png,Education_First_shirt.png,Education_First_shirt_mini.png
+2,ALM,AG2R LA MONDIALE ,AG2R_logo.png,AG2R_shirt.png,AG2R_shirt_mini.png
+3,SUN,TEAM SUNWEB ,Sunweb_logo.png,Sunweb_shirt.png,Sunweb_shirt_mini.png
+....
+
+
+//Format input equips
+Rider_Num,Name,Short_Name,Team_Num,Photo
+NUM_R,NOM_R,SHORT_NOM_R,NUM_T,PHOTO
+NUM_R,NOM_R,SHORT_NOM_R,NUM_T,PHOTO
+NUM_R,NOM_R,SHORT_NOM_R,NUM_T,PHOTO
+...
+
+//Exemple de l'input d'equips
+1,CHRIS FROOME ,C. FROOME,0,001.png
+2,EGAN ARLEY BERNAL GOMEZ ,E. BERNAL GOMEZ,0,002.png
+3,JONATHAN CASTROVIEJO ,J. CASTROVIEJO,0,003.png
+4,MICHAL KWIATKOWSKI ,M. KWIATKOWSKI,0,004.png
+...
+
