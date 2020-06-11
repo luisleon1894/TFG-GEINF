@@ -166,28 +166,9 @@ d3.text("./csv/Stage" + currentStage + "-data-full-csv.csv", function(original_d
 
 
   svg = d3.select("#stage_id")
-     //.append("div")
-     // Container class to make it responsive.
-     //.classed("svg-container", true) 
-     //.append("svg")
-     //.call(zoom)
-     // Responsive SVG needs these 2 attributes and no width and height attr.
-     //.attr("preserveAspectRatio", "xMinYMin meet")
-     //.attr("viewBox", "0 0 1650 750")
-      // .attr("width",  width)
-      // .attr("height", height)
-     // Class to make it responsive.
-     //.classed("svg-content-responsive", true)
-     //.append("g")
-     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-     //.style("border-style", "solid")
      .append("svg")
      .attr("viewBox", "-40 20 1650 750")
-     // .attr("width",  "10%" )
-     // .attr("height", "100%")
      .style("overflow", "visible")
-     // .style("display", "inline-block")
-     // .style("position", "relative")
      .call(zoom)
 
  var arr_kmMostrar = updateAxisXKm(xScale.domain(), columnsKm);
