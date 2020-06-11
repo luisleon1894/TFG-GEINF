@@ -2,12 +2,13 @@ var colors = ["#e41a1c", "#377eb8", "#4daf4a", "#7570b3"]
 var indexColor = 0;
 
 var ridersSelect = [];
+var corredorsMAX = 2;
 
 $(document).on('click', 'path.line', function(event, i){
 
     var id = parseInt((this.id).slice(1, (this.id).length));
 
-    if (event.altKey && indexColor <= 1) {
+    if (event.altKey && indexColor < corredorsMAX) {
        $( ".card" ).remove();  
 
        var e = $.Event("keyup");
@@ -16,7 +17,7 @@ $(document).on('click', 'path.line', function(event, i){
        mostrarRiderLinea(id, riders, this);
        indexColor++;
     }
-    else if(event.altKey && indexColor == 2){
+    else if(event.altKey && indexColor == corredorsMAX){
         indexColor = 0;
         refresh();
         $('#myULImagesRiders_id .ui-selected').removeClass('ui-selected')
@@ -46,14 +47,10 @@ $(document).on('click', "#containerAll_id" , function(event, i){
 
 
 $( "#myULImagesRiders_id" ).selectable({
-
        selected: function(e) {
 
-            if((e.metaKey || e.ctrlKey) && indexColor <= 1){
-                console.log("1");
-                $( ".card" ).remove(); 
-                // d3.selectAll(".line").classed("active", false);
-
+            if((e.metaKey || e.ctrlKey) && indexColor < corredorsMAX){
+                indexColor = 0;
                 $( ".ui-selected", this ).each(function(index, divelement) {
 
                      ridersSelect[index] = divelement;
@@ -69,12 +66,10 @@ $( "#myULImagesRiders_id" ).selectable({
                     if(riderStage.length > 0){
 
                         var clicked = d3.select("#r"+riderStage[0].id);
-
                         clicked.style("stroke", colors[index])
                                .style("stroke-width", "2.5px");
                         
-                        divelement.style.background = colors[index]
-
+                        riderSelect.style.background = colors[index]
                         indexColor++;
                         showLabelInformation(riderStage);
                     }
@@ -83,11 +78,9 @@ $( "#myULImagesRiders_id" ).selectable({
                     }
 
                 });
-
-                
             } 
-            else if((e.metaKey || e.ctrlKey) && indexColor >= 2){   
-                console.log("2");  
+            else if((e.metaKey || e.ctrlKey) && indexColor == corredorsMAX){   
+
                 indexColor = 0; 
                 refresh();
 
@@ -109,26 +102,22 @@ $( "#myULImagesRiders_id" ).selectable({
                 var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
                 
                 var riderStage = riders.filter(r => r.ridernum === ridernum);
-
                 if(riderStage.length > 0){
 
                     var clicked = d3.select("#r"+riderStage[0].id);
-                    // clicked.classed("active", true);//set class of clicked link
                     clicked.style("stroke", colors[indexColor])
-                               .style("stroke-width", "2.5px");
+                           .style("stroke-width", "2.5px");
                     
                     riderSelect.style.background = colors[indexColor]
                     indexColor++;
                     showLabelInformation(riderStage);
-
-                    var rider = ridersInfo.find(r => r.Rider_Num === riderStage[0].ridernum);
                 }
                 else{
                     alert(name + " is not at this stage, sorry");
                 }
             }
             else if (!e.metaKey || !e.ctrlKey){
-                console.log("3");
+
                 indexColor = 0; 
                 refresh();                  
                 var index;
@@ -138,26 +127,17 @@ $( "#myULImagesRiders_id" ).selectable({
                 });
                 var riderSelect = $( "#myULImagesRiders_id div.myDivImagesRiders" )[index]
 
-                // riderSelect.style.background = ""
-
                 var name = riderSelect.getElementsByClassName("aTextName")[0].innerText
                 var ridernumStr = riderSelect.getElementsByClassName("aTextRiderNum")[0].innerText
                 var ridernum = ridernumStr.slice(ridernumStr.indexOf(":") + 2, ridernumStr.length)
-
-                
-
-                // d3.selectAll(".line").classed("active", false);//selectAll instead of select
-                // d3.selectAll(".line").style("stroke", "")
-                // d3.selectAll(".line").style("stroke-width", "1px");
                 
                 var riderStage = riders.filter(r => r.ridernum === ridernum);
-
                 if(riderStage.length > 0){
+
                     var e = $.Event("keyup");
                     $("#myInput").val(name).trigger(e);
 
                     var clicked = d3.select("#r"+riderStage[0].id);
-                    // clicked.classed("active", true);//set class of clicked link
                     clicked.style("stroke", colors[indexColor])
                                .style("stroke-width", "2.5px");
                     
@@ -172,6 +152,7 @@ $( "#myULImagesRiders_id" ).selectable({
                 else{
                     alert(name + " is not at this stage, sorry");
                 }
+                
             }
         },
         unselected: function(event, riderUnselected){
@@ -187,10 +168,8 @@ $( "#myULImagesRiders_id" ).selectable({
             if(riderStage.length > 0){
 
                 var clicked = d3.select("#r"+riderStage[0].id);
-                // clicked.classed("active", false);//set class of clicked link
                 clicked.style("stroke", "")
                 clicked.style("stroke-width", "1px");
-
 
                 var rider = ridersInfo.find(r => r.Rider_Num === riderStage[0].ridernum);
                 hideLabelInformation(riderStage);
@@ -417,17 +396,12 @@ function mostrarRider(id_rider, riders, elem){
 
   var e = $.Event("keyup");
   $("#myInput").val(rider.Name).trigger(e);
-
-  // d3.selectAll(".line").classed("active", false);//selectAll instead of select
   
   var clicked = d3.select(elem);
-  // clicked.classed("active", true);//set class of clicked link
 
   clicked.style("stroke", colors[indexColor])
     .style("stroke-width", "2.5px");
 
-
-  // d3.selectAll("circle").remove();
   showLabelInformation(riderStage);
 
   var team = teamsInfo.find(team => team.Team_Num === rider.Team_Num) 
@@ -437,33 +411,6 @@ function mostrarRider(id_rider, riders, elem){
 
 function mostrarRiderLinea(id_rider, riders, elem){
     
-    // var riderStage = riders.filter(r => r.id === id_rider);
-
-    // var rider = ridersInfo.find(r => r.Rider_Num === riderStage[0].ridernum);
-
-    // //search per riders
-    // var ulRidersImg, divRiders;
-
-    // ulRidersImg = document.getElementById("myULImagesRiders_id");
-    // divRiders = ulRidersImg.getElementsByTagName("div")
-
-    // var divSelect; 
-
-    // for (var i = 0; i < divRiders.length; i++) {
-
-    //     var riderInnerText= divRiders[i].getElementsByTagName("section")[0].innerText;
-    //     var ridernumber = riderInnerText.slice(riderInnerText.indexOf(": ") + 2, riderInnerText.length)
-
-    //     if(ridernumber === rider.Rider_Num) {
-    //         divSelect = divRiders[i];
-    //         break;
-    //     }
-    // }
-
-    // $(divSelect).addClass("ui-selected")
-
-    // divSelect.style.background = colors[indexColor]
-
     var riderStage = riders.filter(r => r.id === id_rider);
     colorBackgroundImg(id_rider, riders);
     var clicked = d3.select(elem);
@@ -716,10 +663,6 @@ $("div.myDivImagesStages").click(function(){
 //refresh all on delete keyboard event
 function refresh(){
 
-    // var e = $.Event("keyup");
-    // $("#myInput").val("").trigger(e);
-
-
     $( "#myULImagesRiders_id div.myDivImagesRiders" ).each(function(){
         this.style.background = ""
     })
@@ -733,9 +676,7 @@ function refresh(){
 }
 
 $(document).keydown(function(e) {
-    if(e.key === "Backspace"){
-        // $('#myULImagesRiders_id .ui-selected').removeClass('ui-selected')
-        // refresh();     
+    if(e.key === "Backspace"){    
         $( ".card" ).remove();  
     }
 });  

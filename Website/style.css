@@ -63,12 +63,6 @@ body, html {
     stroke-width: 2.5px !important;   
 }
 
-/*.line--clicked {
-  fill: none;
-  stroke: red;
-  stroke-width: 2px;
-}*/
-
 .textTimeProvPos{
     font-size: 10px;
 }
@@ -202,34 +196,8 @@ div.tooltipRider {
   margin-top: 10px;
   display: flex;
   align-items: flex-start;
-/*    justify-content: left;
-    text-align: center;*/
-
-    /*font-weight: bold;*/
 }
 
-/*.blockWinners {
-  width: 25%;
-  
-  background-color: none;
-  border-style: groove;
-  font-size: 1vw;
-
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.blockYellowWinner {
-  background-color: none;
-  border-style: groove;
-  font-size: 1vw;
-  
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  
-}*/
 
 .numberCircle {
     border-radius: 50%;
@@ -251,14 +219,10 @@ div.tooltipRider {
 }
 
 .pWinner{
-    /*display : inline-block;*/
-    /*vertical-align:250px;*/
-
 
 }
 
 .first {
-    /*flex: 1 1 auto;*/
     margin-right: 75px;
     font-size: 15px;
     display : inline-block;
@@ -267,7 +231,6 @@ div.tooltipRider {
 }
 
 .second {
-    /*flex: 1 1 auto;*/
     margin-right: 75px;
     font-size: 15px;
     display : inline-block;
@@ -276,7 +239,6 @@ div.tooltipRider {
 }
 
 .third {
-    /*flex: 1 1 auto;*/
     margin-right: 75px;
     font-size: 15px;
     display : inline-block;
@@ -285,10 +247,7 @@ div.tooltipRider {
 }
 
 .yellow {
-    /*flex: 1 1 auto;*/
 
-/*    display : inline-block;
-    vertical-align : middle;*/
     font-size: 15px;
     font-family: Verdana, Geneva, sans-serif
 }
@@ -362,12 +321,10 @@ div.tooltipRider {
 .input {
   border: 1px solid #ddd;
   margin-bottom: : 0px; /* Prevent double borders */
-  /*background-color: #f6f6f6;*/
   background-color: transparent;
   display: block;
   color: black;
   font-size: 12px;
-  /*width: 100%;*/
   padding: 10px;
 }
 
@@ -391,12 +348,9 @@ div.tooltipRider {
 .myLiNamesRider {
   border: 1px solid #8aa883;
   margin-top: -1px; /* Prevent double borders */
-  /*background-color: #f6f6f6;*/
   background-color: transparent;
   padding: 12px;
-  /*display: block;*/
   cursor: pointer;
-  /*width: 100%;*/
 }
 
 .myULImagesRiders {
@@ -408,8 +362,7 @@ div.tooltipRider {
 
 .myDivImagesRiders {
   border: 1px solid #8aa883;
-  /*margin-top: 0px;  Prevent double borders */
-  background-color: none;/*#f6f6f6*/
+  background-color: none;
   padding: 6px;
   display: block;
   cursor: pointer;
@@ -459,12 +412,9 @@ div.tooltipRider {
 .myLiNamesTeam {
   border: 1px solid #8aa883;
   margin-top: -1px; /* Prevent double borders */
-  /*background-color: #f6f6f6;*/
   background-color: transparent;
   padding: 12px;
-  /*display: block;*/
   cursor: pointer;
-  /*width: 100%;*/
 }
 
 .myULImagesTeams {
@@ -476,8 +426,7 @@ div.tooltipRider {
 
 .myDivImagesTeams {
   border: 1px solid #8aa883;
-  /*margin-top: -1px;  Prevent double borders */
-  background-color: none;/*#f6f6f6*/
+  background-color: none;
   padding: 6px;
   display: block;
   cursor: pointer;
